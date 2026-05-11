@@ -379,6 +379,9 @@ const PX='https://api.allorigins.win/raw?url=';
 const TOUR='http://apis.data.go.kr/B551011/KorService2';
 const APP=encodeURIComponent('경북체험학습');
 const GBK=[36.4919,128.8889];
+const EDU_CONTENT_TYPES=['12','14','15','28','38'];
+const BLOCKED_CONTENT_TYPES=['32','39'];
+const CONTENT_TYPE_NAMES={'12':'관광지','14':'문화시설','15':'축제·공연·행사','25':'여행코스','28':'레포츠','32':'숙박','38':'쇼핑','39':'음식점'};
 const SIGUNGU={
   경산시:'1',경주시:'2',고령군:'3',구미시:'4',김천시:'6',문경시:'7',봉화군:'8',상주시:'9',
   성주군:'10',안동시:'11',영덕군:'12',영양군:'13',영주시:'14',영천시:'15',예천군:'16',
@@ -435,6 +438,19 @@ function clsub(p){
   for(const [sub,ks] of Object.entries(SUB_MAP)){if(ks.some(k=>t.includes(k)))return sub;}
   return '';
 }
+function contentTypeName(type){return CONTENT_TYPE_NAMES[String(type||'')]||String(type||'미분류');}
+function isAllowedContentType(type){return EDU_CONTENT_TYPES.includes(String(type||''));}
+function isNonLearningPlace(p){
+  const type=String(p?.contenttypeid||p?.contentTypeId||'');
+  if(BLOCKED_CONTENT_TYPES.includes(type))return true;
+  const text=cleanText(`${p?.title||''} ${p?.addr1||''}`).toLowerCase();
+  const market=/전통시장|시장|오일장|장터/.test(text);
+  if(type==='38'&&!market&&!/공예|공방|문화거리|특산/.test(text))return true;
+  return !market&&/밀면|식당|음식점|맛집|카페|커피|베이커리|빵집|국밥|한우|갈비|막국수|칼국수|횟집|분식|펜션|호텔|모텔|리조트|게스트하우스|숙박|상점|기념품점|매점/.test(text);
+}
+function isUsableTourPlace(p){
+  return isAllowedContentType(p?.contenttypeid||p?.contentTypeId)&&!isNonLearningPlace(p);
+}
 
 /* ── 교육과정 ── */
 const CUR={
@@ -490,7 +506,7 @@ const SOCIAL_CURRICULUM={
     {id:'5s9',unit:'4. 유적과 유물로 살펴본 옛 사람들의 생활',lesson:'7~9차시',name:'다양한 역사 자료로 보는 고려 시대 생활',ic:'🛕',terms:['고려','고려사','역사 자료','불교 문화','사찰','석탑','무량수전','부석사','봉정사','개심사지','생활 모습'],searchTerms:['영주 부석사','부석사 무량수전','안동 봉정사','봉정사 극락전','예천 개심사지','고려사 원문','고려 불교'],placeTypes:['사찰','탑','문화유산','유적지'],standard:'[6사04-03] 다양한 역사 자료를 활용하여 고려 시대 사회 모습과 사람들의 생활을 추론한다.',activity:'고려사 원문·문화유산 해설을 비교해 종교, 건축, 생활 모습의 단서 찾기',focus:'고려 시대, 역사 자료, 불교 문화와 생활',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s10',unit:'5. 달라지는 시대, 변화하는 생활 모습',lesson:'1~4차시',name:'유교 문화와 조선 시대 생활 모습',ic:'📜',terms:['조선','유교 문화','서원','향교','종택','고택','양반','마을 공동체','하회마을','양동마을','도산서원','병산서원','소수서원'],searchTerms:['도산서원','병산서원','소수서원','안동 하회마을','경주 양동마을','향교','종택','고택'],placeTypes:['서원','향교','고택','종택','전통마을'],standard:'[6사05-01] 조선 시대 사람들의 생각과 생활에 유교 문화가 미친 영향을 파악한다.',activity:'공간 배치와 생활 규범 관찰, 서원·마을 자료로 유교 문화가 생활에 준 영향 정리',focus:'조선, 유교 문화, 전통 생활 공간',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s11',unit:'5. 달라지는 시대, 변화하는 생활 모습',lesson:'5~7차시',name:'조선 후기 변화와 개항기 근대 문물',ic:'🏘️',terms:['조선 후기','개항기','근대 문물','사회 변화','상업','시장','옛길','근대문화','생활 변화','문경새재','구룡포 근대문화역사거리'],searchTerms:['문경새재','구룡포 근대문화역사거리','근대문화역사거리','전통시장','옛길','근대문화'],placeTypes:['근대문화','전통시장','옛길','역사관'],standard:'[6사05-02] 조선 후기 사회·문화적 변화와 개항기 근대 문물 수용 과정에서 달라진 사람들의 생활을 이해한다.',activity:'옛 교통로·시장·근대 건축을 통해 이동, 교류, 생활 방식 변화를 비교표로 정리',focus:'조선 후기 변화, 개항기, 근대 문물 수용',source:HISTORY_PUBLIC_SOURCE},
-    {id:'5s12',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'1~4차시',name:'일제 식민 통치와 저항',ic:'🕯️',terms:['일제','식민 통치','독립운동','항일','의병','감시대상인물카드','임청각','박열','왕산 허위','경상북도독립운동기념관','청송 항일의병'],searchTerms:['경상북도독립운동기념관','임청각','청송 항일의병기념공원','박열의사기념관','왕산 허위','일제감시대상인물카드','독립운동'],placeTypes:['독립운동 유적','기념관','역사관','생가'],standard:'[6사06-01] 일제의 식민 통치와 이에 대한 저항이 사회와 생활에 미친 영향을 이해한다.',activity:'국사편찬위원회 일제감시대상인물카드 키워드와 경북 독립운동 장소를 연결해 인물·사건 타임라인 만들기',focus:'식민 통치, 독립운동, 지역 인물과 저항',source:HISTORY_PUBLIC_SOURCE},
+    {id:'5s12',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'1~4차시',name:'일제 식민 통치와 저항',ic:'🕯️',terms:['일제','식민 통치','독립운동','항일','의병','감시대상인물카드','임청각','박열','왕산 허위','신돌석','경상북도독립운동기념관','청송 항일의병'],searchTerms:['경상북도독립운동기념관','임청각','청송 항일의병기념공원','박열의사기념관','왕산 허위','신돌석장군 생가 및 유적지','신돌석','일제감시대상인물카드','독립운동'],placeTypes:['독립운동 유적','기념관','역사관','생가'],standard:'[6사06-01] 일제의 식민 통치와 이에 대한 저항이 사회와 생활에 미친 영향을 이해한다.',activity:'국사편찬위원회 일제감시대상인물카드 키워드와 경북 독립운동 장소를 연결해 인물·사건 타임라인 만들기',focus:'식민 통치, 독립운동, 지역 인물과 저항',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s13',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'5~7차시',name:'광복과 6·25 전쟁 이후 달라진 사회와 생활',ic:'🕊️',terms:['광복','6·25 전쟁','전쟁','호국','전적지','피란','생활 변화','칠곡호국평화기념관','장사상륙작전','다부동전투'],searchTerms:['칠곡호국평화기념관','다부동전적기념관','영덕 장사상륙작전 전승기념관','호국평화','전적기념관','6.25 전쟁'],placeTypes:['전적지','기념관','평화공원','역사관'],standard:'[6사06-02] 8·15 광복과 6·25 전쟁이 사회와 생활에 미친 영향을 파악한다.',activity:'전쟁 기념 공간에서 사건의 위치와 영향을 확인하고 평화 메시지 카드뉴스 만들기',focus:'광복, 전쟁, 사회와 생활 변화, 평화',source:HISTORY_PUBLIC_SOURCE},
   ],
   '6':[
@@ -677,7 +693,7 @@ async function doSrc(){
     if(!rawResults.length)throw new Error('Tour API에서 장소 데이터를 받지 못했습니다. 네트워크 또는 공공데이터 API 응답을 확인해주세요.');
     const seen=new Set();
     const places=rawResults.filter(p=>{
-      if(!p?.contentid||seen.has(p.contentid)||!p.mapx||!p.mapy)return false;
+      if(!p?.contentid||seen.has(p.contentid)||!p.mapx||!p.mapy||!isUsableTourPlace(p))return false;
       seen.add(p.contentid);return true;
     }).map(p=>buildPlace(p,ctr,u,local)).filter(p=>p.score>0).sort((a,b)=>b.score-a.score||a.dist-b.dist);
     A.all=await hydrateImages(places);
@@ -698,13 +714,15 @@ async function doSrc(){
 }
 
 async function ft(term){
-  const url=`${TOUR}/searchKeyword2?serviceKey=${TK}&keyword=${encodeURIComponent(term)}&areaCode=35&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
-  try{const d=await apiJson(url);const it=d?.response?.body?.items?.item;if(!it)return[];return Array.isArray(it)?it:[it];}catch{return[];}
+  const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
+    const url=`${TOUR}/searchKeyword2?serviceKey=${TK}&keyword=${encodeURIComponent(term)}&areaCode=35&contentTypeId=${type}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+    try{const d=await apiJson(url);const it=d?.response?.body?.items?.item;if(!it)return[];return Array.isArray(it)?it:[it];}catch{return[];}
+  }));
+  return batches.flat().filter(isUsableTourPlace);
 }
 
 async function fetchLocalArea(sigunguCode){
-  const contentTypes=['12','14'];
-  const batches=await Promise.all(contentTypes.map(async type=>{
+  const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
     const url=`${TOUR}/areaBasedList2?serviceKey=${TK}&areaCode=35&sigunguCode=${sigunguCode}&contentTypeId=${type}&arrange=A&numOfRows=120&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
     try{
       const d=await apiJson(url);
@@ -713,13 +731,12 @@ async function fetchLocalArea(sigunguCode){
       return Array.isArray(it)?it:[it];
     }catch{return[];}
   }));
-  return batches;
+  return batches.map(list=>list.filter(isUsableTourPlace));
 }
 
 async function fetchNearby(ctr){
-  const contentTypes=['12','14'];
   const radius=30000;
-  const batches=await Promise.all(contentTypes.map(async type=>{
+  const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
     const url=`${TOUR}/locationBasedList2?serviceKey=${TK}&mapX=${ctr[1]}&mapY=${ctr[0]}&radius=${radius}&areaCode=35&contentTypeId=${type}&arrange=E&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
     try{
       const d=await apiJson(url);
@@ -728,7 +745,7 @@ async function fetchNearby(ctr){
       return Array.isArray(it)?it:[it];
     }catch{return[];}
   }));
-  return batches;
+  return batches.map(list=>list.filter(isUsableTourPlace));
 }
 
 function buildPlace(p,ctr,u,local){
@@ -738,6 +755,7 @@ function buildPlace(p,ctr,u,local){
   const place={
     id:p.contentid,title,addr1,
     contentTypeId:p.contenttypeid||'12',
+    contentTypeName:contentTypeName(p.contenttypeid||'12'),
     sigunguCode:p.sigungucode||'',
     cat1:p.cat1||'',cat2:p.cat2||'',cat3:p.cat3||'',
     lat,lng,
@@ -761,6 +779,32 @@ function curriculumEvidenceText(p,overview=''){
 function keywordHits(text,words=[]){
   return words.filter(k=>text.includes(String(k).toLowerCase()));
 }
+const HISTORY_ERA_LABELS={
+  prehistoric:'선사·고조선',
+  ancient:'고대',
+  goryeo:'고려',
+  joseon:'조선',
+  modern:'조선 후기·개항기',
+  resistance:'항일·독립운동',
+  war:'광복·전쟁',
+};
+function historyEraTags(text){
+  const tags=[];
+  if(/선사|고조선|암각화|고인돌/.test(text))tags.push('prehistoric');
+  if(/신라|가야|대가야|통일신라|삼국|대릉원|천마총|첨성대|월성|황룡사지|불국사|석굴암|지산동|고분군|삼국유사|금석문/.test(text))tags.push('ancient');
+  if(/고려|부석사|봉정사|무량수전|극락전|개심사지|고려사/.test(text))tags.push('goryeo');
+  if(/조선|유교|서원|향교|도산서원|병산서원|소수서원|하회|양동|종택|고택/.test(text))tags.push('joseon');
+  if(/조선 후기|개항|근대문물|근대 문화|근대문화|구룡포|문경새재|옛길/.test(text))tags.push('modern');
+  if(/신돌석|독립운동|항일|의병|일제|식민|임청각|박열|왕산|허위|감시대상|만행|침략/.test(text))tags.push('resistance');
+  if(/광복|6\.25|6·25|전쟁|호국|전적|장사상륙|다부동|칠곡호국|피란|평화/.test(text))tags.push('war');
+  return uniq(tags);
+}
+function hasEra(tags,allow=[]){return (allow||[]).some(x=>tags.includes(x));}
+function eraLabels(tags){return (tags||[]).map(x=>HISTORY_ERA_LABELS[x]||x);}
+function genericHistoryOnly(text){
+  const withoutGeneric=text.replace(/유적지|유적|유물|사적|박물관|기념관|역사관|문화관|생가|장군|공원|전시|자료|기록|생활|모습/g,' ');
+  return !/선사|고조선|암각화|고인돌|신라|가야|대가야|통일신라|삼국|대릉원|천마총|첨성대|월성|황룡사지|불국사|석굴암|지산동|고분군|삼국유사|금석문|고려|부석사|봉정사|무량수전|극락전|개심사지|고려사|조선|유교|서원|향교|도산서원|병산서원|소수서원|하회|양동|종택|고택|개항|근대|구룡포|문경새재|신돌석|독립운동|항일|의병|일제|식민|임청각|박열|왕산|허위|광복|6\.25|6·25|전쟁|호국|전적|장사상륙|다부동|칠곡호국/.test(withoutGeneric);
+}
 function socialUnitProfile(u){
   const unit=u?.unit||u?.name||'';
   if(/우리나라 국토 여행/.test(unit))return {
@@ -783,17 +827,21 @@ function socialUnitProfile(u){
   };
   if(/유적과 유물로 살펴본 옛 사람들의 생활/.test(unit))return {
     label:'역사 원자료·고대/고려',
-    min:30,
+    min:42,
     codeGroup:'heritage',
-    strong:['암각화','고인돌','대릉원','천마총','첨성대','월성','황룡사지','불국사','석굴암','대가야','지산동','고분','고분군','부석사','봉정사','개심사지','무량수전','극락전','삼국유사','금석문','고려사','박물관','유적','유물','사적'],
-    keywords:['선사','고조선','고대','삼국','신라','가야','통일신라','고려','역사 기록','역사 자료','생활 모습','추론','불교 문화'],
-    deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|전통시장|공방|산업관|안전체험/,
+    requiredEras:['prehistoric','ancient','goryeo'],
+    blockedEras:['joseon','modern','resistance','war'],
+    strong:['암각화','고인돌','대릉원','천마총','첨성대','월성','황룡사지','불국사','석굴암','대가야','지산동','고분군','부석사','봉정사','개심사지','무량수전','극락전','삼국유사','금석문','고려사'],
+    keywords:['선사','고조선','고대','삼국','신라','가야','통일신라','고려','역사 기록','역사 자료','불교 문화'],
+    deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|전통시장|공방|산업관|안전체험|생가|독립|의병|항일|일제|식민|신돌석|임청각|박열|왕산|허위|호국|전쟁|전적|근대/,
     topicByText:[{re:/선사|고조선|암각화|고인돌/,topic:/선사|고조선/},{re:/경주|신라|가야|대가야|대릉원|천마총|첨성대|월성|황룡사지|불국사|석굴암|고분|삼국유사|금석문/,topic:/고대/},{re:/고려|부석사|봉정사|무량수전|극락전|개심사지|고려사/,topic:/고려/}],
   };
   if(/달라지는 시대, 변화하는 생활 모습/.test(unit))return {
     label:'조선·근대 생활사',
     min:30,
     codeGroup:'heritage',
+    requiredEras:['joseon','modern'],
+    blockedEras:['prehistoric','ancient','goryeo','resistance','war'],
     strong:['도산서원','병산서원','소수서원','서원','향교','하회마을','양동마을','고택','종택','유교','조선','문경새재','구룡포','근대문화','근대문화역사거리','전통시장','옛길'],
     keywords:['조선 후기','개항기','근대 문물','상업','교류','생활 변화','마을 공동체','양반','전통 생활','사회 변화'],
     deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|천문대|과학관/,
@@ -803,10 +851,12 @@ function socialUnitProfile(u){
     label:'독립운동·전쟁 자료',
     min:30,
     codeGroup:'heritage',
-    strong:['독립운동','항일','의병','임청각','박열','왕산','허위','청송 항일','감시대상인물','일제','식민','광복','장사상륙','다부동','칠곡호국','호국평화','6.25','6·25','전쟁','전적','기념관'],
-    keywords:['저항','사회와 생활','피란','평화','호국','근현대','자료대한민국사','한국사료총서'],
+    requiredEras:['resistance','war'],
+    blockedEras:['prehistoric','ancient','goryeo'],
+    strong:['신돌석','독립운동','항일','의병','임청각','박열','왕산','허위','청송 항일','감시대상인물','일제','식민','광복','장사상륙','다부동','칠곡호국','호국평화','6.25','6·25','전쟁','전적'],
+    keywords:['저항','사회와 생활','피란','평화','호국','근현대','자료대한민국사','한국사료총서','기념관'],
     deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|서원|향교|사찰|고분/,
-    topicByText:[{re:/독립|항일|의병|임청각|박열|왕산|허위|일제|식민|감시대상/,topic:/식민|저항/},{re:/광복|6\.25|6·25|전쟁|호국|장사상륙|다부동|칠곡|전적|평화/,topic:/광복|전쟁/}],
+    topicByText:[{re:/신돌석|독립|항일|의병|임청각|박열|왕산|허위|일제|식민|감시대상/,topic:/식민|저항/},{re:/광복|6\.25|6·25|전쟁|호국|장사상륙|다부동|칠곡|전적|평화/,topic:/광복|전쟁/}],
   };
   if(/국가유산|일상에서 만나는 과거|옛날과 오늘날의 생활 모습|평화 통일|민주화와 산업화/.test(unit))return {
     label:'역사·국가유산',
@@ -858,6 +908,7 @@ function pickProfileTopic(profile,u,text){
 function curriculumRelevance(p,u,overview=''){
   const text=curriculumEvidenceText(p,overview);
   const profile=socialUnitProfile(u);
+  const eras=historyEraTags(text);
   let bestTopic=null,bestScore=0;
   (u?.subtopics||[]).forEach(t=>{
     const score=subtopicScore(t,text);
@@ -873,12 +924,19 @@ function curriculumRelevance(p,u,overview=''){
   const broadNature=profile.codeGroup==='nature'&&p?.cat1==='A01';
   let score=bestScore+strong.length*32+weak.length*12;
   if(codeHit||broadNature)score+=34;
+  if(profile.requiredEras?.length&&hasEra(eras,profile.requiredEras))score+=36;
+  if(profile.requiredEras?.length&&!hasEra(eras,profile.requiredEras))score=0;
+  if(profile.blockedEras?.length&&hasEra(eras,profile.blockedEras))score=0;
+  if(profile.requiredEras?.length&&genericHistoryOnly(text))score=0;
   if(profile.deny?.test(text)&&!strong.length&&!codeHit&&!broadNature)score=0;
   const topic=bestTopic||pickProfileTopic(profile,u,text);
-  const evidence=uniq([...strong,...weak,codeHit||broadNature?profile.label:'']);
-  return {profile,score,min:profile.min,evidence,topic,direct:score>=profile.min};
+  const evidence=uniq([...strong,...weak,...eraLabels(eras),codeHit||broadNature?profile.label:'']);
+  const blocked=profile.blockedEras?.length&&hasEra(eras,profile.blockedEras);
+  const missingEra=profile.requiredEras?.length&&!hasEra(eras,profile.requiredEras);
+  return {profile,score,min:profile.min,evidence,topic,direct:score>=profile.min,eras,blocked,missingEra};
 }
 function scorePlace(p,u,local){
+  if(!isUsableTourPlace(p))return 0;
   if(u?.subtopics?.length){
     const rel=curriculumRelevance(p,u);
     if(rel.score<rel.min)return 0;
@@ -1083,7 +1141,7 @@ function subtopicScore(topic,text){
   (topic.placeTypes||[]).forEach(k=>{if(text.includes(k.toLowerCase()))score+=2;});
   const n=topic.name||'';
   if(/국가유산/.test(n)&&/서원|향교|사찰|불국사|석굴암|부석사|봉정사|탑|고분|왕릉|성곽|고택|종택/.test(text))score+=20;
-  if(/박물관|기념관|유적지/.test(n)&&/박물관|기념관|유적|역사관|문화관|전시/.test(text))score+=20;
+  if(/박물관|기념관|유적지/.test(n)&&/박물관|기념관|유적|역사관|문화관|전시/.test(text))score+=12;
   if(/지형/.test(n)&&/지질|주상절리|계곡|폭포|산|해안|강|하천/.test(text))score+=20;
   if(/독도/.test(n)&&/독도|울릉|해안|영토|해양/.test(text))score+=20;
   if(/기후/.test(n)&&/기후|재해|안전|댐|하천|해안|생태/.test(text))score+=18;
@@ -1095,8 +1153,8 @@ function subtopicScore(topic,text){
   if(/문화|풍습|세계|대륙|대양/.test(n)&&/문화|민속|축제|세계|국제|전통|한옥|민속촌/.test(text))score+=18;
   if(/평화|통일/.test(n)&&/평화|통일|분단|전쟁|호국|전적|기념관/.test(text))score+=20;
   if(/산업화|민주화/.test(n)&&/산업|근대|공장|포항제철|민주|역사관|기념관/.test(text))score+=20;
-  if(/선사 시대|고조선/.test(n)&&/선사|고조선|암각화|고인돌|유적|유물|박물관/.test(text))score+=24;
-  if(/고대 사람|고대/.test(n)&&/신라|가야|대가야|경주|대릉원|천마총|첨성대|월성|황룡사지|불국사|석굴암|고분|삼국유사|금석문|박물관/.test(text))score+=28;
+  if(/선사 시대|고조선/.test(n)&&/선사|고조선|암각화|고인돌/.test(text))score+=28;
+  if(/고대 사람|고대/.test(n)&&/신라|가야|대가야|대릉원|천마총|첨성대|월성|황룡사지|불국사|석굴암|지산동|고분군|삼국유사|금석문/.test(text))score+=30;
   if(/고려 시대|고려/.test(n)&&/고려|부석사|봉정사|무량수전|극락전|개심사지|석탑|고려사|사찰/.test(text))score+=26;
   if(/조선 시대|유교 문화/.test(n)&&/조선|유교|서원|향교|도산서원|병산서원|소수서원|하회|양동|고택|종택/.test(text))score+=28;
   if(/조선 후기|개항기|근대 문물/.test(n)&&/조선 후기|개항|근대|문경새재|구룡포|시장|상업|옛길|생활 변화/.test(text))score+=24;
@@ -1145,6 +1203,8 @@ function recommendationReasonFor(p,u,ref,overview='',hits=[],rel=null){
 function directReasonFor(p,u,ref,overview='',hits=[],rel=null){
   if(u?.subtopics?.length){
     const r=rel||curriculumRelevance(p,u,overview);
+    if(r.blocked)return `장소의 시대·주제가 선택 단원과 맞지 않습니다. 감지된 주제는 ${eraLabels(r.eras).join(', ')}이며, 이 단원은 ${r.profile?.label||'선택 단원'} 범위만 추천합니다.`;
+    if(r.missingEra)return `장소명과 소개 정보에서 이 단원에 필요한 시대 근거가 확인되지 않습니다. 일반적인 유적·유물 표현만으로는 추천하지 않습니다.`;
     if(r.score<r.min)return '현재 장소명과 소개 정보만으로는 선택한 단원과 직접 연결할 근거가 부족합니다. 이 장소는 추천 결과에서 제외하는 것이 적절합니다.';
     const unit=u.unit||u.name||'선택 단원';
     const topic=ref?.name||unit;

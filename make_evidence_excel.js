@@ -23,6 +23,7 @@ function readApp() {
   vm.runInContext(`
     globalThis.__APP_EXPORT__ = {
       CUR, SOCIAL_CURRICULUM, CATS, SUB_MAP, TEXTBOOK_SOURCE, CURRICULUM_SOURCE, NIKH_SOURCE, HISTORY_PUBLIC_SOURCE, TOUR_CODE_GROUPS,
+      EDU_CONTENT_TYPES, contentTypeName, isUsableTourPlace,
       GBK, SIGUNGU, TK, TOUR, APP,
       socialUnitProfile, curriculumRelevance, scorePlace, curriculumData, buildPlace,
       setState(g, s) { A.gr = g; A.sj = s; }
@@ -44,7 +45,7 @@ function regexText(v) {
 }
 
 function profileRows(app) {
-  const rows = [['학년', '교과', '선택 단원', '판정 유형', '최소 통과 점수', '강한 근거 키워드', '보조 키워드', '제외 패턴', '관광 API 코드 그룹', '코드 목록', '세부 주제 분기 규칙', '판정 방식']];
+  const rows = [['학년', '교과', '선택 단원', '판정 유형', '최소 통과 점수', '필수 시대 태그', '차단 시대 태그', '강한 근거 키워드', '보조 키워드', '제외 패턴', '관광 API 코드 그룹', '코드 목록', '세부 주제 분기 규칙', '판정 방식']];
   Object.entries(app.CUR).forEach(([grade, subjects]) => {
     (subjects.사회 || []).forEach((unit) => {
       const p = app.socialUnitProfile(unit);
@@ -52,9 +53,9 @@ function profileRows(app) {
       const rules = (p?.topicByText || []).map((r) => `${r.re} -> ${r.topic}`).join(' / ');
       rows.push([
         `${grade}학년`, '사회', unit.unit || unit.name, p?.label || '핵심어 기반',
-        p?.min || '', join(p?.strong), join(p?.keywords), regexText(p?.deny),
+        p?.min || '', join(p?.requiredEras), join(p?.blockedEras), join(p?.strong), join(p?.keywords), regexText(p?.deny),
         p?.codeGroup || '', join(codes), rules,
-        '강한 근거(+32), 보조 근거(+12), 관광분류 코드(+34), 세부주제 점수를 합산하고 최소 점수 미만은 제외',
+        '강한 근거(+32), 보조 근거(+12), 관광분류 코드(+34), 시대 태그(+36), 세부주제 점수를 합산하고 필수 시대 미확인/차단 시대 감지/최소 점수 미만은 제외',
       ]);
     });
   });
@@ -135,6 +136,7 @@ function scoringRows() {
     ['강한 근거 키워드', '+32', '장소명/주소/상세 설명에 단원 핵심 장소어가 포함될 때', '직접 연계성이 높은 증거'],
     ['보조 키워드', '+12', '단원과 관련된 일반 개념어가 포함될 때', '연계 가능성을 보조하는 증거'],
     ['관광 API 분류 코드', '+34', '단원 성격과 맞는 Tour API cat3 또는 cat1 코드일 때', '장소명이 애매해도 공공데이터 분류로 보완'],
+    ['시대 태그', '+36 또는 0점 처리', '역사 단원에서 선사·고대·고려·조선·항일·전쟁 등 시대 태그가 단원 범위와 맞을 때만 통과', '신돌석 장군 같은 항일의병 자료가 고조선/고대 단원에 잘못 들어가는 오류 방지'],
     ['세부 주제 점수', 'terms +3, searchTerms +2, placeTypes +2', '세부 주제별 키워드가 장소 정보에 포함될 때', '큰 단원 안에서 어느 주제/차시와 연결되는지 결정'],
     ['제외 패턴', '0점 처리 가능', '단원과 다른 성격의 장소가 강한 근거 없이 포함될 때', '예: 5학년 우리나라 국토 여행에서 문화원/시장/공방 제외'],
     ['최소 통과 점수', '단원별 22~34점', '단원 유형별 socialUnitProfile에 정의', '애매한 장소를 추천 결과에서 제거'],
@@ -227,6 +229,20 @@ function validationRows(app) {
       expected: '추천 유지',
       place: { title: '경상북도독립운동기념관', addr1: '경상북도 안동시 임하면', cat1: 'A02', cat3: 'A02060200', cat: '인물역사', sub: '독립운동 유적', dist: 30, sigunguCode: '11' },
     },
+    {
+      purpose: '오매칭 제거: 항일의병장 신돌석은 고조선/고대 유물 단원에서 제외',
+      grade: '5',
+      unit: '4. 유적과 유물로 살펴본 옛 사람들의 생활',
+      expected: '추천 제외',
+      place: { title: '신돌석장군 생가 및 유적지', addr1: '경상북도 영덕군 축산면', cat1: 'A02', cat3: 'A02010700', cat: '인물역사', sub: '독립운동 유적', dist: 50, sigunguCode: '12' },
+    },
+    {
+      purpose: '정상 매칭: 항일의병장 신돌석은 식민 통치와 저항 단원에 연결',
+      grade: '5',
+      unit: '6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',
+      expected: '추천 유지',
+      place: { title: '신돌석장군 생가 및 유적지', addr1: '경상북도 영덕군 축산면', cat1: 'A02', cat3: 'A02010700', cat: '인물역사', sub: '독립운동 유적', dist: 50, sigunguCode: '12' },
+    },
   ];
   cases.forEach((c) => {
     const u = getUnit(app, c.grade, c.unit);
@@ -239,17 +255,20 @@ function validationRows(app) {
 }
 
 async function fetchTour(app, keyword) {
-  const url = `${app.TOUR}/searchKeyword2?serviceKey=${app.TK}&keyword=${encodeURIComponent(keyword)}&areaCode=35&numOfRows=8&pageNo=1&MobileOS=ETC&MobileApp=${app.APP}&_type=json`;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return [];
-    const data = await res.json();
-    const item = data?.response?.body?.items?.item;
-    if (!item) return [];
-    return Array.isArray(item) ? item : [item];
-  } catch {
-    return [];
-  }
+  const batches = await Promise.all((app.EDU_CONTENT_TYPES || ['12', '14']).map(async (type) => {
+    const url = `${app.TOUR}/searchKeyword2?serviceKey=${app.TK}&keyword=${encodeURIComponent(keyword)}&areaCode=35&contentTypeId=${type}&numOfRows=8&pageNo=1&MobileOS=ETC&MobileApp=${app.APP}&_type=json`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const data = await res.json();
+      const item = data?.response?.body?.items?.item;
+      if (!item) return [];
+      return (Array.isArray(item) ? item : [item]).filter((it) => app.isUsableTourPlace ? app.isUsableTourPlace(it) : true);
+    } catch {
+      return [];
+    }
+  }));
+  return batches.flat();
 }
 
 async function candidateRows(app) {
@@ -298,6 +317,33 @@ async function candidateRows(app) {
       }
     }
   }
+  return rows;
+}
+
+function offlineCandidateRows(app) {
+  const rows = [['학년', '교과', '선택 단원', '검색어', 'contentid', '장소명', '주소', 'contenttypeid', 'cat1', 'cat2', 'cat3', '시군코드', '좌표유무', '이미지유무', '앱 대분류', '앱 소분류', '경북중심 기준 거리(km)', '교육과정 점수', '최소 기준', '선별 결과', '관련 주제·차시', '근거 키워드', '직접 연계 근거']];
+  const cases = [
+    ['5', '4. 유적과 유물로 살펴본 옛 사람들의 생활', '고대 정상 샘플', { contentid: 'offline-ancient-1', title: '경주 대릉원 천마총', addr1: '경상북도 경주시 황남동', contenttypeid: '12', cat1: 'A02', cat2: '', cat3: 'A02010700', sigungucode: '2', mapx: '129.210', mapy: '35.839', firstimage: '' }],
+    ['5', '4. 유적과 유물로 살펴본 옛 사람들의 생활', '시대 불일치 제외 샘플', { contentid: 'offline-resist-1', title: '신돌석장군 생가 및 유적지', addr1: '경상북도 영덕군 축산면', contenttypeid: '12', cat1: 'A02', cat2: '', cat3: 'A02010700', sigungucode: '12', mapx: '129.416', mapy: '36.507', firstimage: '' }],
+    ['5', '6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활', '항일의병 정상 샘플', { contentid: 'offline-resist-1', title: '신돌석장군 생가 및 유적지', addr1: '경상북도 영덕군 축산면', contenttypeid: '12', cat1: 'A02', cat2: '', cat3: 'A02010700', sigungucode: '12', mapx: '129.416', mapy: '36.507', firstimage: '' }],
+    ['5', '5. 달라지는 시대, 변화하는 생활 모습', '조선 유교 정상 샘플', { contentid: 'offline-joseon-1', title: '안동 도산서원', addr1: '경상북도 안동시 도산면', contenttypeid: '12', cat1: 'A02', cat2: '', cat3: 'A02010700', sigungucode: '11', mapx: '128.843', mapy: '36.727', firstimage: '' }],
+    ['5', '1. 우리나라 국토 여행', '오매칭 제외 샘플', { contentid: 'offline-mismatch-1', title: '영천문화원', addr1: '경상북도 영천시', contenttypeid: '14', cat1: 'A02', cat2: '', cat3: 'A02060900', sigungucode: '15', mapx: '128.939', mapy: '35.973', firstimage: '' }],
+    ['5', '4. 유적과 유물로 살펴본 옛 사람들의 생활', '음식점 제외 샘플', { contentid: '2736657', title: '불국사밀면', addr1: '경상북도 경주시 불국장터길 29', contenttypeid: '39', cat1: 'A05', cat2: '', cat3: 'A05020100', sigungucode: '2', mapx: '129.315', mapy: '35.789', firstimage: '' }],
+  ];
+  cases.forEach(([grade, unitName, seed, item]) => {
+    const unit = getUnit(app, grade, unitName);
+    app.setState(grade, '사회');
+    const place = app.buildPlace(item, app.GBK, unit, null);
+    const rel = app.curriculumRelevance(place, unit, '');
+    const data = app.curriculumData(place, unit, '');
+    rows.push([
+      `${grade}학년`, '사회', unitName, seed, item.contentid, item.title, item.addr1,
+      item.contenttypeid, item.cat1, item.cat2, item.cat3, item.sigungucode,
+      '있음', item.firstimage ? '있음' : '없음', place.cat, place.sub, place.dist,
+      place.score, rel.min, place.score > 0 ? '통과' : '교육과정/장소유형 근거 부족 제외',
+      `${data.topic} · ${data.lesson}`, data.keywords, data.direct,
+    ]);
+  });
   return rows;
 }
 
@@ -471,7 +517,11 @@ function makeXlsx(sheets, outPath) {
 async function main() {
   const app = readApp();
   console.log('앱 데이터 추출 완료');
-  const candidates = await candidateRows(app);
+  let candidates = await candidateRows(app);
+  if (candidates.length <= 1) {
+    console.log('API 후보 샘플 수집 실패: 검증용 대표 샘플로 대체');
+    candidates = offlineCandidateRows(app);
+  }
   console.log(`관광자원 후보 샘플 ${Math.max(candidates.length - 1, 0)}건 생성`);
 
   const sheets = [
