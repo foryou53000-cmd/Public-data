@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>경북 체험학습 추천</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --b50:#EFF6FF;--b100:#DBEAFE;--b200:#BFDBFE;--b300:#93C5FD;
+  --b400:#60A5FA;--b500:#3B82F6;--b600:#2563EB;--b700:#1D4ED8;--b800:#1E40AF;
+  --g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;--g900:#0F172A;
+  --lw:340px;--rw:430px;--th:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;background:var(--g50);color:var(--g800);}
+button,input,select{font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
+
+/* ── 레이아웃 ── */
+#app{display:grid;grid-template-rows:var(--th) 1fr;grid-template-columns:minmax(0,1fr) var(--rw);grid-template-areas:"top top" "map rgt";height:100vh;position:relative;}
+
+/* ── 탑바 ── */
+#top{grid-area:top;background:#fff;border-bottom:1px solid var(--g200);display:flex;align-items:center;padding:0 20px;gap:14px;z-index:100;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-ic{width:32px;height:32px;background:var(--b600);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.brand-tx{font-size:15px;font-weight:800;color:var(--g900);letter-spacing:-.3px;}
+.brand-sb{font-size:11px;color:var(--g400);margin-top:1px;}
+.top-r{margin-left:auto;display:flex;gap:6px;}
+.tbadge{font-size:11px;background:var(--b50);color:var(--b600);border:1px solid var(--b200);padding:3px 10px;border-radius:20px;font-weight:600;}
+
+/* ── 지도 위 검색 패널 ── */
+#lft{grid-area:map;align-self:start;justify-self:start;width:var(--lw);max-width:calc(100% - 28px);max-height:calc(100vh - var(--th) - 28px);margin:14px;background:#fff;border:1px solid var(--g200);border-radius:12px;box-shadow:0 12px 36px rgba(15,23,42,.14);display:flex;flex-direction:column;overflow:hidden;z-index:450;}
+.lbody{flex:1;overflow-y:auto;padding:16px;}
+.lbody::-webkit-scrollbar{width:3px;}
+.lbody::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+.lfoot{padding:12px 16px;border-top:1px solid var(--g100);}
+
+.sec{margin-bottom:20px;}
+.slbl{font-size:11px;font-weight:700;color:var(--g400);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.slbl::after{content:'';flex:1;height:1px;background:var(--g100);}
+
+input[type=text]{width:100%;padding:10px 13px;border:1px solid var(--g200);border-radius:8px;font-size:14px;outline:none;background:var(--g50);color:var(--g800);transition:all .15s;}
+input[type=text]:focus{border-color:var(--b400);background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.08);}
+input::placeholder{color:var(--g300);}
+.srow{display:flex;gap:6px;}
+.srow input{flex:1;}
+.sbtn{padding:10px 14px;border:none;border-radius:8px;background:var(--b600);color:#fff;font-size:13px;font-weight:700;transition:background .15s;flex-shrink:0;}
+.sbtn:hover{background:var(--b700);}
+.sbtn:disabled{background:var(--g300);}
+
+#dd{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--g200);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:500;max-height:240px;overflow-y:auto;display:none;}
+.ddi{width:100%;padding:9px 12px;border:none;background:transparent;text-align:left;cursor:pointer;border-bottom:1px solid var(--g100);display:flex;flex-direction:column;gap:2px;transition:background .1s;}
+.ddi:last-child{border-bottom:none;}
+.ddi:hover{background:var(--b50);}
+.dn{font-size:13px;font-weight:600;color:var(--g800);}
+.ds{font-size:11px;color:var(--g400);}
+
+.st-ok{margin-top:6px;padding:7px 10px;background:var(--b50);border:1px solid var(--b200);border-radius:7px;font-size:12px;color:var(--b700);display:flex;align-items:center;justify-content:space-between;}
+.st-err{margin-top:6px;padding:7px 10px;background:#FEF2F2;border:1px solid #FECACA;border-radius:7px;font-size:12px;color:#DC2626;}
+.st-inf{margin-top:6px;padding:7px 10px;background:var(--g50);border:1px solid var(--g200);border-radius:7px;font-size:12px;color:var(--g500);}
+.xb{border:none;background:none;color:var(--g400);font-size:12px;padding:0;cursor:pointer;}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{padding:7px 15px;border:1px solid var(--g200);border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;background:var(--g50);color:var(--g600);transition:all .15s;}
+.chip.on{background:var(--b600);color:#fff;border-color:var(--b600);}
+.chip:hover:not(.on){background:var(--b50);border-color:var(--b300);color:var(--b700);}
+
+.ubt{width:100%;padding:11px 13px;border:1px solid var(--g200);border-radius:9px;background:var(--g50);text-align:left;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px;margin-bottom:5px;}
+.ubt:hover{border-color:var(--b300);background:var(--b50);}
+.ubt.on{background:var(--b600);color:#fff;border-color:var(--b600);}
+.ubt .ic{font-size:17px;flex-shrink:0;margin-top:1px;}
+.ubt .nm{font-size:13px;font-weight:700;}
+.ubt .tm{font-size:11px;opacity:.6;margin-top:3px;line-height:1.4;}
+
+.goBtn{width:100%;padding:13px;border:none;border-radius:9px;background:var(--b600);color:#fff;font-size:14px;font-weight:700;transition:all .15s;}
+.goBtn:hover:not(:disabled){background:var(--b700);}
+.goBtn:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;}
+
+/* ── 왼쪽 지도 ── */
+#mapw{grid-area:map;position:relative;overflow:hidden;}
+#map{width:100%;height:100%;}
+.me{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--g50);color:var(--g400);pointer-events:none;transition:opacity .3s;z-index:1;}
+.me.hide{opacity:0;pointer-events:none;}
+.me-ic{font-size:44px;}
+.me-t{font-size:14px;font-weight:600;color:var(--g400);}
+.me-s{font-size:12px;color:var(--g300);text-align:center;line-height:1.6;}
+
+/* ── 오른쪽 추천 장소 ── */
+#rgt{grid-area:rgt;background:#fff;border-left:1px solid var(--g200);display:flex;flex-direction:column;overflow:hidden;}
+
+.rhead{padding:14px 14px 0;flex-shrink:0;}
+.rhead-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rhead-title{font-size:13px;font-weight:700;color:var(--g700);}
+.rhead-cnt{font-size:11px;color:var(--g400);}
+
+/* 대분류 탭 */
+.ctabs{display:flex;gap:4px;overflow-x:auto;padding:0 0 10px 0;flex-shrink:0;}
+.ctabs::-webkit-scrollbar{height:3px;}
+.ctabs::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+.ctab{padding:6px 12px;border:1px solid var(--g200);border-radius:20px;font-size:12px;font-weight:600;color:var(--g500);background:var(--g50);white-space:nowrap;flex-shrink:0;transition:all .15s;}
+.ctab.on{background:var(--b600);color:#fff;border-color:var(--b600);}
+.ctab:hover:not(.on){background:var(--b50);border-color:var(--b300);color:var(--b700);}
+
+/* 소분류 */
+.sbar{padding:0 14px 10px;display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--g100);flex-shrink:0;}
+.sbar::-webkit-scrollbar{height:3px;}
+.sbar::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+.sch{padding:5px 11px;border:1px solid var(--g200);border-radius:20px;font-size:12px;font-weight:500;color:var(--g500);background:#fff;white-space:nowrap;flex-shrink:0;transition:all .15s;}
+.sch.on{background:var(--b100);color:var(--b700);border-color:var(--b300);}
+.sch:hover:not(.on){background:var(--g50);}
+
+/* 정렬 */
+.sortbar{padding:8px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--g100);flex-shrink:0;}
+.sortlbl{font-size:12px;color:var(--g400);font-weight:500;}
+.sortbtn{padding:4px 11px;border:1px solid var(--g200);border-radius:20px;font-size:12px;font-weight:500;color:var(--g500);background:#fff;transition:all .15s;}
+.sortbtn.on{background:var(--g800);color:#fff;border-color:var(--g800);}
+
+/* 장소 리스트 */
+#rlist{flex:1;overflow-y:auto;padding:10px 10px 16px;}
+#rlist::-webkit-scrollbar{width:3px;}
+#rlist::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
+
+/* 장소 카드 */
+.pc{border-radius:10px;border:1px solid var(--g100);overflow:hidden;margin-bottom:8px;cursor:pointer;transition:box-shadow .15s,border-color .15s;background:#fff;}
+.pc:hover{box-shadow:0 4px 12px rgba(59,130,246,.1);border-color:var(--b200);}
+.pc-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--g100);}
+.pc-nimg{width:100%;height:110px;background:linear-gradient(135deg,var(--b50),var(--g100));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.pc-nimg-ic{font-size:26px;opacity:.35;}
+.pc-nimg-tx{font-size:11px;color:var(--g400);font-weight:500;}
+.pc-body{padding:9px 11px 10px;}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px;}
+.pc-nm{font-size:13px;font-weight:700;color:var(--g800);line-height:1.3;flex:1;}
+.votes{display:flex;gap:3px;flex-shrink:0;}
+.vb{display:flex;align-items:center;gap:2px;padding:3px 7px;border-radius:20px;border:1px solid var(--g200);font-size:11px;font-weight:600;color:var(--g500);background:#fff;transition:all .15s;}
+.vb:hover{border-color:var(--b300);}
+.vb.up.on{background:var(--b50);color:var(--b600);border-color:var(--b300);}
+.vb.dn.on{background:#FEF2F2;color:#DC2626;border-color:#FECACA;}
+.pc-addr{font-size:11px;color:var(--g400);margin-bottom:6px;}
+.pc-tags{display:flex;gap:3px;flex-wrap:wrap;}
+.ptag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.pb{background:var(--b50);color:var(--b600);}
+.pg{background:var(--g100);color:var(--g500);}
+
+/* 빈 / 스켈레톤 */
+.rempty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;color:var(--g300);text-align:center;gap:8px;}
+.rempty-ic{font-size:36px;}
+.rempty-t{font-size:13px;font-weight:600;color:var(--g400);}
+.rempty-s{font-size:12px;color:var(--g300);line-height:1.5;}
+.sk-card{border-radius:10px;border:1px solid var(--g100);overflow:hidden;margin-bottom:8px;}
+.sk{background:linear-gradient(90deg,var(--g100),var(--g50),var(--g100));background-size:200% 100%;animation:sk 1.5s ease-in-out infinite;}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-h{height:110px;}
+.sk-b{padding:9px 11px;}
+.sk-l{height:12px;border-radius:4px;margin-bottom:7px;}
+
+/* 모달 */
+#ov{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
+#ov.on{display:flex;}
+#mod{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;}
+#mhd{padding:16px 18px;background:var(--b600);color:#fff;display:flex;align-items:flex-start;gap:10px;flex-shrink:0;}
+#mttl{font-size:16px;font-weight:800;flex:1;line-height:1.35;}
+#mcls{border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;flex-shrink:0;}
+#mbdy{overflow-y:auto;flex:1;}
+#mbdy::-webkit-scrollbar{width:4px;}
+#mbdy::-webkit-scrollbar-thumb{background:var(--g200);border-radius:4px;}
+.mimg{width:100%;height:200px;object-fit:cover;display:block;}
+.mnimg{width:100%;height:150px;background:linear-gradient(135deg,var(--b50),var(--g100));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.mnimg-ic{font-size:40px;opacity:.3;}
+.mnimg-tx{font-size:12px;color:var(--g400);}
+.minfo{padding:16px 18px 20px;}
+.ib{padding:13px 15px;border-radius:9px;margin-bottom:9px;font-size:13px;line-height:1.9;}
+.ibl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;color:var(--g500);}
+.nlink{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--b600);font-weight:600;text-decoration:none;margin-top:4px;}
+.nlink:hover{text-decoration:underline;}
+/* AI 섹션 */
+.ai-box{padding:14px 16px;border-radius:10px;margin-bottom:9px;background:linear-gradient(135deg,#EFF6FF,#F0F9FF);border:1px solid var(--b200);}
+.ai-hd{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.ai-ic{font-size:16px;}
+.ai-ttl{font-size:12px;font-weight:700;color:var(--b700);}
+.ai-loading{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--g400);}
+.ai-spin{width:14px;height:14px;border:2px solid var(--b200);border-top-color:var(--b500);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-row{margin-bottom:8px;}
+.ai-row-lbl{font-size:11px;font-weight:700;color:var(--b600);margin-bottom:4px;}
+.ai-row-tx{font-size:13px;color:var(--g700);line-height:1.75;}
+.ai-err{font-size:12px;color:#DC2626;}
+/* 팝업 */
+.leaflet-popup-content b{font-size:13px;font-weight:700;display:block;margin-bottom:3px;}
+.leaflet-popup-content{font-size:12px;line-height:1.6;min-width:160px;}
+@media (max-width:900px){
+  #app{grid-template-columns:1fr;grid-template-rows:var(--th) 46vh 1fr;grid-template-areas:"top" "map" "rgt";}
+  #top{padding:0 12px;}
+  .top-r{display:none;}
+  #lft{width:calc(100% - 24px);max-height:calc(46vh - 24px);margin:12px;}
+  #rgt{border-left:none;border-top:1px solid var(--g200);}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- 탑바 -->
+<div id="top">
+  <div class="brand">
+    <div class="brand-ic">🌿</div>
+    <div><div class="brand-tx">경북 체험학습 추천</div><div class="brand-sb">경상북도 교육과정 기반 플랫폼</div></div>
+  </div>
+  <div class="top-r">
+    <span class="tbadge">나이스 교육정보</span>
+    <span class="tbadge">한국관광공사 Tour API</span>
+  </div>
+</div>
+
+<!-- 지도 위: 탐색 조건 -->
+<div id="lft">
+  <div class="lbody">
+    <div class="sec">
+      <div class="slbl">학교 검색</div>
+      <div style="position:relative;">
+        <div class="srow">
+          <input type="text" id="si" placeholder="학교명 예) 안동초등학교"
+            onkeydown="if(event.key==='Enter')sch()" oninput="oi(this.value)"/>
+          <button class="sbtn" id="sb" onclick="sch()">검색</button>
+        </div>
+        <div id="dd"></div>
+      </div>
+      <div id="st"></div>
+    </div>
+    <div class="sec">
+      <div class="slbl">학년</div>
+      <div class="chips" id="gc">
+        <button class="chip" onclick="sg('3')">3학년</button>
+        <button class="chip" onclick="sg('4')">4학년</button>
+        <button class="chip" onclick="sg('5')">5학년</button>
+        <button class="chip" onclick="sg('6')">6학년</button>
+      </div>
+    </div>
+    <div class="sec" id="sj-s" style="display:none;">
+      <div class="slbl">교과</div>
+      <div class="chips" id="sjc"></div>
+    </div>
+    <div class="sec" id="su-s" style="display:none;">
+      <div class="slbl">단원</div>
+      <div id="ul"></div>
+    </div>
+  </div>
+  <div class="lfoot">
+    <button class="goBtn" id="goBtn" onclick="doSrc()" disabled>체험지 탐색하기 →</button>
+  </div>
+</div>
+
+<!-- 왼쪽: 지도 -->
+<div id="mapw">
+  <div class="me" id="me">
+    <div class="me-ic">🗺️</div>
+    <div class="me-t">체험지를 탐색해보세요</div>
+    <div class="me-s">학교와 단원을 선택하고<br>탐색하기를 누르면<br>지도에 체험지가 나타나요</div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<!-- 오른쪽: 추천 -->
+<div id="rgt">
+  <div class="rhead">
+    <div class="rhead-row">
+      <div class="rhead-title">추천 체험지</div>
+      <div class="rhead-cnt" id="rcnt"></div>
+    </div>
+    <!-- 대분류 탭 -->
+    <div class="ctabs" id="ctabs">
+      <button class="ctab on" onclick="setCat('전체')">전체</button>
+      <button class="ctab" onclick="setCat('문화유산')">🏛️ 문화유산</button>
+      <button class="ctab" onclick="setCat('자연탐구')">🌿 자연탐구</button>
+      <button class="ctab" onclick="setCat('과학체험')">🔬 과학체험</button>
+      <button class="ctab" onclick="setCat('생활체험')">🏘️ 생활체험</button>
+      <button class="ctab" onclick="setCat('인물역사')">👤 인물·역사</button>
+    </div>
+  </div>
+  <!-- 소분류 -->
+  <div class="sbar" id="sbar"><button class="sch on" onclick="setSub('전체')">전체</button></div>
+  <!-- 정렬 -->
+  <div class="sortbar">
+    <span class="sortlbl">정렬</span>
+    <button class="sortbtn on" onclick="setSort('score')">👍 추천순</button>
+    <button class="sortbtn" onclick="setSort('dist')">📍 거리순</button>
+  </div>
+  <div id="rlist">
+    <div class="rempty">
+      <div class="rempty-ic">🔍</div>
+      <div class="rempty-t">아직 탐색 전이에요</div>
+      <div class="rempty-s">학교와 단원을 선택하고<br>탐색하기를 눌러주세요</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- 모달 -->
+<div id="ov" onclick="cm()">
+  <div id="mod" onclick="event.stopPropagation()">
+    <div id="mhd"><div id="mttl"></div><button id="mcls" onclick="cm()">✕</button></div>
+    <div id="mbdy"></div>
+  </div>
+</div>
+
+<script>
+const NK='8faa142720cd4d44af4af420fcf9ec4f';
+const TK=encodeURIComponent('1ed167b364dd8cc6ef53cea742bb851f80fa46ad7ec3db01379aeffad968e6ff');
+const PX='https://api.allorigins.win/raw?url=';
+const TOUR='http://apis.data.go.kr/B551011/KorService2';
+const APP=encodeURIComponent('경북체험학습');
+const GBK=[36.4919,128.8889];
+const SIGUNGU={
+  경산시:'1',경주시:'2',고령군:'3',구미시:'4',김천시:'6',문경시:'7',봉화군:'8',상주시:'9',
+  성주군:'10',안동시:'11',영덕군:'12',영양군:'13',영주시:'14',영천시:'15',예천군:'16',
+  울릉군:'17',울진군:'18',의성군:'19',청도군:'20',청송군:'21',칠곡군:'22',포항시:'23'
+};
+
+/* ── 카테고리 정의 ── */
+const CATS={
+  '문화유산':{ic:'🏛️',subs:['사찰·불교문화','서원·향교','왕릉·고분','유적·사적지','성곽·읍성','종택·고택'],
+    kw:['서원','향교','종택','고택','왕릉','고분','사적','탑','성곽','사찰','유적','봉수대','암자','절','읍성','불국사','석굴암','도산','하회','부석사']},
+  '자연탐구':{ic:'🌿',subs:['국립·도립공원','생태공원·습지','수목원·식물원','계곡·폭포','지질공원','해안·섬'],
+    kw:['공원','생태','수목원','식물원','계곡','폭포','습지','지질','야생화','자연','산림','강','호수','섬','해안','독도','울릉']},
+  '과학체험':{ic:'🔬',subs:['과학관','천문대','자연사박물관','지질탐사지'],
+    kw:['과학관','천문대','자연사','과학체험','지질탐사']},
+  '생활체험':{ic:'🏘️',subs:['전통마을·민속촌','농촌체험','공예·도자기','전통시장'],
+    kw:['전통마을','체험마을','민속촌','농촌','한옥마을','공예','시장','오일장','도자기']},
+  '인물역사':{ic:'👤',subs:['생가','독립운동 유적','기념관','근현대 역사'],
+    kw:['생가','독립운동','의병','기념관','항일','역사','역사관','문화관','삼성현','근대']},
+};
+const SUB_MAP={
+  '사찰·불교문화':['사찰','절','암자','불국사','석굴암'],
+  '서원·향교':['서원','향교','서당'],
+  '왕릉·고분':['왕릉','고분','능'],
+  '유적·사적지':['사적','유적','유적지'],
+  '성곽·읍성':['성곽','읍성','산성'],
+  '종택·고택':['종택','고택'],
+  '국립·도립공원':['국립공원','도립공원'],
+  '생태공원·습지':['생태공원','습지','생태원'],
+  '수목원·식물원':['수목원','식물원'],
+  '계곡·폭포':['계곡','폭포'],
+  '지질공원':['지질공원','지질'],
+  '해안·섬':['해안','섬','독도','울릉'],
+  '과학관':['과학관','과학체험'],
+  '천문대':['천문대','천문','별빛','반딧불'],
+  '자연사박물관':['자연사'],
+  '지질탐사지':['암석','지층','화산'],
+  '전통마을·민속촌':['전통마을','민속촌','한옥마을','체험마을'],
+  '농촌체험':['농촌','농업','농장'],
+  '공예·도자기':['공예','도자기','공방'],
+  '전통시장':['시장','오일장','장터'],
+  '생가':['생가'],
+  '독립운동 유적':['독립운동','항일','의병'],
+  '기념관':['기념관','문화관'],
+  '근현대 역사':['근대','역사','역사관'],
+};
+
+function clf(p){
+  const t=(p.title+' '+p.addr1).toLowerCase();
+  for(const [cat,d] of Object.entries(CATS)){if(d.kw.some(k=>t.includes(k)))return cat;}
+  return '문화유산';
+}
+function clsub(p){
+  const t=(p.title+' '+p.addr1).toLowerCase();
+  for(const [sub,ks] of Object.entries(SUB_MAP)){if(ks.some(k=>t.includes(k)))return sub;}
+  return '';
+}
+
+/* ── 교육과정 ── */
+const CUR={
+  '3':{사회:[{id:'3s1',name:'우리 고장의 모습',ic:'🏘️',terms:['전통마을','민속촌','향교','고택','종택','서당','한옥']},{id:'3s2',name:'우리 고장의 이야기',ic:'🏛️',terms:['서원','기념관','생가','유적지','박물관','사적','역사관','탑']},{id:'3s3',name:'교통과 통신수단의 변화',ic:'🚂',terms:['철도박물관','기차','교통박물관']}],
+   과학:[{id:'3n1',name:'동물의 한살이',ic:'🦋',terms:['생태공원','곤충','동물','자연생태관']},{id:'3n2',name:'식물의 한살이',ic:'🌱',terms:['수목원','식물원','생태숲','산림체험']},{id:'3n3',name:'지표의 변화',ic:'🪨',terms:['지질공원','계곡','암석','폭포','지층']}]},
+  '4':{사회:[{id:'4s1',name:'지역의 위치와 특성',ic:'🗺️',terms:['공원','자연경관','전망대','산','강']},{id:'4s2',name:'우리 지역의 역사',ic:'📜',terms:['서원','향교','종택','고택','생가','왕릉','고분','사적','유적지','기념관','탑','성곽','의병','독립운동']},{id:'4s3',name:'지역의 공공기관과 주민참여',ic:'🏢',terms:['박물관','문화원','과학관','도서관']}],
+   과학:[{id:'4n1',name:'화산과 지진',ic:'🌋',terms:['지질공원','화산','암석','지층']},{id:'4n2',name:'식물의 구조',ic:'🌿',terms:['수목원','식물원','생태숲']},{id:'4n3',name:'물의 상태 변화',ic:'💧',terms:['강','호수','계곡','폭포','댐']}]},
+  '5':{사회:[{id:'5s1',name:'국토와 자연환경',ic:'🏔️',terms:['국립공원','도립공원','자연경관','생태관광','산','해안','지질공원']},{id:'5s2',name:'우리나라의 역사',ic:'🏯',terms:['서원','왕릉','고분','사적','유적지','탑','고택','종택','향교','사찰','성곽','박물관','역사유적','역사','문화관']},{id:'5s3',name:'우리나라의 경제 발전',ic:'🏭',terms:['과학관','산업관','체험관','전통시장']}],
+   과학:[{id:'5n1',name:'생태계와 환경',ic:'🌍',terms:['생태원','생태공원','습지','자연생태','환경체험']},{id:'5n2',name:'날씨와 우리 생활',ic:'🌤️',terms:['과학관','기상체험','천문대']},{id:'5n3',name:'용해와 용액',ic:'🧪',terms:['과학관','자연사박물관','과학체험관']}]},
+  '6':{사회:[{id:'6s1',name:'우리나라의 정치 발전',ic:'⚖️',terms:['독립운동','기념관','항일','의병','생가','역사관']},{id:'6s2',name:'우리나라의 경제 발전',ic:'📊',terms:['전통시장','과학관','공방','오일장']},{id:'6s3',name:'세계 여러 나라의 자연과 문화',ic:'🌏',terms:['세계문화','민속관','문화관','민속촌']}],
+   과학:[{id:'6n1',name:'지구와 달의 운동',ic:'🌕',terms:['천문대','별빛','우주','과학관','반딧불']},{id:'6n2',name:'연소와 소화',ic:'🔥',terms:['과학관','소방체험','안전체험','과학체험']},{id:'6n3',name:'생물과 환경',ic:'🌿',terms:['생태공원','자연생태','수목원','생태원','습지']}]},
+};
+
+/* ── 상태 ── */
+const A={sc:null,loc:null,gr:'',sj:'',uid:'',all:[],cat:'전체',sub:'전체',sort:'score',votes:JSON.parse(localStorage.getItem('gv')||'{}'),map:null,markers:{}};
+const sv=()=>localStorage.setItem('gv',JSON.stringify(A.votes));
+const $i=id=>document.getElementById(id);
+function timeoutSignal(ms){
+  if(window.AbortSignal?.timeout)return AbortSignal.timeout(ms);
+  const controller=new AbortController();
+  setTimeout(()=>controller.abort(),ms);
+  return controller.signal;
+}
+async function apiJson(url,timeout=12000){
+  try{
+    const r=await fetch(url,{signal:timeoutSignal(timeout)});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  }catch(e){
+    const r=await fetch(`${PX}${encodeURIComponent(url)}`,{signal:timeoutSignal(timeout)});
+    if(!r.ok)throw new Error(`Proxy HTTP ${r.status}`);
+    return await r.json();
+  }
+}
+function kmd(la1,lo1,la2,lo2){const R=6371,r=x=>x*Math.PI/180;const a=Math.sin(r(la2-la1)/2)**2+Math.cos(r(la1))*Math.cos(r(la2))*Math.sin(r(lo2-lo1)/2)**2;return+(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);}
+function unit(){return A.gr&&A.sj?CUR[A.gr][A.sj]?.find(u=>u.id===A.uid):null;}
+function schoolSigungu(){
+  const text=[A.sc?.ORG_RDNMA,A.sc?.ORG_RDNDA,A.sc?.JU_ORG_NM,A.sc?.SCHUL_NM].filter(Boolean).join(' ');
+  const name=Object.keys(SIGUNGU).find(n=>text.includes(n));
+  return name?{name,code:SIGUNGU[name]}:null;
+}
+
+/* ── 학교 검색 ── */
+function oi(v){if(A.sc){A.sc=null;A.loc=null;upS();}if(!v.trim())$i('dd').style.display='none';}
+async function sch(){
+  const q=$i('si').value.trim();if(!q)return;
+  const btn=$i('sb');btn.textContent='…';btn.disabled=true;
+  sst('i','🔍 검색 중...');$i('dd').style.display='none';
+  try{
+    const r=await fetch(`https://open.neis.go.kr/hub/schoolInfo?KEY=${NK}&Type=json&pIndex=1&pSize=15&SCHUL_NM=${encodeURIComponent(q)}`,{signal:timeoutSignal(10000)});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const d=await r.json();const rows=d?.schoolInfo?.[1]?.row||[];
+    if(!rows.length){sst('e','검색 결과가 없어요.');return;}
+    shD(rows);cst();
+  }catch(e){sst('e',`검색 실패: ${e.name} — ${e.message}`);}
+  finally{btn.textContent='검색';btn.disabled=false;}
+}
+function shD(rows){
+  const dd=$i('dd');
+  dd.innerHTML=rows.map((s,i)=>`<button class="ddi" onclick="pk(${i})"><span class="dn">${s.SCHUL_NM}</span><span class="ds">${s.SCHUL_KND_SC_NM} · ${s.ORG_RDNMA||''}</span></button>`).join('');
+  dd._r=rows;dd.style.display='block';
+}
+async function pk(i){
+  const s=$i('dd')._r[i];$i('dd').style.display='none';A.sc=s;$i('si').value=s.SCHUL_NM;
+  sst('i','📍 위치 확인 중...');
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(s.ORG_RDNMA||s.SCHUL_NM)}`,{headers:{'Accept-Language':'ko'},signal:timeoutSignal(8000)});
+    const d=await r.json();A.loc=d?.[0]?[parseFloat(d[0].lat),parseFloat(d[0].lon)]:GBK;
+  }catch{A.loc=GBK;}
+  sst('o',`🏫 ${s.SCHUL_NM}`);upB();
+}
+function sst(t,m){const c={o:'st-ok',e:'st-err',i:'st-inf'}[t];$i('st').innerHTML=`<div class="${c}">${m}${t==='o'?`<button class="xb" onclick="csc()">✕</button>`:''}</div>`;}
+function cst(){$i('st').innerHTML='';}
+function upS(){A.sc?sst('o',`🏫 ${A.sc.SCHUL_NM}`):cst();}
+function csc(){A.sc=null;A.loc=null;$i('si').value='';cst();upB();}
+
+/* ── 학년/교과/단원 ── */
+function sg(g){A.gr=g;A.sj='';A.uid='';document.querySelectorAll('#gc .chip').forEach(el=>el.classList.toggle('on',el.textContent===g+'학년'));$i('sj-s').style.display='';$i('sjc').innerHTML=Object.keys(CUR[g]).map(s=>`<button class="chip${A.sj===s?' on':''}" onclick="ssj('${s}')">${s==='사회'?'🗺️ 사회':'🔬 과학'}</button>`).join('');$i('su-s').style.display='none';upB();}
+function ssj(s){A.sj=s;A.uid='';document.querySelectorAll('#sjc .chip').forEach(el=>el.classList.toggle('on',el.textContent.includes(s)));$i('su-s').style.display='';$i('ul').innerHTML=CUR[A.gr][s].map(u=>`<button class="ubt${A.uid===u.id?' on':''}" onclick="sui('${u.id}')"><span class="ic">${u.ic}</span><div><div class="nm">${u.name}</div><div class="tm">${u.terms.slice(0,4).join(' · ')}</div></div></button>`).join('');upB();}
+function sui(id){A.uid=id;document.querySelectorAll('.ubt').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes(`'${id}'`)));upB();}
+function upB(){const ok=A.sc&&A.gr&&A.sj&&A.uid;$i('goBtn').disabled=!ok;$i('goBtn').textContent=ok?'체험지 탐색하기 →':'학교·학년·단원을 모두 선택해주세요';}
+
+/* ── 카테고리 / 소분류 / 정렬 ── */
+function setCat(cat){
+  A.cat=cat;A.sub='전체';
+  document.querySelectorAll('.ctab').forEach(el=>{
+    const t=el.textContent.trim();
+    el.classList.toggle('on',
+      (cat==='전체'&&t==='전체')||(cat!=='전체'&&t.replace(/\s/g,'').includes(cat.replace('인물역사','인물'))));
+  });
+  rnSub();rnList();
+}
+function setSub(sub){
+  A.sub=sub;
+  document.querySelectorAll('.sch').forEach(el=>el.classList.toggle('on',el.textContent===sub));
+  rnList();
+}
+function setSort(s){
+  A.sort=s;
+  document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes(`'${s}'`)));
+  rnList();
+}
+function rnSub(){
+  const d=CATS[A.cat];
+  const subs=d?['전체',...d.subs]:['전체'];
+  $i('sbar').innerHTML=subs.map(s=>`<button class="sch${A.sub===s?' on':''}" onclick="setSub('${s}')">${s}</button>`).join('');
+}
+
+/* ── 탐색 ── */
+async function doSrc(){
+  const u=unit();if(!u)return;
+  const btn=$i('goBtn');
+  btn.disabled=true;btn.textContent='체험지 탐색 중...';
+  $i('me').classList.add('hide');
+  $i('rlist').innerHTML=[1,2,3,4,5].map(()=>`<div class="sk-card"><div class="sk sk-h"></div><div class="sk-b"><div class="sk sk-l" style="width:70%"></div><div class="sk sk-l" style="width:50%"></div><div class="sk sk-l" style="width:40%;height:10px"></div></div></div>`).join('');
+  try{
+    const ctr=A.loc||GBK;
+    if(typeof L!=='undefined')initMap(ctr);
+    const terms=Array.from(new Set(u.terms));
+    const local=schoolSigungu();
+    const [localBatches,nearbyBatches,keywordBatches]=await Promise.all([
+      local?fetchLocalArea(local.code):Promise.resolve([]),
+      fetchNearby(ctr),
+      Promise.all(terms.map(t=>ft(t))),
+    ]);
+    const rawResults=[...localBatches.flat(),...nearbyBatches.flat(),...keywordBatches.flat()];
+    if(!rawResults.length)throw new Error('Tour API에서 장소 데이터를 받지 못했습니다. 네트워크 또는 공공데이터 API 응답을 확인해주세요.');
+    const seen=new Set();
+    const places=rawResults.filter(p=>{
+      if(!p?.contentid||seen.has(p.contentid)||!p.mapx||!p.mapy)return false;
+      seen.add(p.contentid);return true;
+    }).map(p=>buildPlace(p,ctr,u,local)).filter(p=>p.score>0).sort((a,b)=>b.score-a.score||a.dist-b.dist);
+    A.all=await hydrateImages(places);
+
+    A.cat='전체';A.sub='전체';A.sort='score';
+    document.querySelectorAll('.ctab').forEach(el=>el.classList.toggle('on',el.textContent.trim()==='전체'));
+    document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes("'score'")));
+    rnSub();rnList();addMk();
+    window._pm=Object.fromEntries(A.all.map(p=>[p.id,p]));
+  }catch(e){
+    A.all=[];
+    $i('rcnt').textContent='';
+    $i('rlist').innerHTML=`<div class="rempty"><div class="rempty-ic">⚠️</div><div class="rempty-t">검색을 완료하지 못했습니다</div><div class="rempty-s">${e.message||'잠시 후 다시 시도해주세요.'}</div></div>`;
+    console.error(e);
+  }finally{
+    upB();
+  }
+}
+
+async function ft(term){
+  const url=`${TOUR}/searchKeyword2?serviceKey=${TK}&keyword=${encodeURIComponent(term)}&areaCode=35&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+  try{const d=await apiJson(url);const it=d?.response?.body?.items?.item;if(!it)return[];return Array.isArray(it)?it:[it];}catch{return[];}
+}
+
+async function fetchLocalArea(sigunguCode){
+  const contentTypes=['12','14'];
+  const batches=await Promise.all(contentTypes.map(async type=>{
+    const url=`${TOUR}/areaBasedList2?serviceKey=${TK}&areaCode=35&sigunguCode=${sigunguCode}&contentTypeId=${type}&arrange=A&numOfRows=120&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+    try{
+      const d=await apiJson(url);
+      const it=d?.response?.body?.items?.item;
+      if(!it)return[];
+      return Array.isArray(it)?it:[it];
+    }catch{return[];}
+  }));
+  return batches;
+}
+
+async function fetchNearby(ctr){
+  const contentTypes=['12','14'];
+  const radius=30000;
+  const batches=await Promise.all(contentTypes.map(async type=>{
+    const url=`${TOUR}/locationBasedList2?serviceKey=${TK}&mapX=${ctr[1]}&mapY=${ctr[0]}&radius=${radius}&areaCode=35&contentTypeId=${type}&arrange=E&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+    try{
+      const d=await apiJson(url);
+      const it=d?.response?.body?.items?.item;
+      if(!it)return[];
+      return Array.isArray(it)?it:[it];
+    }catch{return[];}
+  }));
+  return batches;
+}
+
+function buildPlace(p,ctr,u,local){
+  const title=p.title||'';
+  const addr1=p.addr1||'경상북도';
+  const lat=parseFloat(p.mapy),lng=parseFloat(p.mapx);
+  const place={
+    id:p.contentid,title,addr1,
+    contentTypeId:p.contenttypeid||'12',
+    sigunguCode:p.sigungucode||'',
+    cat1:p.cat1||'',cat2:p.cat2||'',cat3:p.cat3||'',
+    lat,lng,
+    dist:kmd(ctr[0],ctr[1],lat,lng),
+    img:p.firstimage||p.firstimage2||'',
+    cat:clf({title,addr1}),
+    sub:clsub({title,addr1}),
+  };
+  place.score=scorePlace(place,u,local);
+  return place;
+}
+
+function scorePlace(p,u,local){
+  const title=(p.title||'').toLowerCase();
+  const text=(p.title+' '+p.addr1).toLowerCase();
+  const termHits=u.terms.filter(k=>title.includes(k.toLowerCase())).length;
+  let score=termHits*25;
+  const isNearby=p.dist<=8?24:p.dist<=15?16:p.dist<=30?8:0;
+  const historyCodes=['A02010700','A02010800','A02060100','A02060200','A02060300','A02060700'];
+  const scienceCodes=['A02040800','A02060100','A02060300'];
+  const natureCodes=['A01010100','A01010200','A01010400','A01010500','A01010600','A01010700','A01011800','A02020700'];
+  if(u.id==='5s2'||u.name.includes('역사')||u.name.includes('고장')){
+    if(historyCodes.includes(p.cat3))score+=18;
+    if(/역사|문화관|박물관|향교|서원|고분|사찰|성곽|유적|사적|왕릉|종택|고택/.test(title))score+=30;
+  }else if(u.name.includes('자연')||u.name.includes('생태')||u.name.includes('환경')){
+    if(natureCodes.includes(p.cat3)||p.cat1==='A01')score+=18;
+    if(/공원|생태|수목원|식물원|계곡|폭포|습지|지질|산|해안|호수|숲/.test(text))score+=20;
+  }else if(u.name.includes('과학')||u.name.includes('날씨')||u.name.includes('지구')||u.name.includes('용해')){
+    if(scienceCodes.includes(p.cat3))score+=16;
+    if(/과학|천문|기상|자연사|체험관|박물관/.test(title))score+=22;
+  }else if(u.name.includes('경제')){
+    if(/시장|산업|공장|과학관|체험관/.test(title))score+=24;
+  }else{
+    if(termHits>0)score+=12;
+  }
+  if(score>0)score+=isNearby;
+  if(score>0&&local?.code&&p.sigunguCode===local.code)score+=35;
+  return score;
+}
+
+async function hydrateImages(places){
+  const targets=places.filter(p=>!p.img).slice(0,18);
+  await Promise.all(targets.map(async p=>{p.img=await fetchTourImage(p.id);}));
+  return places;
+}
+
+async function fetchTourImage(contentId){
+  const url=`${TOUR}/detailImage2?serviceKey=${TK}&contentId=${contentId}&imageYN=Y&subImageYN=Y&numOfRows=1&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+  try{
+    const d=await apiJson(url,10000);
+    const item=d?.response?.body?.items?.item;
+    const it=Array.isArray(item)?item[0]:item;
+    return it?.originimgurl||it?.smallimageurl||'';
+  }catch{return '';}
+}
+
+/* ── 리스트 렌더 ── */
+function rnList(){
+  let list=[...A.all];
+  if(A.cat!=='전체')list=list.filter(p=>p.cat===A.cat);
+  if(A.sub!=='전체')list=list.filter(p=>p.sub===A.sub);
+  if(A.sort==='dist')list.sort((a,b)=>a.dist-b.dist);
+  else list.sort((a,b)=>(b.score||0)-(a.score||0)||a.dist-b.dist);
+  $i('rcnt').textContent=list.length?`${list.length}개`:'';
+  if(!list.length){$i('rlist').innerHTML=`<div class="rempty"><div class="rempty-ic">🔍</div><div class="rempty-t">해당 카테고리 결과 없음</div><div class="rempty-s">다른 카테고리를 선택해보세요</div></div>`;return;}
+  $i('rlist').innerHTML=list.map(p=>{
+    const v=gv(p.id);const cm=CATS[p.cat];
+    return `<div class="pc" onclick="om('${p.id}')">
+      ${p.img
+        ?`<img class="pc-img" src="${p.img}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="pc-nimg" style="display:none"><div class="pc-nimg-ic">${cm?.ic||'📍'}</div><div class="pc-nimg-tx">이미지 준비 중</div></div>`
+        :`<div class="pc-nimg"><div class="pc-nimg-ic">${cm?.ic||'📍'}</div><div class="pc-nimg-tx">이미지 준비 중</div></div>`}
+      <div class="pc-body">
+        <div class="pc-top">
+          <div class="pc-nm">${p.title}</div>
+          <div class="votes">
+            <button class="vb up${v.my===1?' on':''}" onclick="vote(event,'${p.id}',1)">👍 ${v.up}</button>
+            <button class="vb dn${v.my===-1?' on':''}" onclick="vote(event,'${p.id}',-1)">👎 ${v.dn}</button>
+          </div>
+        </div>
+        <div class="pc-addr">📍 ${p.addr1} · <strong>${p.dist}km</strong></div>
+        <div class="pc-tags">
+          ${p.cat?`<span class="ptag pb">${cm?.ic||''} ${p.cat}</span>`:''}
+          ${p.sub?`<span class="ptag pg">${p.sub}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  window._pm=Object.fromEntries(list.map(p=>[p.id,p]));
+}
+
+/* ── 투표 ── */
+function gv(id){return A.votes[id]||{up:0,dn:0,my:0};}
+function vote(e,id,dir){
+  e.stopPropagation();
+  const v=gv(id);
+  if(v.my===dir){if(dir===1)v.up=Math.max(0,v.up-1);else v.dn=Math.max(0,v.dn-1);v.my=0;}
+  else{if(v.my===1)v.up=Math.max(0,v.up-1);if(v.my===-1)v.dn=Math.max(0,v.dn-1);if(dir===1)v.up++;else v.dn++;v.my=dir;}
+  A.votes[id]=v;sv();rnList();
+}
+
+/* ── 지도 (CartoDB) ── */
+function initMap(c){
+  if(A.map){A.map.remove();A.map=null;A.markers={};}
+  A.map=L.map('map').setView(c,9);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(A.map);
+  if(A.loc){const ic=L.divIcon({html:`<div style="background:#2563EB;color:#fff;font-size:11px;padding:4px 9px;border-radius:20px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(37,99,235,.3)">🏫 ${A.sc?.SCHUL_NM||''}</div>`,className:'',iconSize:[180,26],iconAnchor:[90,13]});L.marker(A.loc,{icon:ic}).addTo(A.map);}
+}
+function focusPlace(id){
+  const p=window._pm?.[id]||A.all.find(x=>x.id===id);
+  if(!p||!A.map||!p.lat||!p.lng)return;
+  A.map.flyTo([p.lat,p.lng],Math.max(A.map.getZoom(),14),{animate:true,duration:.8});
+  setTimeout(()=>A.markers[id]?.openPopup(),450);
+}
+function addMk(){
+  if(!A.map)return;
+  A.markers={};
+  const bd=A.loc?[A.loc]:[];
+  A.all.forEach((p,i)=>{
+    if(!p.lat||!p.lng)return;
+    const cm=CATS[p.cat];
+    const ic=L.divIcon({html:`<div style="background:#2563EB;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.3)">${i+1}</div>`,className:'',iconSize:[26,26],iconAnchor:[13,13]});
+    const popup=L.popup({maxWidth:220,className:'custom-popup'}).setContent(`
+      <b>${p.title}</b>
+      <div style="color:#64748B;font-size:11px;margin-bottom:4px;">📍 ${p.addr1}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
+        <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#EFF6FF;color:#2563EB;font-weight:600;">${cm?.ic||''} ${p.cat||''}</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#F1F5F9;color:#64748B;font-weight:600;">📏 ${p.dist}km</span>
+      </div>
+      <button onclick="om('${p.id}')" style="width:100%;padding:5px;border:none;border-radius:6px;background:#2563EB;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">상세 보기 →</button>
+    `);
+    A.markers[p.id]=L.marker([p.lat,p.lng],{icon:ic}).addTo(A.map).bindPopup(popup);
+    bd.push([p.lat,p.lng]);
+  });
+  if(bd.length>1)A.map.fitBounds(bd,{padding:[28,28]});
+}
+
+/* ── Tour API 상세정보 조회 ── */
+async function fetchDetail(contentId,contentTypeId='12'){
+  const url=`${TOUR}/detailCommon2?serviceKey=${TK}&contentId=${contentId}&numOfRows=1&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+  try{
+    const d=await apiJson(url,10000);
+    const item=d?.response?.body?.items?.item;
+    const it=Array.isArray(item)?item[0]:item;
+    return it?.overview||'';
+  }catch{return '';}
+}
+
+/* ── 모달 ── */
+async function om(id){
+  const p=window._pm?.[id]||A.all.find(x=>x.id===id);if(!p)return;
+  focusPlace(id);
+  const u=unit();const cm=CATS[p.cat];
+  $i('mttl').textContent=p.title;
+
+  // 추천 장소 클릭 시 팝업으로 기본 정보를 먼저 표시합니다.
+  $i('mbdy').innerHTML=`
+    ${p.img?`<img class="mimg" src="${p.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="mnimg" style="display:none"><div class="mnimg-ic">${cm?.ic||'📍'}</div><div class="mnimg-tx">이미지 준비 중</div></div>`:`<div class="mnimg"><div class="mnimg-ic">${cm?.ic||'📍'}</div><div class="mnimg-tx">이미지 준비 중</div></div>`}
+    <div class="minfo">
+      <div class="ib" style="background:var(--g50);">
+        <div class="ibl">장소 정보</div>
+        <strong>${p.title}</strong><br>
+        📍 ${p.addr1}<br>
+        🏫 ${A.sc?.SCHUL_NM||''}에서 <strong>${p.dist}km</strong><br>
+        ${p.cat?`🏷️ ${cm?.ic||''} ${p.cat}${p.sub?' › '+p.sub:''}`:''}<br>
+        <a class="nlink" href="https://map.naver.com/v5/search/${encodeURIComponent(p.title)}" target="_blank">🗺️ 네이버 지도에서 보기 →</a>
+      </div>
+      <div class="ib" style="background:var(--g50);" id="m-overview">
+        <div class="ibl">장소 소개</div>
+        <div class="ai-loading"><div class="ai-spin"></div> 정보 불러오는 중...</div>
+      </div>
+      ${u?`<div class="ib" style="background:var(--b50);border:1px solid var(--b100);">
+        <div class="ibl" style="color:var(--b600);">연계 단원</div>
+        ${A.gr}학년 ${A.sj} · ${u.ic} <strong>${u.name}</strong>
+      </div>`:''}
+    </div>`;
+  $i('ov').classList.add('on');
+
+  const [overview,img]=await Promise.all([
+    fetchDetail(p.id,p.contentTypeId),
+    p.img?Promise.resolve(p.img):fetchTourImage(p.id),
+  ]);
+  if(!p.img&&img){
+    p.img=img;
+    const media=$i('mbdy').firstElementChild;
+    if(media)media.outerHTML=`<img class="mimg" src="${img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="mnimg" style="display:none"><div class="mnimg-ic">${cm?.ic||'📍'}</div><div class="mnimg-tx">이미지 준비 중</div></div>`;
+    rnList();
+  }
+  const ov=overview||'';
+  const ovEl=$i('m-overview');
+  if(ovEl){ovEl.innerHTML=`<div class="ibl">장소 소개</div>${ov?ov.replace(/<[^>]*>/g,'').slice(0,400)+'...':'장소 소개 정보가 없습니다.'}`;}
+}
+function cm(){$i('ov').classList.remove('on');}
+document.addEventListener('click',e=>{if(!e.target.closest('#si')&&!e.target.closest('#dd'))$i('dd').style.display='none';});
+</script>
+</body>
+</html>
