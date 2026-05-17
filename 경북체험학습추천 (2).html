@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>경북 체험학습 추천</title>
+<title>대구·경북 체험학습 추천</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -138,15 +138,16 @@ input::placeholder{color:var(--g300);}
 .rhead-cnt{font-size:11px;color:var(--g400);}
 
 /* 대분류 탭 */
-.ctabs{display:flex;gap:4px;overflow-x:auto;padding:0 0 10px 0;flex-shrink:0;}
+.ctabs{display:flex;gap:8px;overflow-x:auto;padding:0 0 10px 0;flex-shrink:0;}
 .ctabs::-webkit-scrollbar{height:3px;}
 .ctabs::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
-.ctab{padding:6px 12px;border:1px solid var(--g200);border-radius:20px;font-size:12px;font-weight:600;color:var(--g500);background:var(--g50);white-space:nowrap;flex-shrink:0;transition:all .15s;}
-.ctab.on{background:var(--b600);color:#fff;border-color:var(--b600);}
-.ctab:hover:not(.on){background:var(--b50);border-color:var(--b300);color:var(--b700);}
+.ctab{width:70px;min-height:56px;padding:7px 6px;border:1px solid var(--g100);border-radius:12px;font-size:11px;font-weight:800;color:var(--g700);background:#fff;white-space:normal;flex-shrink:0;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;line-height:1.15;box-shadow:0 2px 8px rgba(15,23,42,.04);}
+.ctab-ic{font-size:17px;line-height:1;}
+.ctab.on{background:#10B981;color:#fff;border-color:#10B981;box-shadow:0 7px 18px rgba(16,185,129,.22);}
+.ctab:hover:not(.on){background:var(--b50);border-color:var(--b200);color:var(--b700);}
 
 /* 소분류 */
-.sbar{padding:0 14px 10px;display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--g100);flex-shrink:0;}
+.sbar{display:none;}
 .sbar::-webkit-scrollbar{height:3px;}
 .sbar::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
 .sch{padding:5px 11px;border:1px solid var(--g200);border-radius:20px;font-size:12px;font-weight:500;color:var(--g500);background:#fff;white-space:nowrap;flex-shrink:0;transition:all .15s;}
@@ -165,32 +166,40 @@ input::placeholder{color:var(--g300);}
 #rlist::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px;}
 
 /* 장소 리스트 카드 */
-.pc{border-radius:9px;border:1px solid var(--g100);margin-bottom:7px;cursor:pointer;transition:box-shadow .15s,border-color .15s,transform .15s;background:#fff;display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;padding:10px 11px;}
-.pc:hover{box-shadow:0 4px 12px rgba(59,130,246,.1);border-color:var(--b200);transform:translateY(-1px);}
-.pc-ico{width:32px;height:32px;border-radius:8px;background:var(--b50);color:var(--b700);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;line-height:1;}
-.pc-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--g100);}
-.pc-nimg{width:100%;height:110px;background:linear-gradient(135deg,var(--b50),var(--g100));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
-.pc-nimg-ic{font-size:26px;opacity:.35;}
-.pc-nimg-tx{font-size:11px;color:var(--g400);font-weight:500;}
+.pc{border-radius:13px;border:1px solid var(--g100);margin-bottom:8px;cursor:pointer;transition:box-shadow .15s,border-color .15s,transform .15s;background:#fff;display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:10px;padding:8px;align-items:center;box-shadow:0 4px 14px rgba(15,23,42,.05);}
+.pc:hover{box-shadow:0 8px 22px rgba(59,130,246,.13);border-color:var(--b200);transform:translateY(-1px);}
+.pc-ico{display:none;}
+.pc-thumb{width:92px;height:72px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#E0F2FE,#F0FDF4);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;}
+.pc-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.pc-thumb-fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--g500);font-size:10px;font-weight:900;text-align:center;padding:6px;}
+.pc-thumb-ic{font-size:22px;line-height:1;}
 .pc-body{padding:0;min-width:0;}
-.pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:4px;}
-.pc-nm{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;flex:1;min-width:0;}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:3px;}
+.pc-nm{font-size:14px;font-weight:900;color:var(--g900);line-height:1.28;flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.pc-subline{font-size:11px;color:var(--g500);font-weight:700;line-height:1.25;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .votes{display:flex;gap:3px;flex-shrink:0;}
 .vb{display:flex;align-items:center;gap:2px;padding:3px 7px;border-radius:20px;border:1px solid var(--g200);font-size:11px;font-weight:600;color:var(--g500);background:#fff;transition:all .15s;}
 .vb:hover{border-color:var(--b300);}
 .vb.up.on{background:var(--b50);color:var(--b600);border-color:var(--b300);}
 .vb.dn.on{background:#FEF2F2;color:#DC2626;border-color:#FECACA;}
-.pc-addr{font-size:11px;color:var(--g400);margin-bottom:6px;line-height:1.45;}
-.pc-tags{display:flex;gap:3px;flex-wrap:wrap;}
-.ptag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
-.pb{background:var(--b50);color:var(--b600);}
+.pc-addr{font-size:11px;color:var(--g500);margin-bottom:6px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pc-tags{display:flex;gap:4px;flex-wrap:wrap;max-height:23px;overflow:hidden;}
+.ptag{font-size:10px;padding:3px 7px;border-radius:20px;font-weight:800;line-height:1.2;}
+.pb{background:#ECFDF5;color:#059669;}
 .pg{background:var(--g100);color:var(--g500);}
+.pc-detail{border:1px solid var(--g300);background:#fff;color:var(--g800);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900;white-space:nowrap;align-self:center;}
+.pc-mark{border:none;background:transparent;color:var(--g400);font-size:18px;line-height:1;padding:4px;align-self:flex-start;}
 
 /* 빈 / 스켈레톤 */
 .rempty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;color:var(--g300);text-align:center;gap:8px;}
 .rempty-ic{font-size:36px;}
 .rempty-t{font-size:13px;font-weight:600;color:var(--g400);}
 .rempty-s{font-size:12px;color:var(--g300);line-height:1.5;}
+.rloading{border:1px solid var(--b100);background:linear-gradient(180deg,#EFF6FF,#fff);border-radius:14px;padding:16px 15px;margin-bottom:10px;display:grid;grid-template-columns:34px minmax(0,1fr);gap:11px;align-items:start;box-shadow:0 8px 22px rgba(37,99,235,.08);}
+.rloading-ic{width:34px;height:34px;border-radius:50%;background:#DBEAFE;color:var(--b700);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;animation:spinHourglass 1.15s ease-in-out infinite;}
+@keyframes spinHourglass{0%,18%{transform:rotate(0deg)}50%,68%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
+.rloading-t{font-size:14px;font-weight:900;color:var(--g900);line-height:1.35;margin-bottom:4px;}
+.rloading-s{font-size:12px;color:var(--g500);line-height:1.5;}
 .sk-card{border-radius:9px;border:1px solid var(--g100);overflow:hidden;margin-bottom:7px;padding:10px 11px;}
 .sk{background:linear-gradient(90deg,var(--g100),var(--g50),var(--g100));background-size:200% 100%;animation:sk 1.5s ease-in-out infinite;}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -201,10 +210,10 @@ input::placeholder{color:var(--g300);}
 /* 모달 */
 #ov{position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(4px);}
 #ov.on{display:flex;}
-#mod{background:#fff;border-radius:16px;width:100%;max-width:720px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;}
-#mhd{padding:16px 18px;background:var(--b600);color:#fff;display:flex;align-items:flex-start;gap:10px;flex-shrink:0;}
-#mttl{font-size:16px;font-weight:800;flex:1;line-height:1.35;}
-#mcls{border:none;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;flex-shrink:0;}
+#mod{background:#fff;border-radius:16px;width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;}
+#mhd{padding:10px 14px;background:#fff;color:var(--g700);display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--g100);}
+#mttl{font-size:13px;font-weight:800;flex:1;line-height:1.35;color:var(--g600);}
+#mcls{border:1px solid var(--g200);background:#fff;color:var(--g600);border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;flex-shrink:0;}
 #mbdy{overflow-y:auto;flex:1;}
 #mbdy::-webkit-scrollbar{width:4px;}
 #mbdy::-webkit-scrollbar-thumb{background:var(--g200);border-radius:4px;}
@@ -212,10 +221,19 @@ input::placeholder{color:var(--g300);}
 .mnimg{width:100%;height:clamp(220px,32vh,300px);background:linear-gradient(135deg,var(--b50),var(--g100));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:18px;}
 .mnimg-ic{font-size:40px;opacity:.3;}
 .mnimg-tx{font-size:12px;color:var(--g400);}
+.mhero{position:relative;height:clamp(250px,38vh,360px);background:linear-gradient(135deg,var(--b50),var(--g100));overflow:hidden;}
+.mhero img{width:100%;height:100%;object-fit:cover;display:block;}
+.mhero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,23,42,.78),rgba(15,23,42,.22) 48%,rgba(15,23,42,.05));pointer-events:none;}
+.mhero-fallback{height:100%;display:flex;align-items:center;justify-content:center;font-size:46px;color:var(--g300);}
+.mhero-content{position:absolute;left:28px;right:28px;bottom:24px;color:#fff;z-index:1;display:grid;gap:12px;max-width:640px;}
+.mhero-title{font-size:clamp(28px,4.2vw,44px);font-weight:900;line-height:1.12;letter-spacing:0;text-shadow:0 2px 12px rgba(0,0,0,.28);}
+.mhero-sub{font-size:13px;font-weight:700;opacity:.9;}
+.hero-chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+.hero-chip{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.16);backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;line-height:1.2;}
 .media-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
 .media-link{border:1px solid var(--g200);background:#fff;color:var(--b600);border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;text-decoration:none;}
 .media-link:hover{border-color:var(--b300);background:var(--b50);}
-.minfo{padding:14px 18px 18px;}
+.minfo{padding:22px 28px 24px;background:linear-gradient(180deg,#F8FAFC 0,#fff 42%);}
 .ib{padding:12px 14px;border-radius:9px;margin-bottom:9px;font-size:13px;line-height:1.65;}
 .ibl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;color:var(--g500);}
 .place-meta{display:grid;gap:4px;color:var(--g700);}
@@ -244,10 +262,45 @@ input::placeholder{color:var(--g300);}
 .ai-row-tx{font-size:13px;color:var(--g700);line-height:1.62;}
 .ai-compact{display:grid;gap:8px;}
 .ai-err{font-size:12px;color:#DC2626;}
+.kw-row{display:flex;flex-wrap:wrap;gap:5px;}
+.kw-chip{display:inline-flex;align-items:center;max-width:100%;border:1px solid var(--b100);border-radius:999px;background:#fff;color:var(--b700);font-size:11px;font-weight:800;line-height:1.25;padding:4px 8px;}
+.mini-points{display:grid;gap:5px;margin:0;padding:0;list-style:none;}
+.mini-points li{font-size:12px;line-height:1.55;color:var(--g700);background:#fff;border:1px solid var(--g100);border-radius:8px;padding:6px 8px;}
+.ai-source{font-size:11px;color:var(--g500);line-height:1.45;margin-top:8px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+.detail-block{background:#fff;border:1px solid var(--g100);border-radius:12px;padding:18px 20px;box-shadow:0 10px 28px rgba(15,23,42,.08);}
+.detail-hd{font-size:22px;font-weight:900;color:#0F766E;line-height:1.2;margin-bottom:14px;letter-spacing:0;}
+.detail-title{font-size:15px;font-weight:900;color:var(--g900);line-height:1.35;margin-bottom:6px;}
+.detail-sub{font-size:12px;font-weight:800;color:var(--g600);line-height:1.45;margin-bottom:14px;}
+.detail-text{font-size:13px;color:var(--g700);line-height:1.65;margin-top:10px;}
+.detail-divider{height:1px;background:var(--g100);margin:14px 0;}
+.site-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13px;color:var(--g700);line-height:1.45;}
+.site-ic{width:30px;height:30px;border-radius:50%;background:var(--b50);display:flex;align-items:center;justify-content:center;color:var(--b700);font-weight:900;flex-shrink:0;}
+.activity-box{background:#fff;border:2px solid #2F7DAA;border-radius:14px;padding:20px 22px;margin:16px 0 14px;box-shadow:0 12px 30px rgba(15,23,42,.06);}
+.activity-title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;color:#256B95;line-height:1.2;margin-bottom:16px;}
+.activity-title-ic{font-size:26px;}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.tip-title{font-size:13px;font-weight:900;color:var(--g900);margin-bottom:8px;}
+.tip-list{display:grid;gap:9px;margin:0;padding:0;list-style:none;}
+.tip-list li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;font-size:13px;color:var(--g700);line-height:1.45;}
+.tip-check{width:15px;height:15px;margin-top:2px;border-radius:4px;border:1px solid var(--g300);background:#fff;position:relative;}
+.modal-links-panel{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:12px 0 10px;}
+.modal-links-panel .link-row{margin-top:0;}
+.city-guide{background:#fff;border:1px solid var(--g100);border-radius:14px;padding:16px 18px;margin:16px 0 14px;box-shadow:0 10px 28px rgba(15,23,42,.06);}
+.city-guide-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.city-guide-kicker{font-size:11px;font-weight:900;color:var(--b600);line-height:1.2;margin-bottom:4px;}
+.city-guide-title{font-size:18px;font-weight:900;color:var(--g900);line-height:1.25;}
+.city-guide-meta{font-size:11px;font-weight:800;color:var(--g500);white-space:nowrap;}
+.city-guide-frame{border:1px solid var(--g100);border-radius:12px;overflow:hidden;background:#fff;}
+.city-guide-img{width:100%;max-height:520px;object-fit:contain;display:block;background:#fff;}
+.city-guide-note{font-size:11px;color:var(--g500);line-height:1.45;margin-top:8px;}
+.overview-text{font-size:13px;color:var(--g700);line-height:1.65;white-space:pre-wrap;}
+.more-btn{margin-top:8px;border:1px solid var(--g200);background:#fff;color:var(--b700);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;cursor:pointer;}
+.more-btn:hover{background:var(--b50);border-color:var(--b200);}
 .cardnews{margin:10px 0 9px;padding:12px;border:1px solid var(--g200);border-radius:12px;background:var(--g50);}
 .cardnews[hidden]{display:none;}
 .news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
-.news-card{min-height:228px;border-radius:10px;border:1px solid var(--g200);background:#fff;overflow:hidden;display:flex;flex-direction:column;}
+.news-card{min-height:188px;border-radius:10px;border:1px solid var(--g200);background:#fff;overflow:hidden;display:flex;flex-direction:column;}
 .news-photo{height:112px;background:linear-gradient(135deg,var(--b50),var(--g100));position:relative;overflow:hidden;}
 .news-photo img{width:100%;height:100%;object-fit:cover;display:block;}
 .news-placeholder{height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--g300);}
@@ -270,8 +323,12 @@ input::placeholder{color:var(--g300);}
   #app.results .top-r{display:flex;margin-left:auto;}
   #app.results .brand-sb{display:none;}
   #app.results #rgt{top:auto;left:12px;right:12px;bottom:12px;width:auto;height:42vh;border-radius:18px;}
-  .ai-grid,.news-grid{grid-template-columns:1fr;}
+  .ai-grid,.news-grid,.detail-grid,.tips-grid{grid-template-columns:1fr;}
   #mod{max-width:calc(100vw - 24px);}
+  .minfo{padding:16px;}
+  .mhero{height:260px;}
+  .mhero-content{left:18px;right:18px;bottom:18px;}
+  .mhero::after{background:linear-gradient(90deg,rgba(15,23,42,.78),rgba(15,23,42,.32));}
   .mimg{height:260px;}
   .mnimg{height:220px;}
 }
@@ -284,7 +341,7 @@ input::placeholder{color:var(--g300);}
 <div id="top">
   <div class="brand">
     <div class="brand-ic">🌿</div>
-    <div><div class="brand-tx">경북 체험학습 추천</div><div class="brand-sb">경상북도 교육과정 기반 플랫폼</div></div>
+    <div><div class="brand-tx">대구·경북 체험학습 추천</div><div class="brand-sb">대구·경북 교육과정 기반 플랫폼</div></div>
   </div>
   <div class="top-r">
     <span class="tbadge intro-only">나이스 교육정보</span>
@@ -358,26 +415,22 @@ input::placeholder{color:var(--g300);}
     </div>
     <!-- 대분류 탭 -->
     <div class="ctabs" id="ctabs">
-      <button class="ctab on" onclick="setCat('전체')">전체</button>
-      <button class="ctab" onclick="setCat('문화유산')">🏛️ 문화유산</button>
-      <button class="ctab" onclick="setCat('현충·근현대사')">🎖️ 현충·근현대사</button>
-      <button class="ctab" onclick="setCat('자연·생태')">🌿 자연·생태</button>
-      <button class="ctab" onclick="setCat('산지·탐방로')">🥾 산지·탐방로</button>
-      <button class="ctab" onclick="setCat('공원·생활환경')">🏞️ 공원·생활환경</button>
-      <button class="ctab" onclick="setCat('농어촌·생산체험')">🌾 농어촌·생산체험</button>
-      <button class="ctab" onclick="setCat('지역축제')">🎪 지역축제</button>
-      <button class="ctab" onclick="setCat('박물관·전시')">🏛️ 박물관·전시</button>
-      <button class="ctab" onclick="setCat('관광명소')">🧭 관광명소</button>
-      <button class="ctab" onclick="setCat('과학체험')">🔬 과학체험</button>
+      <button class="ctab on" onclick="setCat('전체')"><span class="ctab-ic">▦</span><span>전체</span></button>
+      <button class="ctab" onclick="setCat('역사·유산')"><span class="ctab-ic">🏛️</span><span>역사·유산</span></button>
+      <button class="ctab" onclick="setCat('근현대·기념')"><span class="ctab-ic">🎖️</span><span>근현대·기념</span></button>
+      <button class="ctab" onclick="setCat('자연·생태')"><span class="ctab-ic">🌿</span><span>자연·생태</span></button>
+      <button class="ctab" onclick="setCat('과학·탐구')"><span class="ctab-ic">🔭</span><span>과학·탐구</span></button>
+      <button class="ctab" onclick="setCat('경제·생활')"><span class="ctab-ic">🏭</span><span>경제·생활</span></button>
+      <button class="ctab" onclick="setCat('문화·축제')"><span class="ctab-ic">🎪</span><span>문화·축제</span></button>
     </div>
   </div>
   <!-- 소분류 -->
   <div class="sbar" id="sbar"><button class="sch on" onclick="setSub('전체')">전체</button></div>
   <!-- 정렬 -->
   <div class="sortbar">
-    <span class="sortlbl">정렬</span>
-    <button class="sortbtn on" onclick="setSort('score')">👍 추천순</button>
-    <button class="sortbtn" onclick="setSort('dist')">📍 거리순</button>
+    <span class="sortlbl">배열</span>
+    <button class="sortbtn on" onclick="setSort('dist')">📍 거리순</button>
+    <button class="sortbtn" onclick="setSort('recommend')">⭐ 추천순</button>
   </div>
   <div id="rlist">
     <div class="rempty">
@@ -400,6 +453,7 @@ input::placeholder{color:var(--g300);}
 
 <script src="data/public_data_sources.js"></script>
 <script src="data/gyeongbuk_public_places.js"></script>
+<script src="data/curated_representative_places.js"></script>
 <script>
 const NK='8faa142720cd4d44af4af420fcf9ec4f';
 const TK=encodeURIComponent('1ed167b364dd8cc6ef53cea742bb851f80fa46ad7ec3db01379aeffad968e6ff');
@@ -407,9 +461,21 @@ const PX='https://api.allorigins.win/raw?url=';
 const TOUR='http://apis.data.go.kr/B551011/KorService2';
 const KHS='http://www.khs.go.kr/cha';
 const MPVA='http://mfis.mpva.go.kr/api/json/allSearch.do';
-const APP=encodeURIComponent('경북체험학습');
+const APP=encodeURIComponent('대구경북체험학습');
+const VWORLD_KEY='AA4201EF-0CBF-3A23-94E6-51483A0D6AFB';
+const VWORLD_BASE_TILE=`https://api.vworld.kr/req/wmts/1.0.0/${VWORLD_KEY}/Base/{z}/{y}/{x}.png`;
+const CARTO_FALLBACK_TILE='https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 const GBK=[36.4919,128.8889];
-const HERITAGE_CTCD='37';
+const DAEGU=[35.8714,128.6014];
+const SERVICE_AREAS=[
+  {code:'35',name:'경북',fullName:'경상북도',center:GBK},
+  {code:'4',name:'대구',fullName:'대구광역시',center:DAEGU},
+];
+const TOUR_AREA_CODES=SERVICE_AREAS.map(a=>a.code);
+const HERITAGE_CTCODES=[
+  {code:'37',name:'경북',fullName:'경상북도'},
+  {code:'22',name:'대구',fullName:'대구광역시'},
+];
 const HERITAGE_SOURCE='국가유산청 전국 지정문화재 현황 Open API';
 const HERITAGE_DETAIL_SOURCE='국가유산청 국가유산검색 상세 Open API';
 const MPVA_SOURCE='국가보훈부 현충시설정보 API';
@@ -418,36 +484,108 @@ const EDU_CONTENT_TYPES=['12','14','15','28','38'];
 const BLOCKED_CONTENT_TYPES=['32','39'];
 const CONTENT_TYPE_NAMES={'12':'관광지','14':'문화시설','15':'축제·공연·행사','25':'여행코스','28':'레포츠','32':'숙박','38':'쇼핑','39':'음식점'};
 const HERITAGE_CODE_NAMES={'11':'국보','12':'보물','13':'사적','15':'명승','16':'천연기념물','18':'국가민속문화유산','21':'시도유형문화유산','23':'시도기념물','31':'문화유산자료','79':'국가등록유산'};
-const ADDITIONAL_PUBLIC_SOURCE_TYPES=new Set(['ecoTour','cityPark','nationalParkTrail','forestTrail','ruralVillage','festival','touristArea','museumArt']);
+const ADDITIONAL_PUBLIC_SOURCE_TYPES=new Set(['ecoTour','cityPark','nationalParkTrail','forestTrail','festival','touristArea','museumArt','curatedRepresentative']);
 const SIGUNGU={
   경산시:'1',경주시:'2',고령군:'3',구미시:'4',김천시:'6',문경시:'7',봉화군:'8',상주시:'9',
   성주군:'10',안동시:'11',영덕군:'12',영양군:'13',영주시:'14',영천시:'15',예천군:'16',
   울릉군:'17',울진군:'18',의성군:'19',청도군:'20',청송군:'21',칠곡군:'22',포항시:'23'
 };
+const DAEGU_SIGUNGU={
+  남구:'1',달서구:'2',달성군:'3',동구:'4',북구:'5',서구:'6',수성구:'7',중구:'8',군위군:'9'
+};
+const PLACE_DISCOVERY_GROUPS=[
+  {
+    id:'astronomy',
+    label:'천문·우주 체험',
+    triggers:['천문','천문대','천문과학관','밤하늘','달','태양계','행성','별','별자리','천체','우주','지구의 운동','지구본','위도','경도','공간 자료'],
+    keywords:['천문대','천문과학관','보현산천문대','보현산천문과학관','영천보현산천문과학관','보현산 별빛','별빛정원','별빛테마마을','별빛축제','천체관측','천체투영관','우주체험','과학관']
+  },
+  {
+    id:'science',
+    label:'과학 체험 시설',
+    triggers:['과학','물체','자석','소리','기체','산과 염기','산성','염기성','운동','힘','날씨'],
+    keywords:['과학관','과학체험관','과학체험','자연사박물관','천문과학관','안전체험관','기상과학','기상과학관','국립대구기상과학관','대구기상과학관','기상청','기상대','해양과학관']
+  },
+  {
+    id:'geo',
+    label:'지형·지질·해양',
+    triggers:['지형','지질','땅의 변화','화산','지진','암석','지층','해안','해안선','해안 지역','바다','하천','강','산지','국토','지형 이용','국립공원','도립공원'],
+    keywords:['지질공원','주상절리','해안','해안선','해수욕장','갯벌','사구','해양과학관','동굴','계곡','폭포','하천','댐','전망대','탐방로','국립공원','도립공원','팔공산','주왕산','소백산','가야산','문경새재도립공원','청량산도립공원','금오산도립공원','영일대해수욕장','고래불해수욕장','망양정해수욕장']
+  },
+  {
+    id:'ecology',
+    label:'생태·식물·환경',
+    triggers:['생물','생태','식물','동물','환경','습지','서식지','수목원','식물원'],
+    keywords:['생태공원','생태원','습지','수목원','식물원','생태숲','산림체험','자연생태','환경체험']
+  },
+  {
+    id:'ruralEconomy',
+    label:'대표 경제·교류 거점',
+    triggers:['생산','소비','경제','교류','산업','시장','도시','물류'],
+    keywords:['서문시장','칠성시장','죽도시장','대구약령시','중앙시장','공설시장','상설시장','포항제철','포스코','산업관','산업단지','항구','항만','동대구역','서대구역','대구역','포항역','김천구미역','신경주역','안동역','영주역','대구국제공항']
+  }
+];
 
 /* ── 카테고리 정의 ── */
 const CATS={
   '문화유산':{ic:'🏛️',subs:['사찰·불교문화','서원·향교','왕릉·고분','유적·사적지','성곽·읍성','종택·고택'],
-    kw:['서원','향교','종택','고택','왕릉','고분','사적','탑','성곽','사찰','유적','봉수대','암자','절','읍성','불국사','석굴암','도산','하회','부석사']},
+    kw:['서원','향교','종택','고택','왕릉','고분','사적','탑','성곽','사찰','유적','봉수대','암자','절','읍성','불국사','석굴암','도산','하회','부석사','민속촌','전통마을','한옥마을','한옥']},
   '현충·근현대사':{ic:'🎖️',subs:['독립운동·의병','항일·일제강점기','6·25·국가수호','근대역사·민주주의'],
     kw:['현충','호국','독립운동','의병','항일','일제','전쟁','6·25','6.25','전적','평화','근대','민주']},
   '자연·생태':{ic:'🌿',subs:['생태관광','생태공원·습지','수목원·식물원','계곡·폭포','지질공원','해안·섬'],
-    kw:['생태관광','공원','생태','수목원','식물원','계곡','폭포','습지','지질','야생화','자연','산림','강','호수','섬','해안','독도','울릉']},
+    kw:['생태관광','공원','생태','수목원','식물원','계곡','폭포','습지','지질','야생화','자연','산림','강','호수','섬','해안','해안선','해수욕장','갯벌','사구','독도','울릉']},
   '산지·탐방로':{ic:'🥾',subs:['국립공원 탐방로','산림청 등산로','산지·지형 관찰','탐방 안전'],
-    kw:['탐방로','등산로','국립공원','산림청','산지','난이도','코스','탐방','산']},
+    kw:['탐방로','등산로','국립공원','도립공원','산림청','산지','난이도','코스','탐방','팔공산','주왕산','소백산','가야산','문경새재','청량산','금오산','보현산','비슬산']},
   '공원·생활환경':{ic:'🏞️',subs:['근린·생활공원','수변·생태공원','문화·역사공원','공공시설 탐구'],
     kw:['근린공원','도시공원','수변공원','생태공원','생활환경','공공시설','공원','야외무대','체육공원']},
-  '농어촌·생산체험':{ic:'🌾',subs:['농촌체험','어촌체험','수확·생산체험','전통·공예체험'],
-    kw:['농어촌','농촌','어촌','체험휴양마을','수확','생산','소비','갯벌','어업','공예체험','먹거리체험']},
-  '지역축제':{ic:'🎪',subs:['전통문화축제','생태·자연축제','농산물·특산물축제','예술·공연축제','전년도 참고'],
-    kw:['축제','행사','문화제','예술제','페스티벌','전통','계절','특산물']},
+  '대표 경제거점':{ic:'🏭',subs:['대표 시장','산업·물류 거점','항만·철도 거점'],
+    kw:['서문시장','칠성시장','죽도시장','대구약령시','중앙시장','공설시장','상설시장','포항제철','포스코','산업관','산업단지','항구','항만','철도역','동대구역','포항역','대구국제공항','물류']},
+  '지역축제':{ic:'🎪',subs:['전통문화축제','생태·자연축제','예술·공연축제','전년도 참고'],
+    kw:['축제','행사','문화제','예술제','페스티벌']},
   '박물관·전시':{ic:'🏛️',subs:['역사·문화박물관','과학·자연사전시','미술관·전시관','농업·생활사전시'],
-    kw:['박물관','미술관','전시관','전시','역사관','문화관','기념관','자연사','과학관','유물']},
+    kw:['박물관','미술관','전시관','전시','역사관','문화관','문화원','문화센터','자료관','기록관','기념관','자연사','과학관','유물']},
   '관광명소':{ic:'🧭',subs:['역사·문화 관광지','자연경관 관광지','지역생활 관광지','보조 관광자료'],
     kw:['관광지','관광명소','명소','전망대','둘레길','마을','문화관광','자연경관','계곡','강','바다','역사']},
   '과학체험':{ic:'🔬',subs:['과학관','천문대','자연사박물관','지질탐사지'],
-    kw:['과학관','천문대','자연사','과학체험','지질탐사']},
+    kw:['과학관','천문대','천문과학관','천체관측','천체투영관','별빛','우주','자연사','과학체험','지질탐사']},
 };
+const UI_CATS={
+  '전체':{ic:'▦',label:'전체'},
+  '역사·유산':{ic:'🏛️',label:'역사·유산'},
+  '근현대·기념':{ic:'🎖️',label:'근현대·기념'},
+  '자연·생태':{ic:'🌿',label:'자연·생태'},
+  '과학·탐구':{ic:'🔭',label:'과학·탐구'},
+  '경제·생활':{ic:'🏭',label:'경제·생활'},
+  '문화·축제':{ic:'🎪',label:'문화·축제'},
+};
+function uiCategoryForPlace(p){
+  const text=cleanText(`${p?.title||''} ${p?.addr1||''} ${p?.cat||''} ${p?.sub||''} ${p?.sourceMeta||''} ${p?.contentTypeName||''} ${p?.publicData?.evidence||''} ${p?.publicData?.overview||''}`).toLowerCase();
+  if(p?.cat==='현충·근현대사')return '근현대·기념';
+  if(/독립|의병|항일|전쟁|호국|현충|민주|평화기념|전적|추모|위령|6\.25|6·25/.test(text))return '근현대·기념';
+  if(p?.cat==='과학체험'||/천문|과학관|기상|자연사|해양과학|지질탐사|우주|별빛/.test(text))return '과학·탐구';
+  if(p?.cat==='대표 경제거점'||hasRepresentativeEconomyEvidence(text))return '경제·생활';
+  if(p?.cat==='지역축제'||/축제|문화제|페스티벌|공연|예술제|문화거리|근대문화거리/.test(text))return '문화·축제';
+  if(p?.cat==='문화유산')return '역사·유산';
+  if(p?.cat==='박물관·전시'){
+    if(/과학|천문|기상|자연사|해양|지질|독도/.test(text))return '과학·탐구';
+    return '역사·유산';
+  }
+  if(p?.cat==='공원·생활환경'){
+    if(/역사공원|유적|사적|고분|왕릉|삼성현|연오랑|세오녀/.test(text))return '역사·유산';
+    if(/문화공원|테마공원|야외공연|전시|문화/.test(text))return '문화·축제';
+    return '자연·생태';
+  }
+  if(p?.cat==='관광명소'){
+    if(/유적|사적|고분|왕릉|서원|향교|사찰|역사|문화유산|고택|종택/.test(text))return '역사·유산';
+    if(/문화|거리|축제|공연|예술/.test(text))return '문화·축제';
+    return '자연·생태';
+  }
+  if(p?.cat==='자연·생태'||p?.cat==='산지·탐방로')return '자연·생태';
+  return '자연·생태';
+}
+function uiCategoryMeta(id){
+  return UI_CATS[id]||UI_CATS[uiCategoryForPlace(id)]||UI_CATS['전체'];
+}
 const SUB_MAP={
   '사찰·불교문화':['사찰','절','암자','불국사','석굴암'],
   '서원·향교':['서원','향교','서당'],
@@ -464,67 +602,345 @@ const SUB_MAP={
   '수목원·식물원':['수목원','식물원'],
   '계곡·폭포':['계곡','폭포'],
   '지질공원':['지질공원','지질'],
-  '해안·섬':['해안','섬','독도','울릉'],
+  '해안·섬':['해안','해안선','해수욕장','갯벌','사구','섬','독도','울릉'],
   '국립공원 탐방로':['국립공원 탐방로','탐방로'],
   '산림청 등산로':['산림청 등산로','등산로'],
-  '산지·지형 관찰':['산지','지형','산'],
+  '산지·지형 관찰':['산지','지형','국립공원','도립공원','팔공산','주왕산','소백산','가야산','문경새재','청량산','금오산','보현산','비슬산'],
   '탐방 안전':['통제','난이도','탐방가능구간'],
   '근린·생활공원':['근린공원','생활공원','도시공원'],
   '수변·생태공원':['수변공원','생태공원'],
   '문화·역사공원':['문화','역사','현충','기념'],
   '공공시설 탐구':['공공시설','체육공원','야외무대'],
-  '농촌체험':['농촌','농업','농장'],
-  '어촌체험':['어촌','갯벌','어업','낚시'],
-  '수확·생산체험':['수확','생산','먹거리체험'],
-  '전통·공예체험':['전통','공예','도자기','만들기'],
-  '전통문화축제':['전통','문화제','민속','축제'],
+  '대표 시장':['서문시장','칠성시장','죽도시장','대구약령시','중앙시장','공설시장','상설시장','종합시장'],
+  '산업·물류 거점':['산업관','산업단지','포항제철','포스코','물류','대구국제공항'],
+  '항만·철도 거점':['항구','항만','철도역','동대구역','포항역','김천구미역','신경주역','안동역','영주역'],
+  '전통문화축제':['문화제','축제','페스티벌'],
   '생태·자연축제':['생태','자연','꽃','숲','환경'],
-  '농산물·특산물축제':['농산물','특산물','사과','포도','한우','약초'],
   '예술·공연축제':['예술','공연','음악','연극'],
   '전년도 참고':['전년도','작년','종료'],
   '역사·문화 관광지':['역사','문화','유적','전통','마을'],
-  '자연경관 관광지':['자연경관','계곡','강','바다','해안','산','숲','전망'],
+  '자연경관 관광지':['자연경관','계곡','강','바다','해안','숲','전망'],
   '지역생활 관광지':['지역','마을','시장','생활','교류'],
   '보조 관광자료':['관광지','관광명소','보조자료'],
-  '역사·문화박물관':['역사','문화','유물','생활사'],
+  '역사·문화박물관':['역사','문화','문화원','문화센터','자료관','기록관','유물','생활사'],
   '과학·자연사전시':['과학','자연사','생태','천문'],
   '미술관·전시관':['미술관','전시관','전시'],
   '농업·생활사전시':['농업','생활사','민속'],
   '과학관':['과학관','과학체험'],
-  '천문대':['천문대','천문','별빛','반딧불'],
+  '천문대':['천문대','천문과학관','천체관측','천체투영관','천문','별빛','우주','반딧불'],
   '자연사박물관':['자연사'],
   '지질탐사지':['암석','지층','화산'],
   '전통마을·민속촌':['전통마을','민속촌','한옥마을','체험마을'],
-  '공예·도자기':['공예','도자기','공방'],
-  '전통시장':['시장','오일장','장터'],
+  '공예·도자기':['공예','도자기'],
+  '전통시장':['시장','서문시장','칠성시장','죽도시장','대구약령시'],
   '생가':['생가'],
   '독립운동 유적':['독립운동','항일','의병'],
   '기념관':['기념관','문화관'],
   '근현대 역사':['근대','역사','역사관'],
 };
 
+function unitDiscoveryText(u){
+  const topics=(u?.subtopics||[]).flatMap(t=>[t.name,t.focus,t.standard,...(t.terms||[]),...(t.searchTerms||[]),...(t.placeTypes||[])]);
+  return cleanText([
+    u?.unit,u?.name,u?.displayName,u?.focus,u?.standard,
+    ...(u?.terms||[]),...(u?.searchTerms||[]),...(u?.placeTypes||[]),...topics
+  ].filter(Boolean).join(' ')).toLowerCase();
+}
+function allPlaceDiscoverySeeds(){
+  return uniq(PLACE_DISCOVERY_GROUPS.flatMap(g=>g.keywords||[]));
+}
+function placeDiscoverySeeds(u){
+  const text=unitDiscoveryText(u);
+  return uniq(PLACE_DISCOVERY_GROUPS.flatMap(g=>
+    (g.triggers||[]).some(k=>text.includes(String(k).toLowerCase())) ? (g.keywords||[]) : []
+  ));
+}
 function clf(p){
-  const t=(p.title+' '+p.addr1).toLowerCase();
+  const title=cleanText(p.title||'').toLowerCase();
+  if(/천문대|천문과학관|천체관측|천체투영관|별빛|우주|과학관|자연사/.test(title))return '과학체험';
+  if(/문화원|문화센터|자료관|기록관/.test(title))return '박물관·전시';
+  const t=cleanText(`${p.title||''} ${p.addr1||''}`).toLowerCase();
   for(const [cat,d] of Object.entries(CATS)){if(d.kw.some(k=>t.includes(k)))return cat;}
-  return '문화유산';
+  return '관광명소';
 }
 function clsub(p){
-  const t=(p.title+' '+p.addr1).toLowerCase();
-  for(const [sub,ks] of Object.entries(SUB_MAP)){if(ks.some(k=>t.includes(k)))return sub;}
+  const title=cleanText(p.title||'').toLowerCase();
+  const t=cleanText(`${p.title||''} ${p.addr1||''}`).toLowerCase();
+  if(/천문대|천문과학관|천체관측|천체투영관|별빛|우주/.test(title))return '천문대';
+  if(/과학관|과학체험관/.test(title))return '과학관';
+  if(/문화원|문화센터|자료관|기록관/.test(title))return '역사·문화박물관';
+  if(/전통마을|한옥마을|민속촌/.test(t))return '전통마을·민속촌';
+  if(/봉수대|봉수/.test(t))return '유적·사적지';
+  for(const [sub,ks] of Object.entries(SUB_MAP)){
+    if(sub==='천문대')continue;
+    if(ks.some(k=>t.includes(k)))return sub;
+  }
+  if(/천문대|천문과학관|별빛/.test(t)&&!/천문로/.test(t))return '천문대';
   return '';
 }
 function contentTypeName(type){return CONTENT_TYPE_NAMES[String(type||'')]||String(type||'미분류');}
 function isAllowedContentType(type){return EDU_CONTENT_TYPES.includes(String(type||''));}
-function isNonLearningPlace(p){
+const REPRESENTATIVE_ECONOMY_TERMS=[
+  '서문시장','칠성시장','죽도시장','대구약령시','안동구시장','안동중앙신시장','경주중앙시장','성동시장',
+  '영천공설시장','구미새마을중앙시장','구미중앙시장','김천황금시장','김천평화시장','영주365시장','영주종합시장',
+  '상주중앙시장','문경중앙시장','예천상설시장','봉화상설시장','의성전통시장','청도시장','고령대가야시장',
+  '왜관시장','울진바지게시장','영덕시장','중앙시장','공설시장','상설시장','종합시장',
+  '포항제철','포스코','산업관','산업단지','국가산업단지','항만','포항항','영일만항','구룡포항','강구항','후포항',
+  '동대구역','서대구역','대구역','포항역','김천구미역','신경주역','안동역','영주역','점촌역','영천역',
+  '대구국제공항','복합환승센터'
+];
+const REPRESENTATIVE_ECONOMY_RE=new RegExp(REPRESENTATIVE_ECONOMY_TERMS.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'));
+const SMALL_ECONOMY_NOISE_RE=/오일장|장터|공방|체험장|체험마을|체험휴양마을|농촌체험|어촌체험|농업체험|생산체험|수확|갯벌체험|갯벌|특산물|특산|농특산|농특산물|농산물|수산물|농수산물|직판장|로컬푸드|판매장|할인판매|시식행사|먹거리체험|농장|농어촌|어촌|농촌|영농체험|농사체험|농촌생활체험|도시민농사체험|수박서리|산채체험|다슬기|머루따기|사과따기|감자캐기|단감따기|두부만들기|천연염색|도자기체험|가죽공예|목공|미나리푸딩|곶감|한우구이/;
+const REPRESENTATIVE_CULTURE_FESTIVAL_RE=/영천보현산별빛축제|대가야축제|문경찻사발축제|안동국제탈춤페스티벌|포항국제불빛축제|경주벚꽃축제|청도반시축제|영주한국선비문화축제|예천활축제/;
+const REPRESENTATIVE_PARK_RE=/남매공원|남매지|삼성현역사공원|왕산공원|왕산역사공원|환호공원|연오랑세오녀테마공원|사방기념공원|월영공원|태평성대\s*경상감영공원|직지문화공원|신라왕경숲공원|황성문화공원|대가야종묘역사공원|인덕지\s*수변생태공원|지산샛강생태공원|중화지생태공원|단호샌드파크|개목나루문화공원|검암공원|마애솔숲공원|곤충테마생태공원|호랑이와곶감테마공원|회상나루\s*관광지\s*공원|고분군사적공원|남자현지사역사공원|원이엄마테마파크|퇴계문화공원|학봉역사문화공원|죽령테마공원|영주댐하류공원|영일대|송도솔밭|형산강체육공원/;
+const SMALL_LOCAL_PARK_RE=/근린공원|어린이공원|소공원|공원\d|[0-9]+호|제\d+근린|아파트|블루밸리|초곡\d|원동\d|지식\d|중산\d|서사근린|양지근린|도리근린|왜관-근린|연호\d|도량|봉곡|옥계|구평|인동/;
+const HARD_NON_LEARNING_RE=/골프장|파크골프|골프클럽|골프\s*클럽|골프연습장|컨트리클럽|컨트리\s*클럽|c\.?c\b|여행사|관광여행|여행업|여행개발|렌터카|관광버스|버스투어|시티투어|트래블|더휴앤|무덤덤투어|투어\s*\(|투어$|진흥원|바니베어|테디베어|teddy\s*bear|인형\s*박물관|인형박물관|토이\s*박물관|토이박물관|장난감\s*박물관|장난감박물관|피규어\s*박물관|피규어박물관|캐릭터\s*박물관|캐릭터박물관/;
+const CLEAR_NON_LEARNING_RE=/공사|공단|협회|조합|지원센터|관리공단|컨벤션뷰로/;
+const NON_LEARNING_EXCEPTION_RE=/박물관|미술관|전시관|과학관|천문대|기념관|역사관|문화원|자료관|기록관|체험관|생태관|자연사|국립공원|도립공원|서원|향교|고택|종택|유적|사적|문화유산|국가유산|현충시설|독립운동|항일|의병/;
+function hasRepresentativeEconomyEvidence(text=''){
+  const t=cleanText(text).toLowerCase().replace(/역사/g,' ');
+  return REPRESENTATIVE_ECONOMY_RE.test(t);
+}
+function hasSmallEconomyNoise(text=''){
+  return SMALL_ECONOMY_NOISE_RE.test(cleanText(text).toLowerCase());
+}
+function isRepresentativeCultureFestival(text=''){
+  return REPRESENTATIVE_CULTURE_FESTIVAL_RE.test(cleanText(text));
+}
+function isClearlyNonLearningText(text=''){
+  const t=cleanText(text).toLowerCase();
+  if(HARD_NON_LEARNING_RE.test(t))return true;
+  return CLEAR_NON_LEARNING_RE.test(t)&&!NON_LEARNING_EXCEPTION_RE.test(t);
+}
+function isRepresentativeParkData(r){
+  const text=cleanText(`${r?.title||''} ${r?.addr1||''} ${r?.cat||''} ${r?.sub||''} ${r?.evidence||''} ${r?.overview||''}`);
+  const title=cleanText(r?.title||'');
+  if(REPRESENTATIVE_PARK_RE.test(text))return true;
+  if(SMALL_LOCAL_PARK_RE.test(text))return false;
+  if(/생태공원|테마공원|관광지\s*공원|역사문화공원|사적공원|유적|고분군|나루|샌드파크|댐하류|문화마을|해맞이|해돋이/.test(title))return true;
+  if(r?.sub==='수변공원'&&/생태|낙동강|형산강|샛강|호수|연못|나루|댐|강변|저수지/.test(title))return true;
+  if(r?.sub==='역사공원'&&/역사|유적|사적|고분|대가야|경상감영|왕산|남자현|삼성현|학봉/.test(title))return true;
+  return false;
+}
+function isBlockedAdditionalRawPlace(r,u=null){
+  const sourceType=r?.sourceType||'';
+  const text=cleanText(`${r?.title||''} ${r?.addr1||''} ${r?.cat||''} ${r?.sub||''} ${r?.evidence||''} ${r?.overview||''}`);
+  if(isClearlyNonLearningText(text))return true;
+  if(sourceType==='cityPark'&&!isRepresentativeParkData(r))return true;
+  if(sourceType==='ruralVillage')return true;
+  if(sourceType==='festival'&&hasSmallEconomyNoise(text)&&!isRepresentativeCultureFestival(text))return true;
+  if(hasSmallEconomyNoise(text)&&!hasRepresentativeEconomyEvidence(text)&&!isRepresentativeCultureFestival(text)){
+    if(!(isNationalLandUnit(u)&&hasCoastalLandformEvidence(text)))return true;
+  }
+  return false;
+}
+function isEconomyExchangeUnit(u){
+  return /경제활동과 지역 간 교류/.test(`${u?.unit||''} ${u?.name||''}`);
+}
+function isLegacyLifeUnit(u){
+  return /옛날과 오늘날의 생활 모습/.test(`${u?.unit||''} ${u?.name||''}`);
+}
+function isGeographyMapUnit(u){
+  return /지도로 만나는 우리 지역|지역의 위치와 특성|다양한 환경과 삶의 모습|우리나라 지리 탐구|우리나라 국토 여행|국토와 자연환경/.test(`${u?.unit||''} ${u?.name||''} ${u?.focus||''}`);
+}
+function isNationalLandUnit(u){
+  return /우리나라 국토 여행|지구와 바다/.test(`${u?.unit||''} ${u?.name||''} ${u?.focus||''}`);
+}
+function hasCoastalLandformEvidence(text=''){
+  return /해안|해안선|해수욕장|갯벌|바닷가|바다|모래|자갈|파도|사구|해양|섬|독도|울릉/.test(cleanText(text).toLowerCase());
+}
+function hasMountainPlaceEvidence(text=''){
+  const t=cleanText(text).toLowerCase();
+  return /산지|산림|국립공원|도립공원|군립공원|탐방로|등산로|팔공산|주왕산|소백산|가야산|문경새재|청량산|금오산|보현산|비슬산/.test(t)
+    || /(^|[\s·,()/-])산($|[\s·,()/-])/.test(t)
+    || /[가-힣]{1,8}산(국립공원|도립공원|군립공원|자연휴양림|탐방로|등산로|계곡|봉|성|전망대|생태숲|도시자연공원구역)/.test(t);
+}
+function hasNationalLandPlaceEvidence(text=''){
+  return /독도|울릉|해양|지질|자연사|국토|지형|산지|하천|낙동강|금호강|형산강|강변|수변|해안|해수욕장|갯벌|사구|국립공원|도립공원|탐방로|등산로|계곡|폭포|가야산|소백산|주왕산|팔공산|금오산|청량산|문경새재|보현산/.test(cleanText(text).toLowerCase());
+}
+function hasTransportLifeEvidence(text=''){
+  const t=cleanText(text).toLowerCase();
+  return /철도|철도역|기차역|정거장|동대구역|서대구역|대구역|포항역|김천구미역|신경주역|안동역|영주역|점촌역|영천역|기차|버스|항구|교통|옛길/.test(t);
+}
+function hasCommunicationLifeEvidence(text=''){
+  return /봉수|우체국|편지|전신|전화|통신/.test(cleanText(text).toLowerCase());
+}
+function hasCustomsLifeEvidence(text=''){
+  return /풍습|세시풍속|전통놀이|한복|명절(?!연휴|휴관)|민속|민속촌|전통마을|한옥|고택|종택|생활사|옛\s*생활|옛날.{0,8}생활|전통\s*생활|다도|전통예절|짚풀|떡메|유과|전래놀이|민화/.test(cleanText(text).toLowerCase());
+}
+function hasLegacyLifeEvidence(text=''){
+  const t=cleanText(text).toLowerCase();
+  return hasCustomsLifeEvidence(t)
+    || hasTransportLifeEvidence(t)
+    || hasCommunicationLifeEvidence(t);
+}
+function isAstronomyLearningText(text=''){
+  return /밤하늘|천문|천체|별자리|태양계|행성|달의 모양|지구의 운동|자전|공전/.test(cleanText(text).toLowerCase());
+}
+function hasAstronomyPlaceEvidence(text=''){
+  const t=cleanText(text).toLowerCase();
+  return /천문대|천문과학관|천체관측|천체투영|천문\s|우주|행성|별자리|별빛|보현산.{0,12}(천문|별빛)|(천문|별빛).{0,12}보현산/.test(t);
+}
+function specificEvidenceText(p,overview=''){
+  return cleanText(`${p?.title||''} ${p?.addr1||''} ${p?.sourceMeta||''} ${p?.contentTypeName||''} ${p?.sourceName||''} ${p?.heritage?.type||''} ${p?.heritage?.era||''} ${p?.heritage?.classes||''} ${p?.memorial?.gubun||''} ${p?.memorial?.topic||''} ${p?.memorial?.overview||''} ${(p?.publicData?.curriculumTags||[]).join(' ')} ${p?.publicData?.evidence||''} ${p?.publicData?.overview||''} ${overview||''}`).toLowerCase();
+}
+function hasEverydayPlaceEvidence(text=''){
+  return /도서관|박물관|미술관|공원|체육관|공연장|문화관|문화센터|생활문화센터|행정복지센터|주민센터|보건소|병원|경찰|소방|안전체험|어린이회관|청소년/.test(text);
+}
+function hasLocalPastEvidence(text=''){
+  return /과거|현재|사진|기록|연표|타임캡슐|역사관|박물관|문화원|문화관|자료관|기록관|향토|옛이야기|유래|지명|지역 변화|유물|전시|고택|종택|향교|서원|한옥|민속촌|전통시장|근대|옛길|철도역|문화거리|역사거리/.test(text);
+}
+function hasSocialChangeCultureEvidence(text=''){
+  return /저출산|고령화|노인|복지|요양|지능정보|스마트|미래|과학관|과학체험|다문화|세계문화|국제|외국|민속촌(?!길)|이주민|문화\s*존중|세계.{0,8}(문화|민속|나라)|다른\s*문화/.test(text);
+}
+function hasMapLocalEvidence(text=''){
+  return /지도|방위|축척|범례|등고선|디지털\s*영상|안내도|노선도|행정구역|위치|지리\s*정보|면적|인구|기온|강수량|지역\s*특징|전망대|산지|하천|강변|해안|기상과학관|기상대/.test(text)||hasMountainPlaceEvidence(text);
+}
+function hasHeritageStudyEvidence(text=''){
+  return /국가유산|문화유산|서원|향교|사찰|불국사|석굴암|부석사|봉정사|고택|종택|고분|왕릉|성곽|읍성|탑|유적|사적|박물관|기념관|역사관|문화관|전시|유물|자료관|암각화|고인돌|대릉원|천마총|첨성대|월성|황룡사지|대가야|지산동|삼국유사|금석문|무량수전|극락전|개심사지/.test(text);
+}
+function hasLocalProblemPromotionEvidence(text=''){
+  return /지역문제|주민\s*참여|주민\s*자치|환경\s*문제|안전|교통\s*문제|행정|행정복지센터|마을|축제|문화제|관광|홍보|지역\s*알리|대표\s*장소|자연환경|역사|문화관|박물관|전망대/.test(text);
+}
+function hasEnvironmentLifeEvidence(text=''){
+  return /자연환경|인문환경|환경\s*변화|환경\s*개발|산지|하천|강변|해안|생태공원|전망대|도시|경관|인구|교통|산업|생활\s*방식|문화\s*시설|시장/.test(text)||hasMountainPlaceEvidence(text);
+}
+function hasClimatePopulationEvidence(text=''){
+  return /기후|기상|날씨|기온|강수량|자연재해|기후변화|기상과학관|기상청|기상대|댐|하천|해안|안전체험|인구|고령화|수도권|지역\s*불균형|전통시장|대표시장|상설시장|공설시장|중앙시장|서문시장|칠성시장|죽도시장|(^|[\s·,])시장($|[\s·,])|교통\s*시설|의료\s*시설|문화\s*시설|복지|도시\s*(생활|문제|기능|시설|경관|교통)/.test(text);
+}
+function hasRightsLawEvidence(text=''){
+  return /법원|법\s|헌법|인권|권리|보호|경찰|소방|안전|안전체험|복지|장애|다문화|평화|기념관|역사관|문화관|체험관/.test(text);
+}
+function hasModernPeaceIndustrialEvidence(text=''){
+  return /평화|통일|분단|전쟁|호국|전적|이산가족|민주화|산업화|근대|공장|산업|포항제철|포스코|경제성장|역사관|기념관|생활\s*문화/.test(text);
+}
+function hasCivicMediaEvidence(text=''){
+  return /민주화|선거|투표|공약|의회|시청(?!길|로)|군청(?!길|로)|국가기관|국회|행정부|법원|권력분립|경찰|소방|안전체험|행정복지센터|주민\s*참여|주민\s*자치|미디어|뉴스|방송|신문|기록관|미디어센터|문화관.{0,8}(미디어|기록|신문|방송)/.test(text);
+}
+function hasScienceFacilityEvidence(text=''){
+  return /과학관|과학체험|체험관|전시관|자연사|어린이과학|안전체험|기상과학관|천문대|천문과학관|해양과학관/.test(text);
+}
+function hasLifeScienceEvidence(text=''){
+  return /동물|곤충|야생동물|동물원|생태계|먹이|서식지|습지|생태공원|생태원|자연생태|수목원|식물원|생태숲|산림|산림과학|식물|수목|나무|잎|줄기|뿌리|세포|현미경|광합성|증산/.test(text);
+}
+function hasEarthWaterEvidence(text=''){
+  return /바다|해안|갯벌|파도|모래|자갈|바닷가|해양|섬|독도|울릉|지질|주상절리|암석|지층|화산|지진|하천|강|계곡|폭포|침식|운반|퇴적|댐|물\s*순환|상태\s*변화|기상|날씨|구름|강수|습도|안개|바람|기압|얼음|수증기|증발|응결/.test(text);
+}
+function hasPhysicalScienceEvidence(text=''){
+  return /힘|무게|저울|수평|자석|나침반|물체|물질|고체|액체|기체|재료|금속|플라스틱|소리|진동|음향|악기|산성|염기성|지시약|용액|중화|산성화|수질|토양|운동|속력|교통안전|안전장치/.test(text)||hasScienceFacilityEvidence(text);
+}
+function hasGeneralScienceFacilityEvidence(text=''){
+  return /국립대구과학관|과학관|과학체험|어린이과학/.test(text)&&!/천문|우주|별빛|별자리|기상|지질|생태|산림|자연사|해양/.test(text);
+}
+function hasForceEvidence(text=''){
+  return /힘\s*(과|을|이|의|으로)|밀기|당기기|무게|저울|수평|용수철|도르래|지레|도구|놀이기구|안전체험/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasMagnetEvidence(text=''){
+  return /자석|자기장|자기력|자력|나침반|철\s*가루|철\s*(조각|못|가루)|자석의\s*극|끌어당김|밀어냄/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasMatterEvidence(text=''){
+  return /물체|물질|고체|액체|기체|재료|금속|나무|유리|플라스틱|고무|성질|자연사|과학관.{0,12}(물질|재료|실험)/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasSoundEvidence(text=''){
+  return /소리|진동|음향|악기|소음|방음|전달|높은\s*소리|낮은\s*소리|큰\s*소리|작은\s*소리/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasGasEvidence(text=''){
+  return /기체|공기|산소|이산화\s*탄소|질소|연소|숨|대기|공기질|환경과학/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasMotionEvidence(text=''){
+  return /물체의\s*운동|위치\s*변화|이동\s*거리|걸린\s*시간|속력|빠르기|교통안전|안전장치|안전체험/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasAcidBaseEvidence(text=''){
+  return /산과\s*염기|산성\s*용액|염기성|지시약|용액|중화|산성화|수질|토양\s*산성화|해양\s*산성화|환경오염|환경\s*오염/.test(text)||hasGeneralScienceFacilityEvidence(text);
+}
+function hasEarthSeaEvidence(text=''){
+  return /바다|해안|갯벌|파도|모래|자갈|바닷가|해양|섬|독도|울릉|해양과학관/.test(text);
+}
+function hasWaterStateEvidence(text=''){
+  return /물의\s*상태|상태\s*변화|얼음|녹기|얼기|수증기|증발|끓음|응결|구름|강수|물\s*순환|댐|하천|기상과학관|과학관.{0,12}(물|기상|구름|수증기)/.test(text);
+}
+function hasLandChangeEvidence(text=''){
+  return /땅의\s*변화|지질공원|지질|주상절리|암석|지층|화산|지진|하천|낙동강|금호강|형산강|계곡|폭포|침식|운반|퇴적|용암|화산재|과학관.{0,12}(지질|지진|화산|암석)/.test(text);
+}
+function hasWeatherEvidence(text=''){
+  return /기상과학관|기상청|기상대|기상|날씨|습도|이슬점|안개|구름|강수|기압|저기압|고기압|바람|기후|계절별\s*날씨|자연재해|댐|하천/.test(text);
+}
+function hasAnimalLifeEvidence(text=''){
+  return /동물|곤충|야생동물|동물원|서식지|먹이|생태공원|생태원|자연생태|습지/.test(text);
+}
+function hasPlantLifeEvidence(text=''){
+  return /식물|수목원|식물원|생태숲|산림|산림과학|수목|나무|잎|줄기|뿌리|세포|현미경|광합성|증산/.test(text);
+}
+function hasEcologyLifeEvidence(text=''){
+  return /생태계|생물\s*요소|비생물\s*요소|먹이\s*(사슬|그물)|생태계\s*평형|환경\s*오염|생태계\s*보전|멸종\s*위기|생태\s*통로|습지|생태공원|생태원|자연생태|수목원|식물원|산림과학/.test(text);
+}
+function hasUnitSpecificEvidence(p,u,overview=''){
+  if(!u)return true;
+  const unitText=cleanText(`${u?.unit||''} ${u?.name||''} ${u?.focus||''}`).toLowerCase();
+  const text=specificEvidenceText(p,overview);
+  if(isClearlyNonLearningText(text))return false;
+  if(/우리가 사는 곳/.test(unitText))return hasEverydayPlaceEvidence(text);
+  if(/일상에서 만나는 과거/.test(unitText)){
+    if(/독립운동|항일|의병|일제|식민|호국|전쟁|전적|현충|국가수호|6\.25|6·25/.test(text))return false;
+    return hasLocalPastEvidence(text);
+  }
+  if(/사회 변화와 다양한 문화/.test(unitText))return hasSocialChangeCultureEvidence(text);
+  if(isLegacyLifeUnit(u))return hasLegacyLifeEvidence(text);
+  if(/지도로 만나는 우리 지역/.test(unitText))return hasMapLocalEvidence(text);
+  if(/우리 지역의 국가유산/.test(unitText))return hasHeritageStudyEvidence(text)&&!/독립운동|항일|의병|일제|식민|호국|전쟁|전적|현충|국가수호|6\.25|6·25/.test(text);
+  if(/경제활동과 지역 간 교류/.test(unitText))return hasRepresentativeEconomyEvidence(text);
+  if(/민주주의와 자치/.test(unitText)){
+    if(/독립운동|항일|의병|일제|식민|호국|전쟁|전적|현충|국가수호|6\.25|6·25/.test(text)&&!/의회|시청(?!길|로)|군청(?!길|로)|행정복지센터|주민\s*자치|주민\s*참여|지역문제|경찰|소방|안전체험/.test(text))return false;
+    return /학교\s*자치|선거|투표|의회|시청(?!길|로)|군청(?!길|로)|행정복지센터|주민\s*자치|주민\s*참여|지역문제|경찰|소방|안전체험|마을.{0,8}(자치|주민|회의|참여|문제)/.test(text);
+  }
+  if(/지역문제를 해결하고 지역을 알리는 노력/.test(unitText))return hasLocalProblemPromotionEvidence(text);
+  if(/다양한 환경과 삶의 모습/.test(unitText))return hasEnvironmentLifeEvidence(text);
+  if(/우리나라 국토 여행|국토와 자연환경/.test(unitText)){
+    if(/박물관|기념관|역사관|문화관|문화원|자료관/.test(text)&&!/독도|울릉|지질|자연사|해양|국토/.test(text))return false;
+    if(/천문대|천문과학관|과학관|천문|우주/.test(text)&&!/독도|울릉|지질|자연사|해양|국토|해안|국립공원|도립공원|탐방로|등산로/.test(text))return false;
+    return hasNationalLandPlaceEvidence(text)||/독도|울릉/.test(text);
+  }
+  if(/우리나라 지리 탐구/.test(unitText))return hasClimatePopulationEvidence(text);
+  if(/법과 인권/.test(unitText))return hasRightsLawEvidence(text);
+  if(/유적과 유물로 살펴본 옛 사람들의 생활/.test(unitText))return hasHeritageStudyEvidence(text);
+  if(/달라지는 시대, 변화하는 생활 모습/.test(unitText))return /조선|유교|서원|향교|하회|양동|고택|종택|문경새재|구룡포|근대|개항|전통시장|옛길|생활\s*변화/.test(text);
+  if(/식민 통치와 저항, 전쟁이 바꾼 사회와 생활/.test(unitText))return hasModernConflictEvidence(text);
+  if(/평화 통일을 위한 노력, 민주화와 산업화/.test(unitText))return hasModernPeaceIndustrialEvidence(text);
+  if(/민주주의와 시민 참여/.test(unitText))return hasCivicMediaEvidence(text);
+  if(/지구, 대륙 그리고 국가들/.test(unitText))return hasWorldGeographyEvidence(text);
+  if(/동물의 생활/.test(unitText))return hasAnimalLifeEvidence(text);
+  if(/식물의 생활|식물의 구조와 기능/.test(unitText))return hasPlantLifeEvidence(text);
+  if(/생물과 환경/.test(unitText))return hasEcologyLifeEvidence(text);
+  if(/지구와 바다/.test(unitText))return hasEarthSeaEvidence(text);
+  if(/물의 상태 변화/.test(unitText))return hasWaterStateEvidence(text);
+  if(/땅의 변화/.test(unitText))return hasLandChangeEvidence(text);
+  if(/날씨와 우리 생활/.test(unitText))return hasWeatherEvidence(text);
+  if(/밤하늘 관찰|지구의 운동/.test(unitText))return hasAstronomyPlaceEvidence(text);
+  if(/힘과 우리 생활/.test(unitText))return hasForceEvidence(text);
+  if(/자석의 이용/.test(unitText))return hasMagnetEvidence(text);
+  if(/물체와 물질/.test(unitText))return hasMatterEvidence(text);
+  if(/소리의 성질/.test(unitText))return hasSoundEvidence(text);
+  if(/여러 가지 기체/.test(unitText))return hasGasEvidence(text);
+  if(/물체의 운동/.test(unitText))return hasMotionEvidence(text);
+  if(/산과 염기/.test(unitText))return hasAcidBaseEvidence(text);
+  if(/과학/.test(unitText))return hasPhysicalScienceEvidence(text)||hasLifeScienceEvidence(text)||hasEarthWaterEvidence(text)||hasAstronomyPlaceEvidence(text);
+  return true;
+}
+function isNonLearningPlace(p,u=null){
   const type=String(p?.contenttypeid||p?.contentTypeId||'');
   if(BLOCKED_CONTENT_TYPES.includes(type))return true;
-  const text=cleanText(`${p?.title||''} ${p?.addr1||''}`).toLowerCase();
-  const market=/전통시장|시장|오일장|장터/.test(text);
-  if(type==='38'&&!market&&!/공예|공방|문화거리|특산/.test(text))return true;
-  return !market&&/밀면|식당|음식점|맛집|카페|커피|베이커리|빵집|국밥|한우|갈비|막국수|칼국수|횟집|분식|레스토랑|펜션|호텔|모텔|리조트|게스트하우스|민박|풀빌라|카라반|캠핑장|야영장|숙박|상점|기념품점|매점/.test(text);
+  const text=cleanText(`${p?.title||''} ${p?.addr1||''} ${p?.cat||''} ${p?.sub||''} ${p?.sourceMeta||''} ${p?.contentTypeName||''} ${type?contentTypeName(type):''} ${p?.publicData?.evidence||''} ${p?.publicData?.overview||''}`).toLowerCase();
+  if(isClearlyNonLearningText(text))return true;
+  const representativeMarket=hasRepresentativeEconomyEvidence(text);
+  const culturalStreet=/문화거리|역사거리|근대거리/.test(text);
+  if(hasSmallEconomyNoise(text)&&!representativeMarket&&!culturalStreet){
+    if(!(isNationalLandUnit(u)&&hasCoastalLandformEvidence(text)))return true;
+  }
+  if(type==='38'&&!representativeMarket&&!culturalStreet)return true;
+  return !representativeMarket&&!culturalStreet&&/밀면|식당|음식점|맛집|카페|커피|베이커리|빵집|국밥|한우|갈비|막국수|칼국수|횟집|분식|레스토랑|펜션|호텔|모텔|리조트|게스트하우스|민박|풀빌라|카라반|캠핑장|야영장|숙박|상점|기념품점|매점/.test(text);
 }
-function isUsableTourPlace(p){
-  return isAllowedContentType(p?.contenttypeid||p?.contentTypeId)&&!isNonLearningPlace(p);
+function isUsableTourPlace(p,u=null){
+  return isAllowedContentType(p?.contenttypeid||p?.contentTypeId)&&!isNonLearningPlace(p,u);
 }
 
 /* ── 교육과정 ── */
@@ -550,14 +966,14 @@ const CUR={
     {id:'4n5',unit:'4-2 2. 생물과 환경',name:'생물과 환경',ic:'🌿',terms:['생물','환경','생태계','먹이 사슬','생산자','소비자','분해자','비생물 요소','서식지','생태공원','습지'],searchTerms:['생태공원','습지','자연생태','수목원','식물원'],placeTypes:['생태공원','습지','수목원','식물원'],standard:'생물과 환경이 서로 영향을 주고받음을 알아보고, 생태계 구성 요소와 먹이 관계를 설명한다.',activity:'생태계 구성 요소 관찰, 먹이 관계 그림 만들기, 서식지 보전 방법 토의',focus:'생태계, 먹이 관계, 환경 요인',source:SCIENCE_SOURCE_34},
     {id:'4n6',unit:'4-2 3. 여러 가지 기체',name:'여러 가지 기체',ic:'🫧',terms:['기체','공기','산소','이산화 탄소','질소','기체 발생','기체의 성질','연소','숨'],searchTerms:['과학관','체험관','기체','공기','환경'],placeTypes:['과학관','체험관','전시관'],standard:'여러 가지 기체의 성질을 비교하고, 기체가 우리 생활과 자연 현상에서 이용되는 예를 설명한다.',activity:'기체 전시·실험 원리 정리, 공기와 환경 사례 조사, 안전한 실험 태도 확인',focus:'기체의 성질, 공기, 생활 속 이용',source:SCIENCE_SOURCE_34}
    ]},
-  '5':{사회:[{id:'5s1',name:'국토와 자연환경',ic:'🏔️',terms:['국립공원','도립공원','자연경관','생태관광','산','해안','지질공원']},{id:'5s2',name:'우리나라의 역사',ic:'🏯',terms:['서원','왕릉','고분','사적','유적지','탑','고택','종택','향교','사찰','성곽','박물관','역사유적','역사','문화관']},{id:'5s3',name:'우리나라의 경제 발전',ic:'🏭',terms:['과학관','산업관','체험관','전통시장']}],
+  '5':{사회:[{id:'5s1',name:'국토와 자연환경',ic:'🏔️',terms:['국립공원','도립공원','자연경관','생태관광','산','해안','지질공원']},{id:'5s2',name:'우리나라의 역사',ic:'🏯',terms:['서원','왕릉','고분','사적','유적지','탑','고택','종택','향교','사찰','성곽','박물관','역사유적','역사','문화관']},{id:'5s3',name:'우리나라의 경제 발전',ic:'🏭',terms:['과학관','산업관','대표시장','포항제철']}],
    과학:[
     {id:'5n1',unit:'5-2 1. 생물과 환경',name:'생물과 환경',ic:'🌍',terms:['생태계','생물 요소','비생물 요소','먹이 사슬','먹이 그물','생태계 평형','환경 오염','생태계 보전','멸종 위기','생태 통로','습지'],searchTerms:['생태공원','습지','자연생태','환경체험','수목원','생태원'],placeTypes:['생태공원','습지','수목원','식물원'],standard:'생태계 구성 요소와 상호 관계를 알아보고, 환경 오염이 생물에게 미치는 영향과 생태계 보전 방안을 설명한다.',activity:'생태계 구성 요소 조사, 먹이 관계 기록, 환경 오염·보전 사례 토의',focus:'생태계, 환경 오염, 생태계 보전',source:SCIENCE_SOURCE_5},
     {id:'5n2',unit:'5-2 2. 날씨와 우리 생활',name:'날씨와 우리 생활',ic:'🌤️',terms:['날씨','습도','이슬','안개','구름','비','눈','저기압','고기압','바람','계절별 날씨','공기 성질'],searchTerms:['기상','과학관','댐','하천','구름','날씨'],placeTypes:['과학관','기상체험','댐','하천'],standard:'습도, 구름과 강수, 기압과 바람, 계절별 날씨의 특징을 우리 생활과 관련지어 설명한다.',activity:'기상 자료 읽기, 구름·바람 관찰, 날씨와 생활 사례 조사',focus:'습도, 구름과 강수, 기압과 바람',source:SCIENCE_SOURCE_5},
     {id:'5n3',unit:'5-2 3. 물체의 운동',name:'물체의 운동',ic:'🏃',terms:['물체의 운동','위치 변화','빠르기','속력','이동 거리','걸린 시간','교통안전','안전 장치','운동 경기'],searchTerms:['과학관','교통안전','안전체험','운동','체험관'],placeTypes:['과학관','안전체험','체험관'],standard:'물체의 위치 변화와 빠르기를 관찰하고, 이동 거리와 걸린 시간으로 속력을 구해 생활 속 안전과 관련지어 설명한다.',activity:'운동 사례 관찰, 속력 비교, 교통안전 표지·안전 장치 조사',focus:'위치 변화, 속력, 교통안전',source:SCIENCE_SOURCE_5},
     {id:'5n4',unit:'5-2 4. 산과 염기',name:'산과 염기',ic:'🧪',terms:['산','염기','산성 용액','염기성 용액','지시약','용액 분류','중화','흙의 산성화','산성화'],searchTerms:['과학관','환경','흙','수질','체험관'],placeTypes:['과학관','환경체험','체험관'],standard:'지시약을 이용해 산성 용액과 염기성 용액을 분류하고, 산과 염기의 성질과 생활 속 이용 사례를 설명한다.',activity:'용액 성질 전시·실험 원리 정리, 산성화 환경 사례 조사, 생활 속 산·염기 찾기',focus:'산성·염기성, 지시약, 산성화',source:SCIENCE_SOURCE_5}
    ]},
-  '6':{사회:[{id:'6s1',name:'우리나라의 정치 발전',ic:'⚖️',terms:['독립운동','기념관','항일','의병','생가','역사관']},{id:'6s2',name:'우리나라의 경제 발전',ic:'📊',terms:['전통시장','과학관','공방','오일장']},{id:'6s3',name:'세계 여러 나라의 자연과 문화',ic:'🌏',terms:['세계문화','민속관','문화관','민속촌']}],
+  '6':{사회:[{id:'6s1',name:'우리나라의 정치 발전',ic:'⚖️',terms:['독립운동','기념관','항일','의병','생가','역사관']},{id:'6s2',name:'우리나라의 경제 발전',ic:'📊',terms:['대표시장','과학관','산업관','포항제철']},{id:'6s3',name:'세계 여러 나라의 자연과 문화',ic:'🌏',terms:['세계문화','민속관','문화관','민속촌']}],
    과학:[
     {id:'6n1',unit:'6-1 1. 산과 염기',name:'산과 염기',ic:'🧪',terms:['산','염기','산성 용액','염기성 용액','지시약','용액','산성화','환경 오염','해양 산성화','토양 산성화'],searchTerms:['과학관','환경','수질','토양','체험관'],placeTypes:['과학관','환경체험','체험관'],standard:'여러 가지 용액을 산성 용액과 염기성 용액으로 분류하고, 산과 염기의 성질 및 산성화 피해 사례를 설명한다.',activity:'산·염기 실험 전시 원리 정리, 산성화 피해 자료 조사, 생활 속 용액 분류',focus:'산성·염기성, 지시약, 산성화 피해',source:SCIENCE_SOURCE_6},
     {id:'6n2',unit:'6-1 2. 물체의 운동',name:'물체의 운동',ic:'🏃',terms:['물체의 운동','위치 변화','이동 거리','걸린 시간','속력','빠르기','교통안전','안전 수칙','안전장치'],searchTerms:['과학관','교통안전','안전체험','체험관','운동'],placeTypes:['과학관','안전체험','체험관'],standard:'운동하는 물체의 위치 변화를 표현하고, 이동 거리와 걸린 시간을 측정하여 속력을 구해 교통안전과 관련지어 설명한다.',activity:'위치 변화 기록, 속력 계산, 교통안전 수칙·안전장치 조사',focus:'위치 변화, 속력, 안전 수칙',source:SCIENCE_SOURCE_6},
@@ -584,22 +1000,22 @@ const SOCIAL_CURRICULUM={
   ],
   '4':[
     {id:'4s1',unit:'1. 지도로 만나는 우리 지역',lesson:'1~3차시',name:'지도의 읽기와 활용',ic:'🗺️',terms:['지도','방위','축척','범례','등고선','디지털 영상 지도','전망대','안내도','노선도'],searchTerms:['전망대','공원','지질공원','수목원'],placeTypes:['전망대','공원','지질공원'],standard:'지도 요소를 이해하고 지도에서 필요한 정보를 찾아 일상생활에 활용한다.',activity:'지도에서 위치 찾기, 실제 경로와 지도 비교, 방위·축척 읽기',focus:'지도 요소, 위치 찾기, 디지털 지도'},
-    {id:'4s2',unit:'1. 지도로 만나는 우리 지역',lesson:'4~6차시',name:'우리 지역의 위치와 특징',ic:'📌',terms:['행정구역','위치','지리 정보','산','하천','강','해안','기온','강수량','인구','지역 특징'],searchTerms:['산','강','하천','해안','전망대','생태공원'],placeTypes:['산','강','해안','생태공원','전망대'],standard:'지역의 위치와 지리 정보를 조사하고 다른 지역과 비교해 지역 특징을 정리한다.',activity:'위치·면적·인구·지형 자료 조사, 현장 사진과 지도 자료 연결',focus:'지역 위치, 지리 정보, 지역 특징'},
+    {id:'4s2',unit:'1. 지도로 만나는 우리 지역',lesson:'4~6차시',name:'우리 지역의 위치와 특징',ic:'📌',terms:['행정구역','위치','지리 정보','산','하천','강','해안','기온','강수량','인구','지역 특징'],searchTerms:['산','강','하천','해안','전망대','생태공원','기상과학관','기상대'],placeTypes:['산','강','해안','생태공원','전망대','기상과학관'],standard:'지역의 위치와 지리 정보를 조사하고 다른 지역과 비교해 지역 특징을 정리한다.',activity:'위치·면적·인구·지형 자료 조사, 현장 사진과 지도 자료 연결',focus:'지역 위치, 지리 정보, 지역 특징'},
     {id:'4s3',unit:'2. 우리 지역의 국가유산',lesson:'1~4차시',name:'지역의 국가유산',ic:'🏛️',terms:['국가유산','문화유산','서원','향교','사찰','불국사','석굴암','부석사','고택','종택','고분','성곽','탑'],searchTerms:['국가유산','서원','향교','사찰','고택','고분','성곽'],placeTypes:['서원','향교','사찰','고택','종택','고분','성곽'],standard:'지역 국가유산의 의미와 유형을 알고, 국가유산을 통해 옛 생활 모습과 가치를 설명한다.',activity:'국가유산 조사 카드, 보존 가치 토의, 문화관광해설 관찰 질문 만들기',focus:'국가유산, 옛 생활 모습, 보존 가치'},
     {id:'4s4',unit:'2. 우리 지역의 국가유산',lesson:'5~8차시',name:'지역의 박물관, 기념관, 유적지',ic:'🏺',terms:['박물관','기념관','유적지','역사관','문화관','답사','전시','유물','보고서'],searchTerms:['박물관','기념관','유적지','역사관','문화관'],placeTypes:['박물관','기념관','유적지','역사관','문화관'],standard:'지역의 박물관, 기념관, 유적지를 체험하고 지역의 역사를 설명한다.',activity:'답사 계획 세우기, 전시 주제 조사, 답사 보고서 작성',focus:'답사 계획, 전시 관찰, 지역 역사'},
-    {id:'4s5',unit:'3. 경제활동과 지역 간 교류',lesson:'1~3차시',name:'경제활동과 합리적 선택',ic:'🛒',terms:['경제활동','생산','소비','선택','희소성','시장','전통시장','체험장','공방','특산물'],searchTerms:['전통시장','시장','공방','체험장','특산물'],placeTypes:['전통시장','공방','체험장'],standard:'경제활동에서 선택의 문제가 일어나는 까닭을 알고 합리적 선택 방법을 탐색한다.',activity:'가격·품질·필요 비교, 시장 관찰, 합리적 선택 기준 세우기',focus:'생산과 소비, 희소성, 합리적 선택'},
-    {id:'4s6',unit:'3. 경제활동과 지역 간 교류',lesson:'4~6차시',name:'교류하며 발전하는 우리 지역',ic:'🔁',terms:['지역 간 교류','생산물','시장','항구','역','농촌체험','산업','특산물','물류'],searchTerms:['전통시장','항구','역','농촌체험','산업관','특산물'],placeTypes:['전통시장','항구','철도역','농촌체험','산업관'],standard:'지역 간 경제 교류 사례를 조사하고 경제활동의 상호 의존 관계를 설명한다.',activity:'생산물 이동 경로 추적, 시장·항구·역 역할 조사, 교류 지도 만들기',focus:'경제 교류, 생산물, 상호 의존'},
+    {id:'4s5',unit:'3. 경제활동과 지역 간 교류',lesson:'1~3차시',name:'경제활동과 합리적 선택',ic:'🛒',terms:['경제활동','생산','소비','선택','희소성','시장','대표시장','서문시장','칠성시장','죽도시장'],searchTerms:['서문시장','칠성시장','죽도시장','대구약령시','중앙시장','공설시장','상설시장'],placeTypes:['대표시장','전통시장'],standard:'경제활동에서 선택의 문제가 일어나는 까닭을 알고 합리적 선택 방법을 탐색한다.',activity:'가격·품질·필요 비교, 대표 시장 관찰, 합리적 선택 기준 세우기',focus:'생산과 소비, 희소성, 합리적 선택'},
+    {id:'4s6',unit:'3. 경제활동과 지역 간 교류',lesson:'4~6차시',name:'교류하며 발전하는 우리 지역',ic:'🔁',terms:['지역 간 교류','생산물','대표시장','항구','항만','철도역','산업','산업단지','물류','포항제철','동대구역'],searchTerms:['서문시장','죽도시장','항구','항만','산업관','산업단지','포항제철','동대구역','포항역','김천구미역'],placeTypes:['대표시장','항구','항만','철도역','산업관','산업단지'],standard:'지역 간 경제 교류 사례를 조사하고 경제활동의 상호 의존 관계를 설명한다.',activity:'생산물 이동 경로 추적, 대표 시장·항만·철도역 역할 조사, 교류 지도 만들기',focus:'경제 교류, 생산물, 상호 의존'},
     {id:'4s7',unit:'1. 민주주의와 자치',lesson:'7~8차시',name:'학교 자치와 민주주의',ic:'🏫',terms:['학교 자치','민주주의','의견','의사 결정','참여','토의','투표'],searchTerms:['민주','기념관','의회','행정'],placeTypes:['공공기관','기념관'],standard:'학교 자치 사례를 통해 민주주의의 의미를 알고 의사 결정 과정에 참여한다.',activity:'의견 모으기, 의사 결정 과정 비교, 민주적 태도 정리',focus:'학교 자치, 민주주의, 참여'},
     {id:'4s8',unit:'1. 민주주의와 자치',lesson:'9~11차시',name:'주민 자치와 주민 참여',ic:'🏢',terms:['주민 자치','주민 참여','지역문제','행정복지센터','마을','공원','안전','환경','복지'],searchTerms:['행정복지센터','마을','안전체험','생태공원','공원'],placeTypes:['행정','마을','공원','안전체험','생태공원'],standard:'주민 자치와 주민 참여의 의미와 중요성을 알고 지역사회 문제 해결에 관심을 가진다.',activity:'주민 참여 사례 조사, 지역문제 관찰, 해결 제안서 작성',focus:'주민 참여, 지역문제, 해결 방안'},
     {id:'4s9',unit:'2. 지역문제를 해결하고 지역을 알리는 노력',lesson:'12~14차시',name:'지역문제를 해결하려는 노력',ic:'🧩',terms:['지역문제','환경','안전','교통','주민 참여','마을','행정','공원','생태공원'],searchTerms:['마을','안전체험','생태공원','공원','행정'],placeTypes:['마을','공원','생태공원','안전체험'],standard:'생활 주변의 지역문제를 찾고 발생 배경과 해결 방안을 합리적으로 탐색한다.',activity:'문제 현장 관찰, 원인-해결 방안 연결, 실천 제안 만들기',focus:'지역문제, 원인 분석, 해결 노력'},
-    {id:'4s10',unit:'2. 지역문제를 해결하고 지역을 알리는 노력',lesson:'15~17차시',name:'지역을 알리려는 노력',ic:'🎪',terms:['지역 알리기','축제','자연환경','역사','문화','생산물','관광','체험마을','문화관'],searchTerms:['축제','문화관','체험마을','관광','전통시장'],placeTypes:['축제','문화관','체험마을','전통시장'],standard:'지역의 자연환경, 역사, 문화, 생산물을 조사하고 지역을 알리는 활동에 참여한다.',activity:'지역 홍보 카드뉴스, 축제·특산물 조사, 관광 안내 문구 만들기',focus:'지역 홍보, 축제, 지역 자원'},
+    {id:'4s10',unit:'2. 지역문제를 해결하고 지역을 알리는 노력',lesson:'15~17차시',name:'지역을 알리려는 노력',ic:'🎪',terms:['지역 알리기','축제','자연환경','역사','문화','대표 장소','관광','문화관'],searchTerms:['축제','문화관','관광명소','박물관','전망대'],placeTypes:['축제','문화관','박물관','관광명소'],standard:'지역의 자연환경, 역사, 문화, 대표 자원을 조사하고 지역을 알리는 활동에 참여한다.',activity:'지역 홍보 카드뉴스, 대표 장소 조사, 관광 안내 문구 만들기',focus:'지역 홍보, 축제, 지역 자원'},
     {id:'4s11',unit:'3. 다양한 환경과 삶의 모습',lesson:'18~20차시',name:'지역의 다양한 환경과 변화',ic:'🌄',terms:['자연환경','인문환경','환경 변화','환경 개발','산','강','해안','생태공원','전망대'],searchTerms:['전망대','생태공원','산','강','해안'],placeTypes:['전망대','생태공원','산','강','해안'],standard:'여러 지역의 자연환경과 인문환경 특징, 환경 이용과 개발에 따른 변화를 설명한다.',activity:'경관 관찰, 환경 이용 사례 조사, 보전과 개발 토의',focus:'자연환경, 인문환경, 환경 변화'},
     {id:'4s12',unit:'3. 다양한 환경과 삶의 모습',lesson:'21~23차시',name:'도시의 특징과 생활 모습',ic:'🏙️',terms:['도시','경관','인구','교통','산업','생활 방식','문화 시설','시장','전망대'],searchTerms:['도시','전망대','산업관','시장','문화관'],placeTypes:['전망대','산업관','전통시장','문화관'],standard:'우리나라 여러 도시의 특징과 도시 생활의 좋은 점과 문제점을 설명한다.',activity:'도시 경관 관찰, 교통·산업·생활 방식 비교, 도시 문제 토의',focus:'도시 특징, 교통과 산업, 생활 모습'},
   ],
   '5':[
-    {id:'5s1',unit:'1. 우리나라 국토 여행',lesson:'1~4차시',name:'우리나라 지형 여행',ic:'🏔️',terms:['산지','하천','해안','지형','주상절리','지질공원','계곡','폭포','국립공원','도립공원'],searchTerms:['지질공원','주상절리','계곡','폭포','산','해안'],placeTypes:['지질공원','계곡','폭포','산','해안'],standard:'우리나라 산지, 하천, 해안 지형의 위치와 분포 특징을 설명하고 생태환경의 중요성을 느낀다.',activity:'지형 사진 기록, 지도 위치 표시, 지형 형성·이용 특징 정리',focus:'산지, 하천, 해안, 지형 분포'},
+    {id:'5s1',unit:'1. 우리나라 국토 여행',lesson:'1~4차시',name:'우리나라 지형 여행',ic:'🏔️',terms:['산지','하천','해안','해안선','해안 지역','해수욕장','갯벌','지형 이용','주상절리','지질공원','계곡','폭포','국립공원','도립공원','팔공산','주왕산','소백산','가야산'],searchTerms:['국립공원','도립공원','팔공산','주왕산','소백산','가야산','문경새재도립공원','청량산도립공원','금오산도립공원','지질공원','주상절리','계곡','폭포','산','해안','해수욕장','갯벌','영일대해수욕장','고래불해수욕장','망양정해수욕장'],placeTypes:['국립공원','도립공원','지질공원','계곡','폭포','산','해안','해수욕장','갯벌'],standard:'우리나라 산지, 하천, 해안 지형의 위치와 분포 특징을 설명하고 생태환경의 중요성을 느낀다.',activity:'지형 사진 기록, 지도 위치 표시, 지형 형성·이용 특징 정리',focus:'산지, 하천, 해안, 지형 분포와 이용'},
     {id:'5s2',unit:'1. 우리나라 국토 여행',lesson:'5~7차시',name:'우리 땅 독도',ic:'🌊',terms:['독도','울릉도','영토','해양','해안','동식물','기후','역사 기록','독도박물관'],searchTerms:['독도','울릉','독도박물관','해안','전망대'],placeTypes:['독도','울릉','해안','박물관','전망대'],standard:'독도의 지리적 특성과 역사 기록을 탐구하고 영토의 가치와 중요성을 이해한다.',activity:'독도 지리 정보 조사, 역사 기록 근거 찾기, 영토 가치 설명문 작성',focus:'독도, 영토, 지리적 가치'},
-    {id:'5s3',unit:'2. 우리나라 지리 탐구',lesson:'1~4차시',name:'우리나라 기후 탐구',ic:'🌦️',terms:['기후','기온','강수량','자연재해','기후변화','하천','댐','해안','안전체험','생태'],searchTerms:['안전체험','댐','하천','생태공원','해안'],placeTypes:['안전체험','댐','하천','생태공원','해안'],standard:'기후 자료를 탐구하고 기후변화와 자연재해의 심각성을 이해하며 기후 행동을 모색한다.',activity:'기후 자료 읽기, 재해 대응 시설 관찰, 기후 행동 제안',focus:'기후 자료, 자연재해, 기후 행동'},
+    {id:'5s3',unit:'2. 우리나라 지리 탐구',lesson:'1~4차시',name:'우리나라 기후 탐구',ic:'🌦️',terms:['기후','기온','강수량','자연재해','기후변화','기상과학관','기상청','기상대','하천','댐','해안','안전체험','생태'],searchTerms:['기상과학관','국립대구기상과학관','기상청','기상대','안전체험','댐','하천','생태공원','해안'],placeTypes:['기상과학관','안전체험','댐','하천','생태공원','해안'],standard:'기후 자료를 탐구하고 기후변화와 자연재해의 심각성을 이해하며 기후 행동을 모색한다.',activity:'기후 자료 읽기, 재해 대응 시설 관찰, 기후 행동 제안',focus:'기후 자료, 자연재해, 기후 행동'},
     {id:'5s4',unit:'2. 우리나라 지리 탐구',lesson:'5~8차시',name:'우리나라 인구 분포 탐구',ic:'👥',terms:['인구','수도권 집중','고령화','지역 경제','교통 시설','의료 시설','문화 시설','도시','시장'],searchTerms:['도시','전통시장','문화관','박물관','교통'],placeTypes:['전통시장','문화관','박물관','도시','교통'],standard:'지역별 인구 분포 특징과 불균형 문제를 탐구하고 해결 방안을 탐색한다.',activity:'도시·농촌 시설 비교, 인구 문제 원인 찾기, 지역 활성화 아이디어',focus:'인구 분포, 지역 불균형, 생활 시설'},
     {id:'5s5',unit:'3. 법과 인권의 보장',lesson:'1~3차시',name:'우리 생활 속 법과 인권',ic:'⚖️',terms:['법','인권','헌법','안전','보호','경찰','소방','법원','기념관','역사관'],searchTerms:['안전체험','경찰','소방','기념관','역사관'],placeTypes:['안전체험','기념관','역사관','공공기관'],standard:'일상 사례에서 법의 의미와 역할, 헌법의 인권 보장 사례를 찾는다.',activity:'권리 보호 사례 조사, 안전·공공 시설 역할 정리, 인권 약속 만들기',focus:'법의 역할, 인권 보장, 공공성'},
     {id:'5s6',unit:'3. 법과 인권의 보장',lesson:'4~6차시',name:'인권을 존중하는 우리',ic:'🫶',terms:['인권 침해','인권 보호','복지','장애','다문화','평화','기념관','문화관','체험관'],searchTerms:['복지','다문화','평화','기념관','문화관'],placeTypes:['복지','문화관','기념관','체험관'],standard:'인권 침해 사례와 해결 방안을 찾고 인권 보호 활동에 참여한다.',activity:'모두가 이용하기 쉬운 시설 점검, 인권 보호 캠페인, 개선 제안',focus:'인권 존중, 접근성, 보호 활동'},
@@ -608,7 +1024,7 @@ const SOCIAL_CURRICULUM={
     {id:'5s9',unit:'4. 유적과 유물로 살펴본 옛 사람들의 생활',lesson:'7~9차시',name:'다양한 역사 자료로 보는 고려 시대 생활',ic:'🛕',terms:['고려','고려사','역사 자료','불교 문화','사찰','석탑','무량수전','부석사','봉정사','개심사지','생활 모습'],searchTerms:['영주 부석사','부석사 무량수전','안동 봉정사','봉정사 극락전','예천 개심사지','고려사 원문','고려 불교'],placeTypes:['사찰','탑','문화유산','유적지'],standard:'[6사04-03] 다양한 역사 자료를 활용하여 고려 시대 사회 모습과 사람들의 생활을 추론한다.',activity:'고려사 원문·문화유산 해설을 비교해 종교, 건축, 생활 모습의 단서 찾기',focus:'고려 시대, 역사 자료, 불교 문화와 생활',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s10',unit:'5. 달라지는 시대, 변화하는 생활 모습',lesson:'1~4차시',name:'유교 문화와 조선 시대 생활 모습',ic:'📜',terms:['조선','유교 문화','서원','향교','종택','고택','양반','마을 공동체','하회마을','양동마을','도산서원','병산서원','소수서원'],searchTerms:['도산서원','병산서원','소수서원','안동 하회마을','경주 양동마을','향교','종택','고택'],placeTypes:['서원','향교','고택','종택','전통마을'],standard:'[6사05-01] 조선 시대 사람들의 생각과 생활에 유교 문화가 미친 영향을 파악한다.',activity:'공간 배치와 생활 규범 관찰, 서원·마을 자료로 유교 문화가 생활에 준 영향 정리',focus:'조선, 유교 문화, 전통 생활 공간',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s11',unit:'5. 달라지는 시대, 변화하는 생활 모습',lesson:'5~7차시',name:'조선 후기 변화와 개항기 근대 문물',ic:'🏘️',terms:['조선 후기','개항기','근대 문물','사회 변화','상업','시장','옛길','근대문화','생활 변화','문경새재','구룡포 근대문화역사거리'],searchTerms:['문경새재','구룡포 근대문화역사거리','근대문화역사거리','전통시장','옛길','근대문화'],placeTypes:['근대문화','전통시장','옛길','역사관'],standard:'[6사05-02] 조선 후기 사회·문화적 변화와 개항기 근대 문물 수용 과정에서 달라진 사람들의 생활을 이해한다.',activity:'옛 교통로·시장·근대 건축을 통해 이동, 교류, 생활 방식 변화를 비교표로 정리',focus:'조선 후기 변화, 개항기, 근대 문물 수용',source:HISTORY_PUBLIC_SOURCE},
-    {id:'5s12',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'1~4차시',name:'일제 식민 통치와 저항',ic:'🕯️',terms:['일제','식민 통치','독립운동','항일','의병','감시대상인물카드','임청각','박열','왕산 허위','남자현','신돌석','경상북도독립운동기념관','청송 항일의병'],searchTerms:['경상북도독립운동기념관','임청각','청송 항일의병기념공원','박열의사기념관','왕산 허위','남자현지사역사공원','신돌석장군 생가 및 유적지','신돌석','일제감시대상인물카드','독립운동'],placeTypes:['독립운동 유적','기념관','역사관','생가'],standard:'[6사06-01] 일제의 식민 통치와 이에 대한 저항이 사회와 생활에 미친 영향을 이해한다.',activity:'국사편찬위원회 일제감시대상인물카드 키워드와 경북 독립운동 장소를 연결해 인물·사건 타임라인 만들기',focus:'식민 통치, 독립운동, 지역 인물과 저항',source:HISTORY_PUBLIC_SOURCE},
+    {id:'5s12',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'1~4차시',name:'일제 식민 통치와 저항',ic:'🕯️',terms:['일제','식민 통치','독립운동','항일','의병','감시대상인물카드','임청각','박열','왕산 허위','남자현','신돌석','경상북도독립운동기념관','청송 항일의병'],searchTerms:['경상북도독립운동기념관','임청각','청송 항일의병기념공원','박열의사기념관','왕산 허위','남자현지사역사공원','신돌석장군 생가 및 유적지','신돌석','일제감시대상인물카드','독립운동'],placeTypes:['독립운동 유적','기념관','역사관','생가'],standard:'[6사06-01] 일제의 식민 통치와 이에 대한 저항이 사회와 생활에 미친 영향을 이해한다.',activity:'국사편찬위원회 일제감시대상인물카드 키워드와 대구·경북 독립운동 장소를 연결해 인물·사건 타임라인 만들기',focus:'식민 통치, 독립운동, 지역 인물과 저항',source:HISTORY_PUBLIC_SOURCE},
     {id:'5s13',unit:'6. 식민 통치와 저항, 전쟁이 바꾼 사회와 생활',lesson:'5~7차시',name:'광복과 6·25 전쟁 이후 달라진 사회와 생활',ic:'🕊️',terms:['광복','6·25 전쟁','전쟁','호국','전적지','피란','생활 변화','칠곡호국평화기념관','장사상륙작전','다부동전투'],searchTerms:['칠곡호국평화기념관','다부동전적기념관','영덕 장사상륙작전 전승기념관','호국평화','전적기념관','6.25 전쟁'],placeTypes:['전적지','기념관','평화공원','역사관'],standard:'[6사06-02] 8·15 광복과 6·25 전쟁이 사회와 생활에 미친 영향을 파악한다.',activity:'전쟁 기념 공간에서 사건의 위치와 영향을 확인하고 평화 메시지 카드뉴스 만들기',focus:'광복, 전쟁, 사회와 생활 변화, 평화',source:HISTORY_PUBLIC_SOURCE},
   ],
   '6':[
@@ -640,7 +1056,7 @@ function mergeSocialUnits(grade,units){
       terms:uniq(items.flatMap(x=>x.terms||[])),
       searchTerms:uniq(items.flatMap(x=>x.searchTerms||[])),
       placeTypes:uniq(items.flatMap(x=>x.placeTypes||[])),
-      standard:`${g.unit} 단원에서 다루는 ${items.map(x=>x.name).join(', ')} 내용을 경북 지역 자원과 연결해 조사한다.`,
+      standard:`${g.unit} 단원에서 다루는 ${items.map(x=>x.name).join(', ')} 내용을 대구·경북 지역 자원과 연결해 조사한다.`,
       activity:'장소 특성에 따라 단원 안의 관련 주제와 차시를 연결해 답사·조사 활동을 구성합니다.',
       focus:items.map(x=>x.name).join(' · '),
       subtopics:items,
@@ -651,7 +1067,7 @@ function mergeSocialUnits(grade,units){
 Object.entries(SOCIAL_CURRICULUM).forEach(([grade,units])=>{CUR[grade].사회=mergeSocialUnits(grade,units);});
 
 /* ── 상태 ── */
-const A={sc:null,loc:null,gr:'',sj:'',uid:'',all:[],cat:'전체',sub:'전체',sort:'score',searched:false,votes:JSON.parse(localStorage.getItem('gv')||'{}'),map:null,markers:{}};
+const A={sc:null,loc:null,gr:'',sj:'',uid:'',all:[],cat:'전체',sub:'전체',sort:'dist',searched:false,votes:JSON.parse(localStorage.getItem('gv')||'{}'),map:null,markers:{}};
 const sv=()=>localStorage.setItem('gv',JSON.stringify(A.votes));
 const $i=id=>document.getElementById(id);
 function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
@@ -751,8 +1167,11 @@ function kmd(la1,lo1,la2,lo2){const R=6371,r=x=>x*Math.PI/180;const a=Math.sin(r
 function unit(){return A.gr&&A.sj?CUR[A.gr][A.sj]?.find(u=>u.id===A.uid):null;}
 function schoolSigungu(){
   const text=[A.sc?.ORG_RDNMA,A.sc?.ORG_RDNDA,A.sc?.JU_ORG_NM,A.sc?.SCHUL_NM].filter(Boolean).join(' ');
-  const name=Object.keys(SIGUNGU).find(n=>text.includes(n));
-  return name?{name,code:SIGUNGU[name]}:null;
+  const gbName=Object.keys(SIGUNGU).find(n=>text.includes(n));
+  if(gbName)return {name:gbName,code:SIGUNGU[gbName],areaCode:'35',areaName:'경북'};
+  const dgName=Object.keys(DAEGU_SIGUNGU).find(n=>text.includes(n));
+  if(/대구/.test(text)&&dgName)return {name:dgName,code:DAEGU_SIGUNGU[dgName],areaCode:'4',areaName:'대구'};
+  return null;
 }
 
 /* ── 학교 검색 ── */
@@ -799,9 +1218,7 @@ function upB(){const ok=A.sc&&A.gr&&A.sj&&A.uid;$i('goBtn').disabled=!ok;$i('goB
 function setCat(cat){
   A.cat=cat;A.sub='전체';
   document.querySelectorAll('.ctab').forEach(el=>{
-    const t=el.textContent.trim();
-    el.classList.toggle('on',
-      (cat==='전체'&&t==='전체')||(cat!=='전체'&&t.replace(/\s/g,'').includes(cat.replace(/\s/g,''))));
+    el.classList.toggle('on',el.getAttribute('onclick')?.includes(`'${cat}'`));
   });
   rnSub();rnList();
 }
@@ -816,12 +1233,10 @@ function setSort(s){
   rnList();
 }
 function rnSub(){
-  const d=CATS[A.cat];
-  const subs=d?['전체',...d.subs]:['전체'];
-  $i('sbar').innerHTML=subs.map(s=>`<button class="sch${A.sub===s?' on':''}" onclick="setSub('${s}')">${s}</button>`).join('');
+  $i('sbar').innerHTML='';
 }
 function resetResults(){
-  A.all=[];A.cat='전체';A.sub='전체';A.sort='score';A.searched=false;A.markers={};
+  A.all=[];A.cat='전체';A.sub='전체';A.sort='dist';A.searched=false;A.markers={};
   window._pm={};
   if(A.map){A.map.remove();A.map=null;}
   $i('me').classList.remove('hide');
@@ -831,8 +1246,8 @@ function resetResults(){
     <div class="rempty-t">아직 탐색 전이에요</div>
     <div class="rempty-s">학교와 단원을 선택하고<br>탐색하기를 눌러주세요</div>
   </div>`;
-  document.querySelectorAll('.ctab').forEach(el=>el.classList.toggle('on',el.textContent.trim()==='전체'));
-  document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes("'score'")));
+  document.querySelectorAll('.ctab').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick')?.includes("'전체'")));
+  document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes("'dist'")));
   rnSub();cm();setSearchMode(false);updateResetBtn();upB();
 }
 
@@ -843,16 +1258,25 @@ async function doSrc(){
   btn.disabled=true;btn.textContent='체험지 탐색 중...';
   A.searched=true;setSearchMode(true);updateResetBtn();
   $i('me').classList.add('hide');
-  $i('rlist').innerHTML=[1,2,3,4,5].map(()=>`<div class="sk-card"><div class="sk sk-h"></div><div class="sk-b"><div class="sk sk-l" style="width:70%"></div><div class="sk sk-l" style="width:50%"></div><div class="sk sk-l" style="width:40%;height:10px"></div></div></div>`).join('');
+  $i('rcnt').textContent='추천 중';
+  $i('rlist').innerHTML=`
+    <div class="rloading">
+      <div class="rloading-ic">⌛</div>
+      <div>
+        <div class="rloading-t">장소를 추천 중입니다</div>
+        <div class="rloading-s">선택한 단원과 학교 위치를 기준으로 교육과정 연계, 거리, 대표성을 함께 확인하고 있어요.</div>
+      </div>
+    </div>
+    ${[1,2,3,4,5].map(()=>`<div class="sk-card"><div class="sk sk-h"></div><div class="sk-b"><div class="sk sk-l" style="width:70%"></div><div class="sk sk-l" style="width:50%"></div><div class="sk sk-l" style="width:40%;height:10px"></div></div></div>`).join('')}`;
   try{
     const ctr=A.loc||GBK;
     if(typeof L!=='undefined')initMap(ctr);
-    const terms=Array.from(new Set([...(u.searchTerms||[]),...(u.terms||[]).slice(0,8)]));
+    const terms=Array.from(new Set([...(u.searchTerms||[]),...(u.terms||[]).slice(0,8),...placeDiscoverySeeds(u)]));
     const local=schoolSigungu();
     const [localBatches,nearbyBatches,keywordBatches,heritageBatch,memorialBatch]=await Promise.all([
-      local?fetchLocalArea(local.code):Promise.resolve([]),
-      fetchNearby(ctr),
-      Promise.all(terms.map(t=>ft(t))),
+      local?fetchLocalArea(local,u):Promise.resolve([]),
+      fetchNearby(ctr,u),
+      Promise.all(terms.map(t=>ft(t,u))),
       fetchHeritageCandidates(u),
       fetchMemorialCandidates(u),
     ]);
@@ -860,13 +1284,12 @@ async function doSrc(){
     const rawResults=[...localBatches.flat(),...nearbyBatches.flat(),...keywordBatches.flat(),...heritageBatch,...memorialBatch,...additionalBatch];
     if(!rawResults.length)throw new Error('공공데이터 API에서 장소 데이터를 받지 못했습니다. 네트워크 또는 API 응답을 확인해주세요.');
     const places=dedupePlaces(rawResults.map(p=>buildAnyPlace(p,ctr,u,local)).filter(Boolean),u)
-      .filter(p=>p.score>0)
-      .sort((a,b)=>b.score-a.score||a.dist-b.dist);
-    A.all=await hydrateImages(places);
+      .filter(p=>p.score>0);
+    A.all=await hydrateImages(trimRecommendationCandidates(places,u,local));
 
-    A.cat='전체';A.sub='전체';A.sort='score';
-    document.querySelectorAll('.ctab').forEach(el=>el.classList.toggle('on',el.textContent.trim()==='전체'));
-    document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes("'score'")));
+    A.cat='전체';A.sub='전체';A.sort='dist';
+    document.querySelectorAll('.ctab').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick')?.includes("'전체'")));
+    document.querySelectorAll('.sortbtn').forEach(el=>el.classList.toggle('on',el.getAttribute('onclick').includes("'dist'")));
     rnSub();rnList();addMk();
     window._pm=Object.fromEntries(A.all.map(p=>[p.id,p]));
   }catch(e){
@@ -879,17 +1302,20 @@ async function doSrc(){
   }
 }
 
-async function ft(term){
-  const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
-    const url=`${TOUR}/searchKeyword2?serviceKey=${TK}&keyword=${encodeURIComponent(term)}&areaCode=35&contentTypeId=${type}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+async function ft(term,u=null){
+  const tasks=TOUR_AREA_CODES.flatMap(areaCode=>EDU_CONTENT_TYPES.map(async type=>{
+    const url=`${TOUR}/searchKeyword2?serviceKey=${TK}&keyword=${encodeURIComponent(term)}&areaCode=${areaCode}&contentTypeId=${type}&numOfRows=40&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
     try{const d=await apiJson(url);const it=d?.response?.body?.items?.item;if(!it)return[];return Array.isArray(it)?it:[it];}catch{return[];}
   }));
-  return batches.flat().filter(isUsableTourPlace);
+  const batches=await Promise.all(tasks);
+  return batches.flat().filter(p=>isUsableTourPlace(p,u));
 }
 
-async function fetchLocalArea(sigunguCode){
+async function fetchLocalArea(local,u=null){
+  const sigunguCode=typeof local==='string'?local:local?.code;
+  const areaCode=typeof local==='object'&&local?.areaCode?local.areaCode:'35';
   const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
-    const url=`${TOUR}/areaBasedList2?serviceKey=${TK}&areaCode=35&sigunguCode=${sigunguCode}&contentTypeId=${type}&arrange=A&numOfRows=120&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+    const url=`${TOUR}/areaBasedList2?serviceKey=${TK}&areaCode=${areaCode}&sigunguCode=${sigunguCode}&contentTypeId=${type}&arrange=A&numOfRows=120&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
     try{
       const d=await apiJson(url);
       const it=d?.response?.body?.items?.item;
@@ -897,13 +1323,13 @@ async function fetchLocalArea(sigunguCode){
       return Array.isArray(it)?it:[it];
     }catch{return[];}
   }));
-  return batches.map(list=>list.filter(isUsableTourPlace));
+  return batches.map(list=>list.filter(p=>isUsableTourPlace(p,u)));
 }
 
-async function fetchNearby(ctr){
+async function fetchNearby(ctr,u=null){
   const radius=30000;
-  const batches=await Promise.all(EDU_CONTENT_TYPES.map(async type=>{
-    const url=`${TOUR}/locationBasedList2?serviceKey=${TK}&mapX=${ctr[1]}&mapY=${ctr[0]}&radius=${radius}&areaCode=35&contentTypeId=${type}&arrange=E&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
+  const tasks=TOUR_AREA_CODES.flatMap(areaCode=>EDU_CONTENT_TYPES.map(async type=>{
+    const url=`${TOUR}/locationBasedList2?serviceKey=${TK}&mapX=${ctr[1]}&mapY=${ctr[0]}&radius=${radius}&areaCode=${areaCode}&contentTypeId=${type}&arrange=E&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=${APP}&_type=json`;
     try{
       const d=await apiJson(url);
       const it=d?.response?.body?.items?.item;
@@ -911,7 +1337,8 @@ async function fetchNearby(ctr){
       return Array.isArray(it)?it:[it];
     }catch{return[];}
   }));
-  return batches.map(list=>list.filter(isUsableTourPlace));
+  const batches=await Promise.all(tasks);
+  return batches.map(list=>list.filter(p=>isUsableTourPlace(p,u)));
 }
 
 function isHeritageUnit(u){
@@ -930,7 +1357,7 @@ function heritageSearchTerms(u){
   return uniq(raw.map(x=>cleanText(x)).filter(x=>x.length>=2&&!skip.test(x))).slice(0,14);
 }
 function heritageListUrl(params={}){
-  const q=new URLSearchParams({ccbaCtcd:HERITAGE_CTCD,ccbaCncl:'N',pageUnit:'80',pageIndex:'1',...params});
+  const q=new URLSearchParams({ccbaCncl:'N',pageUnit:'80',pageIndex:'1',...params});
   return `${KHS}/SearchKindOpenapiList.do?${q.toString()}`;
 }
 async function fetchHeritageList(params={}){
@@ -942,8 +1369,8 @@ async function fetchHeritageList(params={}){
 async function fetchHeritageCandidates(u){
   if(!isHeritageUnit(u))return[];
   const terms=heritageSearchTerms(u);
-  const codeBatches=HERITAGE_CODES.map(code=>fetchHeritageList({ccbaKdcd:code,pageUnit:'70'}));
-  const termBatches=terms.map(term=>fetchHeritageList({ccbaMnm1:term,pageUnit:'60'}));
+  const codeBatches=HERITAGE_CTCODES.flatMap(area=>HERITAGE_CODES.map(code=>fetchHeritageList({ccbaCtcd:area.code,ccbaKdcd:code,pageUnit:'70'})));
+  const termBatches=HERITAGE_CTCODES.flatMap(area=>terms.map(term=>fetchHeritageList({ccbaCtcd:area.code,ccbaMnm1:term,pageUnit:'60'})));
   const batches=await Promise.all([...codeBatches,...termBatches]);
   return batches.flat();
 }
@@ -965,7 +1392,10 @@ function heritageSub(h){
   return '유적·사적지';
 }
 function fetchAdditionalPublicCandidates(u,ctr,local){
-  const rows=Array.isArray(window.ADDITIONAL_PUBLIC_PLACES)?window.ADDITIONAL_PUBLIC_PLACES:[];
+  const rows=[
+    ...(Array.isArray(window.ADDITIONAL_PUBLIC_PLACES)?window.ADDITIONAL_PUBLIC_PLACES:[]),
+    ...(Array.isArray(window.CURATED_REPRESENTATIVE_PLACES)?window.CURATED_REPRESENTATIVE_PLACES:[]),
+  ];
   return rows.map(r=>buildAdditionalPublicPlace(r,ctr,u,local)).filter(Boolean);
 }
 function hasContextualMemorialEvidence(text=''){
@@ -975,10 +1405,11 @@ function hasContextualMemorialEvidence(text=''){
 }
 function additionalCategory(cat='',sourceType='',text=''){
   if(/남자현|독립운동|항일|의병|일제|식민|호국|전쟁|전적|국가수호|6\.25|6·25|장사상륙|다부동/.test(text)||hasContextualMemorialEvidence(text))return '현충·근현대사';
+  if(hasRepresentativeEconomyEvidence(text))return '대표 경제거점';
   if(cat==='관광명소'){
     if(/독립|의병|항일|전쟁|호국|6\.25|6·25|근대|민주/.test(text))return '현충·근현대사';
     if(/유적|유물|사적|고분|왕릉|서원|향교|사찰|문화유산/.test(text))return '문화유산';
-    if(/생태|자연|지질|동굴|해안|산|하천|호수|숲/.test(text))return '자연·생태';
+    if(/생태|자연|지질|동굴|해안|하천|호수|숲/.test(text)||hasMountainPlaceEvidence(text))return '자연·생태';
   }
   if(sourceType==='museumArt'&&/과학관|천문|자연사|과학/.test(text))return '과학체험';
   return cat||'관광명소';
@@ -997,8 +1428,25 @@ function applyPlaceCuration(p){
   }
   return p;
 }
+function sigunguCodeForRegion(name='',addr=''){
+  if(/대구/.test(addr)||DAEGU_SIGUNGU[name])return DAEGU_SIGUNGU[name]||'';
+  return SIGUNGU[name]||'';
+}
+function defaultAddrForSigungu(sigungu='',addr=''){
+  if(addr)return addr;
+  if(DAEGU_SIGUNGU[sigungu])return cleanText(`대구광역시 ${sigungu}`);
+  if(SIGUNGU[sigungu])return cleanText(`경상북도 ${sigungu}`);
+  return '대구·경북';
+}
+function areaInfoByTourCode(code=''){
+  return SERVICE_AREAS.find(a=>String(a.code)===String(code))||null;
+}
+function areaInfoByHeritageCode(code=''){
+  return HERITAGE_CTCODES.find(a=>String(a.code)===String(code))||HERITAGE_CTCODES[0];
+}
 function buildAdditionalPublicPlace(r,ctr,u,local){
   if(!r?.title)return null;
+  if(isBlockedAdditionalRawPlace(r,u))return null;
   const lat=Number(r.lat),lng=Number(r.lng);
   const hasCoord=Number.isFinite(lat)&&Number.isFinite(lng)&&lat!==0&&lng!==0;
   const sourceType=r.sourceType||'publicData';
@@ -1007,7 +1455,7 @@ function buildAdditionalPublicPlace(r,ctr,u,local){
   const place={
     id:`pub-${r.id}`,
     title:r.title,
-    addr1:r.addr1||r.sigungu||'경상북도',
+    addr1:defaultAddrForSigungu(r.sigungu,r.addr1),
     sourceType,
     sourceId:r.sourceId||'',
     sourceName:r.sourceName||'추가 공공데이터',
@@ -1016,7 +1464,7 @@ function buildAdditionalPublicPlace(r,ctr,u,local){
     detailSource:r.sourceName||'추가 공공데이터 전처리 자료',
     contentTypeId:sourceType,
     contentTypeName:r.sub||cat,
-    sigunguCode:SIGUNGU[r.sigungu]||'',
+    sigunguCode:sigunguCodeForRegion(r.sigungu,r.addr1),
     cat1:'PUBLIC',cat2:r.sourceId||'',cat3:sourceType,
     lat:hasCoord?lat:null,
     lng:hasCoord?lng:null,
@@ -1047,12 +1495,13 @@ function buildAnyPlace(p,ctr,u,local){
   if(p?.sourceId&&ADDITIONAL_PUBLIC_SOURCE_TYPES.has(p?.sourceType))return p;
   if(p?.ccbaMnm1)return buildHeritagePlace(p,ctr,u,local);
   if(p?.facilnm)return buildMemorialPlace(p,ctr,u,local);
-  if(!p?.contentid||!p.mapx||!p.mapy||!isUsableTourPlace(p))return null;
+  if(!p?.contentid||!p.mapx||!p.mapy||!isUsableTourPlace(p,u))return null;
   return buildPlace(p,ctr,u,local);
 }
 function buildPlace(p,ctr,u,local){
   const title=p.title||'';
-  const addr1=p.addr1||'경상북도';
+  const area=areaInfoByTourCode(p.areacode||p.areaCode);
+  const addr1=p.addr1||area?.fullName||'대구·경북';
   const lat=parseFloat(p.mapy),lng=parseFloat(p.mapx);
   const place={
     id:p.contentid,title,addr1,
@@ -1076,7 +1525,8 @@ function buildPlace(p,ctr,u,local){
 function buildHeritagePlace(h,ctr,u,local){
   const title=h.ccbaMnm1||'';
   const city=h.ccsiName||'';
-  const addr1=cleanText(`경상북도 ${city}`);
+  const area=areaInfoByHeritageCode(h.ccbaCtcd);
+  const addr1=cleanText(`${area.fullName} ${city}`);
   const lat=parseFloat(h.latitude),lng=parseFloat(h.longitude);
   const meta=uniq([h.ccmaName,HERITAGE_CODE_NAMES[h.ccbaKdcd],h.ccbaMnm2,city,h.ccbaAdmin]).join(' · ');
   const place={
@@ -1087,7 +1537,7 @@ function buildHeritagePlace(h,ctr,u,local){
     sourceMeta:meta,
     contentTypeId:'heritage',
     contentTypeName:h.ccmaName||HERITAGE_CODE_NAMES[h.ccbaKdcd]||'국가유산',
-    sigunguCode:SIGUNGU[city]||'',
+    sigunguCode:area.code==='22'?(DAEGU_SIGUNGU[city]||''):(SIGUNGU[city]||''),
     cat1:'A02',cat2:'A0201',cat3:'A02010700',
     lat,lng,
     dist:kmd(ctr[0],ctr[1],lat,lng),
@@ -1123,15 +1573,15 @@ async function fetchMemorialCandidates(u){
     return window._mpvaCache.filter(m=>isUsableMemorialRecord(m,u)).slice(0,260);
   }catch{return[];}
 }
-function isGyeongbukAddr(addr=''){
-  return /경상북도|경북/.test(addr);
+function isServiceRegionAddr(addr=''){
+  return /경상북도|경북|대구광역시|대구/.test(addr);
 }
 function isUsableMemorialRecord(m,u){
   const title=m?.facilnm||'';
   const addr=m?.addr||'';
   const lat=parseFloat(m?.xindex),lng=parseFloat(m?.yindex);
-  if(!title||!isGyeongbukAddr(addr)||!Number.isFinite(lat)||!Number.isFinite(lng)||lat===0||lng===0)return false;
-  if(isNonLearningPlace({title,addr1:addr}))return false;
+  if(!title||!isServiceRegionAddr(addr)||!Number.isFinite(lat)||!Number.isFinite(lng)||lat===0||lng===0)return false;
+  if(isNonLearningPlace({title,addr1:addr},u))return false;
   const text=cleanText(`${title} ${addr} ${m?.gubun||''} ${m?.topic||''} ${m?.indicate||''} ${m?.facilgubun||''} ${m?.facilexplain||''}`).toLowerCase();
   if(/식민 통치와 저항, 전쟁이 바꾼 사회와 생활/.test(u?.unit||'')){
     return /독립운동|국가수호|3·1|3\.1|의병|항일|일제|식민|광복|6\.25|6·25|전쟁|호국|전투|전적|장사상륙|다부동|충혼|추모|위령|기념/.test(text);
@@ -1147,7 +1597,7 @@ function memorialSub(m){
 }
 function buildMemorialPlace(m,ctr,u,local){
   const title=m.facilnm||'';
-  const addr1=m.addr||'경상북도';
+  const addr1=m.addr||'대구·경북';
   const lat=parseFloat(m.xindex),lng=parseFloat(m.yindex);
   const sourceMeta=uniq([m.gubun,m.topic,m.indicate,m.facilgubun,m.mgmtno].filter(Boolean)).join(' · ');
   const place={
@@ -1225,6 +1675,8 @@ function curriculumEvidenceText(p,overview=''){
 function keywordMatch(text='',keyword=''){
   const k=String(keyword||'').toLowerCase();
   if(!k)return false;
+  if(k==='산')return hasMountainPlaceEvidence(text);
+  if(k==='역')return hasTransportLifeEvidence(text);
   if(k==='왕산')return /왕산\s*허위|왕산허위/.test(text);
   if(k==='평화')return /호국평화|평화기념|평화공원|평화통일|분단.*평화|전쟁.*평화/.test(text);
   return text.includes(k);
@@ -1265,10 +1717,10 @@ function socialUnitProfile(u){
     label:'지형·독도',
     min:34,
     codeGroup:'nature',
-    strong:['독도','울릉','지질공원','주상절리','해안','해양','계곡','폭포','국립공원','도립공원'],
-    keywords:['산지','하천','강','영토','섬','전망대','자연생태','생태','동식물'],
+    strong:['독도','울릉','지질공원','주상절리','해안','해안선','해수욕장','갯벌','사구','해양','계곡','폭포','국립공원','도립공원','팔공산','주왕산','소백산','가야산','문경새재','청량산','금오산'],
+    keywords:['산지','하천','강','영토','섬','전망대','자연생태','생태','동식물','해안 지역','지형 이용','바닷가','모래','파도','탐방로'],
     deny:/문화원|문화관|전통시장|시장|공방|체험관|향교|서원|고택|종택|성곽|읍성|생가|기념관|역사관|사찰|왕릉|고분/,
-    topicByText:[{re:/독도|울릉/,topic:/독도/},{re:/./,topic:/지형/}],
+    topicByText:[{re:/독도|울릉/,topic:/독도/},{re:/해안|해수욕장|갯벌|사구|바닷가|해양/,topic:/지형/},{re:/국립공원|도립공원|팔공산|주왕산|소백산|가야산|문경새재|청량산|금오산|산지/,topic:/지형/},{re:/./,topic:/지형/}],
   };
   if(/우리나라 지리 탐구|지도로 만나는 우리 지역|다양한 환경과 삶의 모습/.test(unit))return {
     label:'지리·환경',
@@ -1312,22 +1764,43 @@ function socialUnitProfile(u){
     deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|서원|향교|사찰|고분/,
     topicByText:[{re:/신돌석|남자현|독립|항일|의병|임청각|박열|왕산\s*허위|왕산허위|허위|일제|식민|감시대상/,topic:/식민|저항/},{re:/광복|6\.25|6·25|전쟁|호국|장사상륙|다부동|칠곡|전적|평화/,topic:/광복|전쟁/}],
   };
-  if(/국가유산|일상에서 만나는 과거|옛날과 오늘날의 생활 모습|평화 통일|민주화와 산업화/.test(unit))return {
+  if(/일상에서 만나는 과거/.test(unit))return {
+    label:'지역 과거 자료',
+    min:30,
+    codeGroup:'heritage',
+    strong:['박물관','역사관','문화원','문화관','자료관','기록관','향토문화','옛길','근대문화','전통시장','철도역','봉수','우체국','고택','종택','향교','서원','한옥','민속촌'],
+    keywords:['과거','현재','사진','기록','연표','지역 변화','옛이야기','생활 모습','오래된 물건','유물','전시','자료'],
+    deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|생태공원|탐방로|등산로/,
+    topicByText:[{re:/사진|기록|연표|문화원|자료관|기록관|역사관|박물관|근대|옛길/,topic:/시간의 흐름/},{re:/고택|종택|향교|서원|한옥|민속촌|유물|전통/,topic:/오래된 것/},{re:/지명|옛이야기|지역 변화|전통시장|철도역|문화거리|근대거리/,topic:/지역의 변화/},{re:/./,topic:/과거|생활 모습|지역/}],
+  };
+  if(/옛날과 오늘날의 생활 모습/.test(unit))return {
+    label:'생활사·교통·통신',
+    min:30,
+    strong:['풍습','세시풍속','전통놀이','한복','명절','민속촌','민속','전통마을','한옥','고택','종택','생활사','옛 생활','전통 생활','전통예절','다도','짚풀','떡메','유과','전래놀이','철도','철도역','기차역','정거장','역전','기차','버스','항구','옛길','교통','봉수','우체국','편지','전신','전화','통신'],
+    keywords:['생활 모습','생활 변화','이동','정보 전달'],
+    deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장|저수지|댐|와인터널|와인|카페|음식점|숙박|쇼핑|상점/,
+    topicByText:[
+      {re:/철도|철도역|기차역|정거장|역전|동대구역|서대구역|대구역|포항역|김천구미역|신경주역|안동역|영주역|점촌역|영천역|기차|버스|항구|교통|옛길/,topic:/교통/},
+      {re:/봉수|우체국|편지|전신|전화|통신/,topic:/통신/},
+      {re:/풍습|세시풍속|전통놀이|한복|명절|민속|전통마을|한옥|고택|종택|생활사|옛 생활|전통예절|다도|짚풀|떡메|유과|전래놀이/,topic:/풍습|생활 모습/},
+    ],
+  };
+  if(/국가유산|옛날과 오늘날의 생활 모습|평화 통일|민주화와 산업화/.test(unit))return {
     label:'역사·국가유산',
     min:30,
     codeGroup:'heritage',
     strong:['서원','향교','사찰','불국사','석굴암','부석사','고택','종택','고분','왕릉','성곽','읍성','탑','유적','사적','기념관','역사관','박물관','독립','의병','호국','전쟁','평화','근대','산업화','포항제철'],
     keywords:['전통','한옥','민속','유물','전시','문화유산','국가유산','생활 모습','분단','통일','민주화'],
     deny:/지질공원|수목원|식물원|계곡|폭포|해수욕장/,
-    topicByText:[{re:/평화|통일|분단|전쟁|호국/,topic:/평화|통일/},{re:/산업|포항제철|근대|민주화/,topic:/산업화|민주화/},{re:/교통|철도|역|항구/,topic:/교통/},{re:/통신|봉수|우체국/,topic:/통신/},{re:/./,topic:/국가유산|과거|생활 모습|박물관|기념관|유적/}],
+    topicByText:[{re:/평화|통일|분단|전쟁|호국/,topic:/평화|통일/},{re:/산업|포항제철|근대|민주화/,topic:/산업화|민주화/},{re:/교통|철도|철도역|기차|항구|동대구역|서대구역|대구역|포항역|김천구미역|신경주역|안동역|영주역|점촌역|영천역/,topic:/교통/},{re:/통신|봉수|우체국/,topic:/통신/},{re:/./,topic:/국가유산|과거|생활 모습|박물관|기념관|유적/}],
   };
   if(/경제활동과 지역 간 교류/.test(unit))return {
     label:'경제활동·교류',
     min:30,
-    strong:['전통시장','시장','오일장','장터','공방','체험장','특산물','항구','철도역','역','산업관','농촌체험','물류'],
-    keywords:['생산','소비','교류','산업','공장','농촌','가격','상품'],
-    deny:/서원|향교|사찰|고택|종택|왕릉|고분|성곽|지질공원|수목원/,
-    topicByText:[{re:/시장|공방|체험장|상품|가격|소비|생산/,topic:/경제활동|선택/},{re:/항구|역|교류|물류|특산|농촌|산업/,topic:/교류/}],
+    strong:REPRESENTATIVE_ECONOMY_TERMS,
+    keywords:['생산','소비','교류','산업','공장','가격','상품','항만','철도','공항'],
+    deny:/서원|향교|사찰|고택|종택|왕릉|고분|성곽|지질공원|수목원|오일장|장터|공방|체험장|농촌체험|어촌체험|특산물|농산물|수산물/,
+    topicByText:[{re:/서문시장|칠성시장|죽도시장|약령시|중앙시장|공설시장|상설시장|종합시장|가격|소비|상품/,topic:/경제활동|선택/},{re:/항구|항만|철도역|동대구역|포항역|물류|산업|포항제철|포스코|공항/,topic:/교류/}],
   };
   if(/민주주의와 자치|민주주의와 시민 참여|법과 인권/.test(unit))return {
     label:'시민·권리',
@@ -1379,6 +1852,15 @@ function curriculumRelevance(p,u,overview=''){
   if(profile&&isWorldGeographyUnit(u)&&!hasWorldGeographyEvidence(text)){
     return {profile,score:0,min:profile.min,evidence:[],topic:null,direct:false,eras,blocked:false,missingEra:false};
   }
+  if(profile&&!hasUnitSpecificEvidence(p,u,overview)){
+    return {profile,score:0,min:profile.min,evidence:[],topic:null,direct:false,eras,blocked:false,missingEra:false};
+  }
+  if(profile&&isEconomyExchangeUnit(u)&&!hasRepresentativeEconomyEvidence(text)){
+    return {profile,score:0,min:profile.min,evidence:[],topic:null,direct:false,eras,blocked:false,missingEra:false};
+  }
+  if(profile&&isLegacyLifeUnit(u)&&!hasLegacyLifeEvidence(text)){
+    return {profile,score:0,min:profile.min,evidence:[],topic:null,direct:false,eras,blocked:false,missingEra:false};
+  }
   if(!profile){
     const hits=keywordHits(text,u?.terms||[]);
     return {profile:null,score:hits.length*18+bestScore,min:18,evidence:hits,topic:bestTopic,direct:hits.length>0||bestScore>0};
@@ -1406,7 +1888,8 @@ function scorePlace(p,u,local){
   }
   if(p?.sourceType==='heritage'||p?.sourceType==='memorial'){
     if(isNonLearningPlace(p))return 0;
-  }else if(!isUsableTourPlace(p))return 0;
+  }else if(!isUsableTourPlace(p,u))return 0;
+  if(!hasUnitSpecificEvidence(p,u,p?.publicData?.overview||p?.memorial?.overview||''))return 0;
   if(u?.subtopics?.length){
     const rel=curriculumRelevance(p,u);
     if(rel.score<rel.min)return 0;
@@ -1418,6 +1901,7 @@ function scorePlace(p,u,local){
   const title=(p.title||'').toLowerCase();
   const text=(p.title+' '+p.addr1+' '+p.cat+' '+p.sub+' '+(p.sourceMeta||'')+' '+(p.contentTypeName||'')+' '+(p.memorial?.overview||'')).toLowerCase();
   const unitText=((u.name||'')+' '+(u.focus||'')+' '+(u.terms||[]).join(' ')+' '+(u.placeTypes||[]).join(' ')).toLowerCase();
+  if(isEconomyExchangeUnit(u)&&!hasRepresentativeEconomyEvidence(text))return 0;
   const termHits=(u.terms||[]).filter(k=>keywordMatch(text,k)).length;
   const placeHits=(u.placeTypes||[]).filter(k=>keywordMatch(text,k)).length;
   let score=termHits*22+placeHits*16;
@@ -1431,14 +1915,14 @@ function scorePlace(p,u,local){
   }
   if(/지형|기후|자연|생태|환경|지도|위치|하천|해안|산지|대륙|대양/.test(unitText)){
     if(natureCodes.includes(p.cat3)||p.cat1==='A01')score+=18;
-    if(/공원|생태|수목원|식물원|계곡|폭포|습지|지질|산|해안|호수|숲|강|하천|전망대|주상절리|울릉|독도/.test(text))score+=22;
+    if(/공원|생태|수목원|식물원|계곡|폭포|습지|지질|해안|해안선|해수욕장|갯벌|사구|호수|숲|강|하천|전망대|주상절리|울릉|독도/.test(text)||hasMountainPlaceEvidence(text))score+=22;
   }
   if(/과학|날씨|지구|천문|밤하늘|달|별|자석|소리|기체|산과 염기|산성|염기성|물체와 물질|물체의 운동|힘|무게|속력/.test(unitText)){
     if(scienceCodes.includes(p.cat3))score+=16;
     if(/과학|천문|기상|자연사|체험관|박물관|안전|교통|환경/.test(title))score+=22;
   }
-  if(/경제|교류|생산|소비|산업화|시장|특산물/.test(unitText)&&/시장|산업|공장|공방|체험관|항구|역|특산|농촌|오일장|포항제철/.test(text))score+=28;
-  if(/교통|통신/.test(unitText)&&/철도|역|항구|봉수|우체국|전신|교통|기차/.test(text))score+=30;
+  if(/경제|교류|생산|소비|산업화|시장/.test(unitText)&&hasRepresentativeEconomyEvidence(text))score+=28;
+  if(/교통|통신/.test(unitText)&&(hasTransportLifeEvidence(text)||hasCommunicationLifeEvidence(text)))score+=30;
   if(/민주주의|선거|국가기관|주민|지역문제|인권|법/.test(unitText)&&/행정|시청|군청|의회|경찰|소방|안전|기념관|역사관|복지|평화|민주/.test(text))score+=24;
   if(/문화|세계|다문화|민속|축제|지역 알리기/.test(unitText)&&/문화|민속|축제|체험마을|세계|국제|박물관|시장/.test(text))score+=22;
   if(score===0&&termHits>0)score+=12;
@@ -1465,8 +1949,13 @@ function hasModernConflictEvidence(text=''){
   return /평화/.test(t)&&/호국|전쟁|전적|기념|통일|분단|추모|위령|국가수호|6\.25|6·25|광복/.test(t);
 }
 function scoreAdditionalPublicPlace(p,u,local){
-  if(isNonLearningPlace(p))return 0;
+  if(isNonLearningPlace(p,u))return 0;
+  if(!hasUnitSpecificEvidence(p,u,p?.publicData?.overview||''))return 0;
   const text=curriculumEvidenceText(p,p?.publicData?.overview||'');
+  if(u?.subtopics?.length){
+    const rel=curriculumRelevance(p,u,p?.publicData?.overview||'');
+    if(rel.score<rel.min)return 0;
+  }
   const unitText=cleanText(`${u?.unit||''} ${u?.name||''} ${u?.focus||''} ${(u?.terms||[]).join(' ')} ${(u?.placeTypes||[]).join(' ')}`).toLowerCase();
   const termHits=(u?.terms||[]).filter(k=>keywordMatch(text,k)).length;
   const placeHits=(u?.placeTypes||[]).filter(k=>keywordMatch(text,k)).length;
@@ -1475,6 +1964,13 @@ function scoreAdditionalPublicPlace(p,u,local){
   const sourceType=p?.sourceType||'';
   const modernConflictUnit=isModernConflictUnit(u);
   const worldGeographyUnit=isWorldGeographyUnit(u);
+  const economyExchangeUnit=isEconomyExchangeUnit(u);
+  if(isAstronomyLearningText(unitText)&&!hasAstronomyPlaceEvidence(text))return 0;
+  if(isNationalLandUnit(u)&&!hasNationalLandPlaceEvidence(text))return 0;
+  if(isLegacyLifeUnit(u)&&!hasLegacyLifeEvidence(text))return 0;
+  if(economyExchangeUnit&&!hasRepresentativeEconomyEvidence(text))return 0;
+  if(economyExchangeUnit&&/^(ruralVillage|festival)$/.test(sourceType))return 0;
+  if(sourceType==='festival'&&!isRepresentativeCultureFestival(text)&&!/문화|풍습|지역 알리기|사회 변화|계절|축제/.test(unitText))return 0;
   if(worldGeographyUnit&&sourceType==='ruralVillage')return 0;
   if(worldGeographyUnit&&!hasWorldGeographyEvidence(text))return 0;
   if(worldGeographyUnit&&/^(cityPark|nationalParkTrail|forestTrail|ecoTour)$/.test(sourceType))return 0;
@@ -1484,19 +1980,20 @@ function scoreAdditionalPublicPlace(p,u,local){
   if(modernConflictUnit&&!hasModernConflictEvidence(text))return 0;
 
   let boost=termHits*14+placeHits*12;
-  if(/역사|유적|유물|국가유산|문화유산|고대|고려|조선|생활 모습/.test(unitText)&&/역사|문화|유적|유물|박물관|전시|사적|고분|서원|향교|사찰|신라|가야|고려|조선|근대/.test(text))boost+=52;
-  if(/국토|지형|산지|지도|위치|자연|생태|환경|하천|해안|기후/.test(unitText)&&/산지|탐방로|등산로|국립공원|생태|자연|지질|동굴|공원|수변|해안|하천|숲|환경/.test(text))boost+=52;
-  if(/경제|생산|소비|촌락|도시|교류|지역문화|생활 모습/.test(unitText)&&/농촌|어촌|체험|생산|소비|수확|갯벌|어업|마을|특산|시장/.test(text))boost+=52;
-  if(/문화|풍습|지역 알리기|사회 변화|계절|축제/.test(unitText)&&/축제|문화제|전통|예술|공연|계절|특산|지역/.test(text))boost+=44;
+  if(!isLegacyLifeUnit(u)&&/역사|유적|유물|국가유산|문화유산|고대|고려|조선|생활 모습/.test(unitText)&&/역사|문화|유적|유물|박물관|전시|사적|고분|서원|향교|사찰|신라|가야|고려|조선|근대/.test(text))boost+=52;
+  if(/국토|지형|산지|지도|위치|자연|생태|환경|하천|해안|기후/.test(unitText)&&/산지|탐방로|등산로|국립공원|도립공원|생태|자연|지질|동굴|공원|수변|해안|해안선|해수욕장|갯벌|사구|하천|숲|환경/.test(text))boost+=52;
+  if(/경제|생산|소비|촌락|도시|교류|지역문화|생활 모습/.test(unitText)&&hasRepresentativeEconomyEvidence(text))boost+=52;
+  if(!isLegacyLifeUnit(u)&&/문화|풍습|지역 알리기|사회 변화|계절|축제/.test(unitText)&&/축제|문화제|전통|예술|공연|계절|특산|지역/.test(text))boost+=44;
   if(/과학|생태계|환경|날씨|지구|천문|자연사|밤하늘|달|별|자석|소리|기체|산과 염기|산성|염기성|물체와 물질|물체의 운동|힘|무게|속력/.test(unitText)&&/과학|자연사|천문|별|우주|생태|환경|지질|기상|안전|교통|전시|체험/.test(text))boost+=44;
   if(modernConflictUnit&&hasModernConflictEvidence(text))boost+=44;
   if(cat==='박물관·전시'&&/역사|문화|과학|자료|전시|유물|생활/.test(unitText))boost+=24;
   if(cat==='공원·생활환경'&&/위치|지역|공공|주민|지도|환경|생활권|자연|시민/.test(unitText))boost+=20;
   if(cat==='관광명소'&&/국토|지역|지도|문화|역사|자연|환경|생활 모습|지역 알리기/.test(unitText))boost+=18;
-  if(sourceType==='ruralVillage'&&/경제|생산|소비|촌락|지역|문화|교류|생활/.test(unitText))boost+=26;
+  if(sourceType==='ruralVillage'&&/지역|문화|생활/.test(unitText)&&!economyExchangeUnit)boost+=16;
   if(sourceType==='festival'&&/문화|지역|풍습|사회 변화|계절/.test(unitText))boost+=22;
   if((sourceType==='nationalParkTrail'||sourceType==='forestTrail')&&/국토|지형|산지|지도|자연|환경|안전/.test(unitText))boost+=26;
   if(worldGeographyUnit&&hasWorldGeographyEvidence(text))boost+=56;
+  if(isLegacyLifeUnit(u)&&hasLegacyLifeEvidence(text))boost+=44;
 
   if(boost<28&&termHits===0&&placeHits===0)return 0;
   if(/^검수필요/.test(status)&&boost<48)return 0;
@@ -1556,34 +2053,151 @@ function sourceShortLabel(p){
   if(ADDITIONAL_PUBLIC_SOURCE_TYPES.has(p.sourceType))return '추가 공공데이터';
   return '';
 }
+function cardThumbHtml(p,meta){
+  if(p?.img)return `<div class="pc-thumb"><img src="${esc(p.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="pc-thumb-fallback" style="display:none"><span class="pc-thumb-ic">${meta.ic}</span><span>${esc(meta.label)}</span></div></div>`;
+  return `<div class="pc-thumb"><div class="pc-thumb-fallback"><span class="pc-thumb-ic">${meta.ic}</span><span>${esc(meta.label)}</span></div></div>`;
+}
+function cardSubtitleFor(p,u){
+  const ui=uiCategoryForPlace(p);
+  if(ui==='역사·유산')return '지역 역사와 국가유산 탐구';
+  if(ui==='근현대·기념')return '인물·사건·기념 공간 탐구';
+  if(ui==='자연·생태'){
+    if(/수변|하천|강|호수|못|연못|해안|해수욕장|갯벌/.test(`${p.title} ${p.sub}`))return '수변·지형·생태 관찰';
+    if(hasMountainPlaceEvidence(`${p.title} ${p.sub}`))return '산지·탐방로 관찰';
+    return '지역 자연환경 관찰';
+  }
+  if(ui==='과학·탐구')return '과학 개념과 현장 자료 연결';
+  if(ui==='경제·생활')return '지역 경제와 교류 흐름 탐구';
+  if(ui==='문화·축제')return '지역 문화와 알리기 활동';
+  return u?unitLabel(u):'교육과정 연결 장소';
+}
+function cardKeywordsFor(p,u){
+  const ui=uiCategoryForPlace(p);
+  const text=cleanText(`${p.title} ${p.sub||''} ${p.cat||''} ${p.publicData?.evidence||''} ${(p.publicData?.curriculumTags||[]).join(' ')}`);
+  const words=[];
+  const add=x=>{if(x&&!words.includes(x))words.push(x);};
+  add(ui);
+  if(/국립공원|도립공원|탐방로|등산로/.test(text))add('탐방로');
+  if(/해안|해수욕장|갯벌|사구|바다/.test(text))add('해안 지형');
+  if(/수변|하천|강|호수|못|연못/.test(text))add('수변 생태');
+  if(/천문|별빛|우주|과학관|기상|지질/.test(text))add('과학 탐구');
+  if(/서원|향교|사찰|고택|종택|고분|왕릉|국가유산|문화유산/.test(text))add('문화유산');
+  if(/독립|의병|항일|전쟁|호국|평화|기념/.test(text))add('기념 공간');
+  if(/시장|산업|항만|철도|공항|물류/.test(text))add('경제 교류');
+  if(/축제|문화제|공연|예술|문화거리/.test(text))add('지역 문화');
+  if(!words.includes(p.sub)&&p.sub)add(p.sub);
+  if(u&&isGeographyMapUnit(u)&&/지도|위치|지형|지역/.test(unitDiscoveryText(u)))add('지도·위치');
+  return words.slice(0,3);
+}
+function compactAddr(p){
+  const addr=cleanText(p?.addr1||'위치 검수 필요');
+  return addr.replace(/^경상북도\s*/,'').replace(/^대구광역시\s*/,'');
+}
+const REPRESENTATIVE_PLACE_RE=/불국사|석굴암|부석사|봉정사|직지사|동화사|파계사|부인사|은해사|거조암|고운사|운문사|기림사|분황사|보경사|불영사|청량사|축서사|용문사|대전사|불굴사|환성사|도산서원|병산서원|소수서원|하회마을|양동마을|대릉원|천마총|첨성대|월성|황룡사지|지산동 고분군|독도|울릉|팔공산|주왕산|소백산|가야산|문경새재|청량산|금오산|서문시장|칠성시장|죽도시장|포항제철|포스코|동대구역|포항역|경상북도독립운동기념관|임청각|박열의사기념관|칠곡호국평화기념관|다부동전적기념관|영천보현산천문과학관|예천천문우주센터|영양반딧불이천문대/;
+function representativeScore(p){
+  const title=cleanText(p?.title||'');
+  const status=p?.publicData?.status||'';
+  const text=cleanText(`${title} ${p?.addr1||''} ${p?.cat||''} ${p?.sub||''} ${p?.sourceMeta||''} ${p?.contentTypeName||''} ${p?.sourceName||''} ${status} ${p?.publicData?.educationLevel||''} ${p?.publicData?.evidence||''} ${p?.publicData?.overview||''} ${p?.heritage?.type||''} ${p?.heritage?.era||''} ${p?.heritage?.classes||''}`).toLowerCase();
+  let score=0;
+  if(REPRESENTATIVE_PLACE_RE.test(title))score+=85;
+  if(/세계유산|유네스코|국보/.test(text))score+=90;
+  else if(/보물/.test(text))score+=70;
+  else if(/사적|명승|천연기념물|국가민속문화유산|국가등록유산/.test(text))score+=55;
+  else if(/시도유형문화유산|시도기념물|문화유산자료/.test(text))score+=30;
+  if(p?.sourceType==='heritage')score+=35;
+  if(p?.sourceType==='memorial')score+=35;
+  if(p?.sourceType==='curatedRepresentative')score+=45;
+  if(/대표장소|대표 관광|대표문화|대표 자원|대표/.test(`${status} ${text}`))score+=35;
+  if(p?.publicData?.educationLevel==='직접연계')score+=25;
+  const base=Number(p?.publicData?.scoreBase);
+  if(Number.isFinite(base))score+=Math.max(0,base-45);
+  if(hasRepresentativeEconomyEvidence(text))score+=45;
+  if(isRepresentativeParkData(p))score+=22;
+  if(SMALL_LOCAL_PARK_RE.test(text))score-=80;
+  if(/검수필요/.test(status))score-=35;
+  if(/보조자료|전년도|종료/.test(status))score-=18;
+  if(/암자|포교당|기도도량/.test(text)&&!/국보|보물|사적|명승|문화유산|유네스코|세계유산/.test(text))score-=45;
+  return score;
+}
+function distanceSortBonus(p){
+  const d=Number(p?.dist);
+  if(!Number.isFinite(d))return 0;
+  if(d<=3)return 10;
+  if(d<=8)return 8;
+  if(d<=15)return 5;
+  if(d<=30)return 2;
+  return 0;
+}
+function recommendationSortValue(p){
+  return (Number(p?.score)||0)+(representativeScore(p)*1.4)+distanceSortBonus(p);
+}
+function isLocalPastMuseumUnit(u){
+  return /일상에서 만나는 과거/.test(`${u?.unit||''} ${u?.name||''}`);
+}
+function sameLocalArea(p,local){
+  if(!p||!local)return false;
+  const addr=cleanText(`${p.addr1||''} ${p.sourceMeta||''}`);
+  return (local.code&&p.sigunguCode&&String(local.code)===String(p.sigunguCode))
+    || (local.name&&addr.includes(local.name));
+}
+function isPastMuseumEvidencePlace(p){
+  const text=cleanText(`${p?.title||''} ${p?.addr1||''} ${p?.cat||''} ${p?.sub||''} ${p?.sourceMeta||''} ${p?.contentTypeName||''} ${p?.publicData?.evidence||''} ${p?.publicData?.overview||''}`).toLowerCase();
+  const museumLike=/박물관|유물관|역사관|역사문화관|문화원|자료관|기록관|향토관|전시관/.test(text);
+  if(!museumLike)return false;
+  const weakExhibit=/미술관|자동차박물관|대중음악박물관|과학관|천문|기상|자연생태|수목원|식물원/.test(text);
+  const pastEvidence=/역사|유물|유적|향토|고고|민속|전통|문화유산|자료|기록|과거|옛|생활사|박물관미술관소개/.test(text);
+  return !weakExhibit||pastEvidence;
+}
+function mergePreferredCandidates(preferred,sorted){
+  const seen=new Set();
+  return [...preferred,...sorted].filter(p=>{
+    const key=p?.id||placeDedupeKey(p);
+    if(seen.has(key))return false;
+    seen.add(key);
+    return true;
+  });
+}
+function trimRecommendationCandidates(list,u=null,local=null){
+  const sorted=[...list]
+    .sort((a,b)=>recommendationSortValue(b)-recommendationSortValue(a)||((b.score||0)-(a.score||0))||a.dist-b.dist);
+  if(!isLocalPastMuseumUnit(u))return sorted;
+  const localMuseums=sorted.filter(p=>isPastMuseumEvidencePlace(p)&&sameLocalArea(p,local)).slice(0,4);
+  const museumFallback=sorted.filter(p=>isPastMuseumEvidencePlace(p)&&!sameLocalArea(p,local)).slice(0,Math.max(0,4-localMuseums.length));
+  return mergePreferredCandidates([...localMuseums,...museumFallback],sorted);
+}
+function sortPlaces(list){
+  if(A.sort==='dist'){
+    return list.sort((a,b)=>a.dist-b.dist||recommendationSortValue(b)-recommendationSortValue(a)||((b.score||0)-(a.score||0)));
+  }
+  return list.sort((a,b)=>recommendationSortValue(b)-recommendationSortValue(a)||((b.score||0)-(a.score||0))||a.dist-b.dist);
+}
 function rnList(){
   let list=[...A.all];
-  if(A.cat!=='전체')list=list.filter(p=>p.cat===A.cat);
+  const u=unit();
+  if(A.cat!=='전체')list=list.filter(p=>uiCategoryForPlace(p)===A.cat);
   if(A.sub!=='전체')list=list.filter(p=>p.sub===A.sub);
-  if(A.sort==='dist')list.sort((a,b)=>a.dist-b.dist);
-  else list.sort((a,b)=>(b.score||0)-(a.score||0)||a.dist-b.dist);
+  sortPlaces(list);
   $i('rcnt').textContent=list.length?`${list.length}개`:'';
   if(!list.length){$i('rlist').innerHTML=`<div class="rempty"><div class="rempty-ic">🔍</div><div class="rempty-t">해당 카테고리 결과 없음</div><div class="rempty-s">다른 카테고리를 선택해보세요</div></div>`;return;}
-  $i('rlist').innerHTML=list.map((p,i)=>{
-    const v=gv(p.id);const cm=CATS[p.cat];
+  $i('rlist').innerHTML=list.map(p=>{
+    const ui=uiCategoryForPlace(p);
+    const meta=uiCategoryMeta(ui);
+    const tags=cardKeywordsFor(p,u);
     return `<div class="pc" onclick="om('${p.id}')">
-      <div class="pc-ico">${i+1}</div>
+      ${cardThumbHtml(p,meta)}
       <div class="pc-body">
         <div class="pc-top">
           <div class="pc-nm">${esc(p.title)}</div>
-          <div class="votes">
-            <button class="vb up${v.my===1?' on':''}" onclick="vote(event,'${p.id}',1)">👍 ${v.up}</button>
-            <button class="vb dn${v.my===-1?' on':''}" onclick="vote(event,'${p.id}',-1)">👎 ${v.dn}</button>
-          </div>
+          <button class="pc-mark" onclick="event.stopPropagation()" aria-label="저장">♡</button>
         </div>
-        <div class="pc-addr">📍 ${esc(p.addr1||'위치 검수 필요')} · <strong>${esc(distLabel(p))}</strong></div>
+        <div class="pc-subline">${esc(cardSubtitleFor(p,u))}</div>
+        <div class="pc-addr">📍 ${esc(compactAddr(p))} · <strong>${esc(distLabel(p))}</strong></div>
         <div class="pc-tags">
-          ${p.cat?`<span class="ptag pb">${cm?.ic||''} ${esc(p.cat)}</span>`:''}
-          ${p.sub?`<span class="ptag pg">${esc(p.sub)}</span>`:''}
-          ${sourceShortLabel(p)?`<span class="ptag pg">${esc(sourceShortLabel(p))}</span>`:''}
+          ${tags.map((t,i)=>`<span class="ptag ${i?'pg':'pb'}">${esc(t)}</span>`).join('')}
           ${publicStatusLabel(p)?`<span class="ptag pg">${esc(publicStatusLabel(p))}</span>`:''}
         </div>
       </div>
+      <button class="pc-detail" onclick="event.stopPropagation();om('${p.id}')">상세보기</button>
     </div>`;
   }).join('');
   window._pm=Object.fromEntries(list.map(p=>[p.id,p]));
@@ -1599,11 +2213,25 @@ function vote(e,id,dir){
   A.votes[id]=v;sv();rnList();
 }
 
-/* ── 지도 (CartoDB) ── */
+/* ── 지도 ── */
+function addBaseMapLayer(map){
+  const fallback=()=>L.tileLayer(CARTO_FALLBACK_TILE,{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(map);
+  if(!VWORLD_KEY)return fallback();
+  const vworld=L.tileLayer(VWORLD_BASE_TILE,{attribution:'© VWorld',maxZoom:19});
+  let errors=0,switched=false;
+  vworld.on('tileerror',()=>{
+    errors+=1;
+    if(switched||errors<3)return;
+    switched=true;
+    if(map.hasLayer(vworld))map.removeLayer(vworld);
+    fallback();
+  });
+  return vworld.addTo(map);
+}
 function initMap(c){
   if(A.map){A.map.remove();A.map=null;A.markers={};}
   A.map=L.map('map').setView(c,9);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(A.map);
+  addBaseMapLayer(A.map);
   if(A.loc){const ic=L.divIcon({html:`<div style="background:#2563EB;color:#fff;font-size:11px;padding:4px 9px;border-radius:20px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(37,99,235,.3)">🏫 ${A.sc?.SCHUL_NM||''}</div>`,className:'',iconSize:[180,26],iconAnchor:[90,13]});L.marker(A.loc,{icon:ic}).addTo(A.map);}
 }
 function focusPlace(id){
@@ -1616,15 +2244,15 @@ function addMk(){
   if(!A.map)return;
   A.markers={};
   const bd=A.loc?[A.loc]:[];
-  A.all.forEach((p,i)=>{
+  A.all.forEach(p=>{
     if(!p.lat||!p.lng)return;
-    const cm=CATS[p.cat];
-    const ic=L.divIcon({html:`<div style="background:#2563EB;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.3)">${i+1}</div>`,className:'',iconSize:[26,26],iconAnchor:[13,13]});
+    const cm=uiCategoryMeta(uiCategoryForPlace(p));
+    const ic=L.divIcon({html:`<div style="background:#2563EB;color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.3)">${cm?.ic||'•'}</div>`,className:'',iconSize:[26,26],iconAnchor:[13,13]});
     const popup=L.popup({maxWidth:220,className:'custom-popup'}).setContent(`
       <b>${p.title}</b>
       <div style="color:#64748B;font-size:11px;margin-bottom:4px;">📍 ${p.addr1}</div>
       <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">
-        <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#EFF6FF;color:#2563EB;font-weight:600;">${cm?.ic||''} ${p.cat||''}</span>
+        <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#EFF6FF;color:#2563EB;font-weight:600;">${cm?.ic||''} ${cm?.label||''}</span>
         <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#F1F5F9;color:#64748B;font-weight:600;">📏 ${distLabel(p)}</span>
       </div>
       <button onclick="om('${p.id}')" style="width:100%;padding:5px;border:none;border-radius:6px;background:#2563EB;color:#fff;font-size:11px;font-weight:700;cursor:pointer;">상세 보기 →</button>
@@ -1690,7 +2318,14 @@ async function fetchHeritageDetail(p){
 
 /* ── 교육과정 연결 / 카드뉴스 ── */
 function areaName(addr=''){
-  return Object.keys(SIGUNGU).find(n=>addr.includes(n))||'경북';
+  if(/대구/.test(addr)){
+    const name=Object.keys(DAEGU_SIGUNGU).find(n=>addr.includes(n));
+    return name?`대구 ${name}`:'대구';
+  }
+  const name=Object.keys(SIGUNGU).find(n=>addr.includes(n));
+  if(name)return name;
+  if(/경상북도|경북/.test(addr))return '경북';
+  return '대구·경북';
 }
 function lessonRange(u,p){
   if(u?.lesson)return u.lesson;
@@ -1728,7 +2363,7 @@ function activityFor(p){
     '자연·생태':'지형·생태 관찰, 사진 기록, 환경 변화 원인 찾기',
     '산지·탐방로':'지도 읽기, 탐방 경로 계획, 안전 수칙 점검',
     '공원·생활환경':'생활권 공공시설 조사, 이용자 관찰, 개선 의견 만들기',
-    '농어촌·생산체험':'생산·소비 과정 관찰, 체험 기록, 지역 특산물 조사',
+    '대표 경제거점':'대표 시장·산업·물류 거점 관찰, 이동 경로 조사, 지역 간 교류 지도 만들기',
     '지역축제':'지역 문화 요소 찾기, 계절성 비교, 지역 알리기 자료 만들기',
     '박물관·전시':'전시 자료 관찰, 유물·기록 근거 찾기, 질문 카드 만들기',
     관광명소:'지역 장소성 조사, 지도 표시, 교육과정 관련 근거 찾기',
@@ -1740,16 +2375,15 @@ function placeReason(p,u,overview='',hits=[]){
   const text=cleanText(`${p.title} ${p.addr1} ${overview}`).toLowerCase();
   if(/하회|양동|민속|한옥|고택|종택/.test(text))return '전통 생활 공간과 공동체 문화를 실제 장소에서 관찰할 수 있어 생활 모습 변화와 지역 문화 학습에 적합합니다.';
   if(/서원|향교|사찰|불국사|석굴암|부석사|봉정사|탑|고분|왕릉|성곽/.test(text))return '국가유산의 형태, 쓰임, 보존 가치를 현장에서 확인할 수 있어 국가유산 조사와 답사 활동으로 바로 연결됩니다.';
-  if(/박물관|기념관|역사관|문화관/.test(text))return '전시 자료와 해설을 바탕으로 기록, 유물, 사건을 근거로 삼아 조사 보고서와 설명문을 만들기 좋습니다.';
-  if(/시장|오일장|공방|체험장|특산|항구|역/.test(text))return '생산, 소비, 이동, 교류가 드러나는 장소라서 지역 경제활동과 상호 의존 관계를 구체적으로 살펴볼 수 있습니다.';
-  if(/농촌|어촌|체험휴양마을|갯벌|어업|수확|생산체험/.test(text))return '농어촌의 생산과 소비, 지역 공동체의 생활 모습을 체험 프로그램을 통해 관찰할 수 있어 가족 체험학습에 적합합니다.';
+  if(/박물관|기념관|역사관|문화관|문화원|자료관|기록관/.test(text))return '전시 자료와 해설을 바탕으로 기록, 유물, 사건을 근거로 삼아 조사 보고서와 설명문을 만들기 좋습니다.';
+  if(hasRepresentativeEconomyEvidence(text))return '대표 시장, 산업·물류 거점, 항만·철도 시설처럼 지역 경제의 흐름이 크게 드러나는 장소라서 생산·소비·교류 관계를 구체적으로 살펴볼 수 있습니다.';
   if(/탐방로|등산로|난이도|통제|국립공원/.test(text))return '산지 지형과 이동 경로를 지도 위에서 확인하고, 탐방 안전과 자연환경 관찰을 함께 계획할 수 있는 코스형 자료입니다.';
-  if(/축제|문화제|예술제|페스티벌/.test(text))return '지역의 계절성, 특산물, 문화 표현을 살펴볼 수 있어 지역 알리기와 생활문화 탐구 자료로 활용할 수 있습니다.';
-  if(/지질|주상절리|계곡|폭포|산|해안|강|하천|습지|생태|수목원|식물원|공원|울릉|독도/.test(text))return '지형, 생태, 환경 이용 모습을 직접 관찰할 수 있어 지도 자료와 현장 관찰을 결합한 탐구에 알맞습니다.';
+  if(/축제|문화제|예술제|페스티벌/.test(text))return '지역의 계절성, 역사, 문화 표현을 살펴볼 수 있어 지역 알리기와 생활문화 탐구 자료로 활용할 수 있습니다.';
+  if(/지질|주상절리|계곡|폭포|해안|강|하천|습지|생태|수목원|식물원|공원|울릉|독도/.test(text)||hasMountainPlaceEvidence(text))return '지형, 생태, 환경 이용 모습을 직접 관찰할 수 있어 지도 자료와 현장 관찰을 결합한 탐구에 알맞습니다.';
   if(/호국|전쟁|평화|민주|독립|의병|근대/.test(text))return '역사적 사건을 기념하거나 기억하는 장소라서 평화, 민주주의, 근현대 생활 변화의 의미를 토의하기 좋습니다.';
   if(/행정|경찰|소방|안전|복지|의회|시청|군청/.test(text))return '공공기관과 주민 생활의 관계를 확인할 수 있어 자치, 안전, 권리 보호 학습과 연결됩니다.';
   if(hits.length)return `${hits.slice(0,3).join(', ')} 요소가 교과서 단원의 핵심 개념과 겹쳐 현장 관찰과 자료 조사 활동으로 확장하기 좋습니다.`;
-  return `${p.cat||'지역 자원'} 성격이 ${u?.name||'선택 단원'}의 탐구 대상과 맞닿아 있어 경북 지역화 수업 자료로 활용할 수 있습니다.`;
+  return `${p.cat||'지역 자원'} 성격이 ${u?.name||'선택 단원'}의 탐구 대상과 맞닿아 있어 대구·경북 지역화 수업 자료로 활용할 수 있습니다.`;
 }
 function isThinOverview(text=''){
   const t=cleanText(text);
@@ -1769,7 +2403,7 @@ function generatedPlaceOverview(p,u,raw=''){
   const parkType=evidenceValue(evidence,'공원구분')||p?.sub||'공원';
   const facilities=evidenceValue(evidence,'보유시설');
   const unitName=u?unitLabel(u):'선택한 단원';
-  const baseAddr=p?.addr1?p.addr1.replace(/^경상북도\s*/,''):area;
+  const baseAddr=p?.addr1?p.addr1.replace(/^(경상북도|대구광역시)\s*/,''):area;
   const allText=cleanText(`${title} ${evidence} ${raw}`);
 
   if(/남자현/.test(allText)){
@@ -1792,8 +2426,8 @@ function generatedPlaceOverview(p,u,raw=''){
   if(p?.cat==='산지·탐방로'||p?.cat==='자연·생태'){
     return `${title}은 ${area}의 ${p.cat} 자원입니다. 원자료의 수치나 구간 정보만으로 설명이 부족할 수 있으므로, 지도에서 위치를 확인하고 지형, 생태, 이동 경로, 안전 요소를 함께 살펴보는 탐구 장소로 활용할 수 있습니다.`;
   }
-  if(p?.cat==='농어촌·생산체험'){
-    return `${title}은 ${area}의 농어촌 체험 후보입니다. 체험 프로그램과 지역 생산 활동을 중심으로 생산, 소비, 지역 공동체의 생활 모습을 관찰하는 가족 체험학습 자료로 활용할 수 있습니다.`;
+  if(p?.cat==='대표 경제거점'){
+    return `${title}은 ${area}의 대표 경제 거점 후보입니다. 소규모 생산 체험장보다 지역을 넓게 대표하는 시장, 산업·물류 시설, 항만·철도 거점인지 확인하면서 생산·소비·교류 흐름을 조사하는 자료로 활용합니다.`;
   }
   return `${title}은 ${area}의 ${p?.cat||'지역'} 자원입니다. 원자료 소개가 충분하지 않아 장소명, 주소, 분류, 공식 원자료 필드를 바탕으로 보조 설명을 구성했습니다. 실제 방문 전 운영 여부와 현장 안내 자료를 확인하면 ${unitName}과의 연결성을 더 정확히 판단할 수 있습니다.`;
 }
@@ -1802,6 +2436,22 @@ function placeOverviewFor(p,u,raw=''){
   if(!isThinOverview(clean))return {text:clean,generated:false};
   return {text:generatedPlaceOverview(p,u,clean),generated:true,raw:clean};
 }
+function expandableTextHtml(text='',limit=260){
+  const clean=cleanText(text);
+  if(clean.length<=limit)return `<div class="overview-text">${esc(clean)}</div>`;
+  const short=clean.slice(0,limit).trim();
+  return `
+    <div class="overview-text" data-short="${esc(short)}" data-full="${esc(clean)}">${esc(short)}...</div>
+    <button class="more-btn" onclick="toggleMoreText(this)">더보기</button>`;
+}
+function toggleMoreText(btn){
+  const textEl=btn?.previousElementSibling;
+  if(!textEl)return;
+  const expanded=btn.dataset.expanded==='1';
+  textEl.textContent=expanded?`${textEl.dataset.short}...`:textEl.dataset.full;
+  btn.textContent=expanded?'더보기':'접기';
+  btn.dataset.expanded=expanded?'0':'1';
+}
 function subtopicScore(topic,text){
   let score=0;
   (topic.terms||[]).forEach(k=>{if(keywordMatch(text,k))score+=3;});
@@ -1809,16 +2459,17 @@ function subtopicScore(topic,text){
   (topic.placeTypes||[]).forEach(k=>{if(keywordMatch(text,k))score+=2;});
   const n=topic.name||'';
   if(/국가유산/.test(n)&&/서원|향교|사찰|불국사|석굴암|부석사|봉정사|탑|고분|왕릉|성곽|고택|종택/.test(text))score+=20;
-  if(/박물관|기념관|유적지/.test(n)&&/박물관|기념관|유적|역사관|문화관|전시/.test(text))score+=12;
-  if(/지형/.test(n)&&/지질|주상절리|계곡|폭포|산|해안|강|하천/.test(text))score+=20;
+  if(/박물관|기념관|유적지/.test(n)&&/박물관|기념관|유적|역사관|문화관|문화원|자료관|기록관|전시/.test(text))score+=12;
+  if(/지형/.test(n)&&(/지질|주상절리|계곡|폭포|해안|해안선|해수욕장|갯벌|사구|강|하천/.test(text)||hasMountainPlaceEvidence(text)))score+=20;
   if(/독도/.test(n)&&/독도|울릉|해안|영토|해양/.test(text))score+=20;
   if(/기후/.test(n)&&/기후|재해|안전|댐|하천|해안|생태/.test(text))score+=18;
   if(/인구/.test(n)&&/도시|시장|교통|문화시설|복지|고령/.test(text))score+=16;
-  if(/경제|교류|합리적 선택/.test(n)&&/시장|오일장|공방|체험장|항구|역|산업|특산/.test(text))score+=20;
-  if(/교통/.test(n)&&/철도|역|기차|항구|교통|옛길/.test(text))score+=20;
+  if(/경제|교류|합리적 선택/.test(n)&&hasRepresentativeEconomyEvidence(text))score+=20;
+  if(/교통/.test(n)&&hasTransportLifeEvidence(text))score+=20;
   if(/통신/.test(n)&&/봉수|우체국|편지|통신|전신|전화/.test(text))score+=20;
   if(/민주|선거|자치|참여|국가기관/.test(n)&&/민주|선거|의회|행정|경찰|소방|안전|기념관|시청|군청/.test(text))score+=18;
-  if(/문화|풍습|세계|대륙|대양/.test(n)&&/문화|민속|축제|세계|국제|전통|한옥|민속촌/.test(text))score+=18;
+  if(/풍습|생활 모습/.test(n)&&hasLegacyLifeEvidence(text))score+=18;
+  if(/문화|세계|대륙|대양/.test(n)&&/문화|민속|축제|세계|국제|전통|한옥|민속촌/.test(text))score+=18;
   if(/평화|통일/.test(n)&&/평화|통일|분단|전쟁|호국|전적|기념관/.test(text))score+=20;
   if(/산업화|민주화/.test(n)&&/산업|근대|공장|포항제철|민주|역사관|기념관/.test(text))score+=20;
   if(/선사 시대|고조선/.test(n)&&/선사|고조선|암각화|고인돌/.test(text))score+=28;
@@ -1850,26 +2501,9 @@ function matchSubtopic(p,u,overview=''){
   const picked=rel.topic||best;
   return {...picked,source:u.source||picked.source||TEXTBOOK_SOURCE};
 }
-function recommendationReasonFor(p,u,ref,overview='',hits=[],rel=null){
-  const unit=u?.unit||u?.name||'선택 단원';
-  const topic=ref?.name||unit;
-  const evidence=((rel?.evidence?.length?rel.evidence:hits)||[]).filter(Boolean).slice(0,3).join(', ');
-  const basis=evidence||p?.sub||p?.cat||'장소 특성';
-  if(rel?.profile&&rel.score<rel.min){
-    return `${p.title}은 현재 원자료만으로는 ${unit}과 직접 연결되는 근거가 부족합니다. 이 장소는 기본 추천보다 별도 자료 확인 대상으로 두는 것이 적절합니다.`;
-  }
-  if(/유적과 유물로 살펴본 옛 사람들의 생활/.test(unit)){
-    if(/고대/.test(topic))return `${p.title}은 신라·가야 등 고대사의 유적, 유물, 기록을 현장에서 확인할 수 있는 경북 역사 자원입니다. 국사편찬위원회 삼국유사 원문·한국고대금석문과 연결해 "기록-유물-장소"를 함께 살피는 가족 탐구 여행으로 설계할 수 있습니다.`;
-    if(/고려/.test(topic))return `${p.title}은 고려 시대의 불교 문화, 건축, 생활 단서를 찾기에 좋은 장소입니다. 고려사 원문과 한국사료총서 같은 역사 자료를 보조 근거로 삼아 장소 해설을 검증하며 관찰할 수 있습니다.`;
-    return `${p.title}은 ${basis} 근거가 있어 유적과 유물을 통해 옛 사람들의 생활 모습을 추론하는 활동에 적합합니다. 현장 관찰 결과를 사진과 질문으로 남기기 좋습니다.`;
-  }
-  if(/달라지는 시대, 변화하는 생활 모습/.test(unit)){
-    return `${p.title}은 ${basis} 요소를 통해 조선 시대 유교 문화 또는 근대 문물 수용으로 달라진 생활 모습을 살펴볼 수 있는 장소입니다. 가족 여행 중 공간 배치, 생활 규범, 교류 흔적을 직접 관찰할 수 있어 생활사 학습에 적합합니다.`;
-  }
-  if(/식민 통치와 저항, 전쟁이 바꾼 사회와 생활/.test(unit)){
-    return `${p.title}은 ${basis} 근거가 있어 일제 식민 통치와 저항, 광복과 전쟁이 지역 사람들의 삶에 남긴 영향을 탐구하기 좋습니다. 국사편찬위원회 일제감시대상인물카드·한국사료총서와 함께 인물, 사건, 장소를 교차 확인할 수 있습니다.`;
-  }
-  return placeReason(p,ref,overview,hits);
+function recommendationReasonFor(p,u,ref,overview='',hits=[],rel=null,keywordList=null){
+  const words=keywordList||curriculumKeywordList(p,u,ref,overview,rel,hits);
+  return keywordReasonText(p,u,ref,overview,words,!!(rel?.profile&&rel.score<rel.min));
 }
 function directReasonFor(p,u,ref,overview='',hits=[],rel=null){
   if(u?.subtopics?.length){
@@ -1883,7 +2517,8 @@ function directReasonFor(p,u,ref,overview='',hits=[],rel=null){
     const evidence=ev||'장소의 핵심 특징';
     if(/우리나라 국토 여행/.test(unit)){
       if(/독도/.test(topic))return `${evidence} 근거가 있어 독도의 위치, 해양 환경, 영토 가치 탐구와 연결됩니다. 문화시설 일반이 아니라 독도·울릉·해안 자원일 때만 이 단원에 추천됩니다.`;
-      return `${evidence} 근거가 있어 산지·하천·해안 지형의 분포와 특징을 실제 경북 장소에서 관찰하는 활동으로 연결됩니다.`;
+      if(/해안|해수욕장|갯벌|사구|바닷가|해양/.test(`${p.title} ${p.addr1} ${overview}`.toLowerCase()))return `${evidence} 근거가 있어 해안선, 해안 지역의 지형 특징과 이용 모습을 실제 장소에서 관찰하는 활동으로 연결됩니다. 이 단원에서는 갯벌 체험장과 대표 해수욕장도 해안 지형 탐구 장소로 추천합니다.`;
+      return `${evidence} 근거가 있어 산지·하천·해안 지형의 분포와 특징을 실제 대구·경북 장소에서 관찰하는 활동으로 연결됩니다. 국립공원·도립공원 산지는 산지 지형과 이용 방식을 살피는 핵심 장소로 우선 추천합니다.`;
     }
     if(/우리나라 지리 탐구|지도로 만나는 우리 지역|다양한 환경과 삶의 모습/.test(unit)){
       return `${evidence} 근거를 바탕으로 위치, 환경, 기후, 인구 또는 생활 시설의 지역 차이를 조사하는 활동과 연결됩니다.`;
@@ -1904,7 +2539,17 @@ function directReasonFor(p,u,ref,overview='',hits=[],rel=null){
       if(/식민|저항/.test(topic))return `${evidence} 근거가 있어 [6사06-01]의 일제 식민 통치와 저항이 사회와 생활에 미친 영향 이해와 직접 연결됩니다. 국사편찬위원회 일제감시대상인물카드와 함께 지역 인물·사건을 검증할 수 있습니다.`;
       return `${evidence} 근거가 있어 [6사06-02]의 광복과 6·25 전쟁이 사회와 생활에 미친 영향 파악과 연결됩니다.`;
     }
-    if(/국가유산|일상에서 만나는 과거|옛날과 오늘날의 생활 모습|평화 통일|민주화와 산업화/.test(unit)){
+    if(/일상에서 만나는 과거/.test(unit)){
+      return `${evidence} 근거가 있어 사진, 기록, 장소를 바탕으로 우리 지역의 과거와 현재 모습을 비교하는 활동과 연결됩니다.`;
+    }
+    if(/옛날과 오늘날의 생활 모습/.test(unit)){
+      const fullText=curriculumEvidenceText(p,overview);
+      if(hasCustomsLifeEvidence(fullText))return `${evidence} 근거가 있어 풍습, 전통놀이, 전통 생활 공간을 오늘날 모습과 비교하는 활동과 연결됩니다. 단순 관광지나 자연장소 분류만으로는 이 단원에 추천하지 않습니다.`;
+      if(hasTransportLifeEvidence(fullText))return `${evidence} 근거가 있어 옛날과 오늘날의 교통수단, 이동 방식, 생활 변화 비교 활동과 연결됩니다.`;
+      if(hasCommunicationLifeEvidence(fullText))return `${evidence} 근거가 있어 통신수단과 정보 전달 방식의 변화를 살피는 활동과 연결됩니다.`;
+      return `${evidence} 근거가 있어 풍습, 교통수단, 통신수단 중 하나의 변화를 비교하는 활동과 연결됩니다.`;
+    }
+    if(/국가유산|옛날과 오늘날의 생활 모습|평화 통일|민주화와 산업화/.test(unit)){
       return `${evidence} 근거가 있어 장소에 남아 있는 유물, 기록, 국가유산 또는 근현대 변화의 의미를 조사하는 활동과 연결됩니다.`;
     }
     if(/민주주의와 자치|민주주의와 시민 참여|법과 인권/.test(unit)){
@@ -1916,7 +2561,7 @@ function directReasonFor(p,u,ref,overview='',hits=[],rel=null){
     if(/사회 변화와 다양한 문화|지역문제를 해결하고 지역을 알리는 노력/.test(unit)){
       return `${evidence} 근거가 있어 지역 문화, 지역 홍보, 세계와의 연결 또는 사회 변화 사례를 조사하는 활동과 연결됩니다.`;
     }
-    return `${evidence} 근거가 ${topic} 학습 흐름과 직접 맞닿아 있어 경북 지역화 수업 자료로 활용할 수 있습니다.`;
+    return `${evidence} 근거가 ${topic} 학습 흐름과 직접 맞닿아 있어 대구·경북 지역화 수업 자료로 활용할 수 있습니다.`;
   }
   return hits.length
     ? `${hits.slice(0,3).join(', ')} 키워드가 장소 정보와 맞닿아 있어 ${ref?.name||u?.name||'선택 단원'} 학습 흐름과 직접 연결됩니다.`
@@ -1932,10 +2577,238 @@ function sourceEvidenceSummary(p,overview=''){
   if(!picked.length&&evidence)picked.push(evidence);
   return picked.join(' / ').slice(0,220);
 }
+function normalizedKeywordLabel(k=''){
+  const raw=cleanText(k).replace(/[,:;]+$/,'');
+  const map={
+    '위치·면적·인구·지형 자료 조사':'위치·지형',
+    '현장 사진과 지도 자료 연결':'지도 자료',
+    '지역의 위치와 특성':'위치·특성',
+    '우리 지역의 위치와 특성':'위치·특성',
+    '우리나라의 국토와 생활 모습':'국토 지형',
+    '우리나라 국토 여행':'국토 지형',
+    '해안 지역':'해안',
+    '지형 이용':'지형 이용',
+    '대표 경제거점':'경제 거점',
+    '박물관·전시':'전시 자료',
+    '공원·생활환경':'생활환경',
+    '산지·탐방로':'산지',
+    '자연·생태':'생태',
+  };
+  const label=map[raw]||raw;
+  if(!label||label.length>18)return '';
+  return label;
+}
+function detectedKeywordLabels(text=''){
+  const t=cleanText(text).toLowerCase();
+  const rules=[
+    [/지도|위치|좌표|전망|면적|인구|지형/,'위치·지형'],
+    [/해안|해수욕장|갯벌|사구|바다|해양|독도|울릉/,'해안'],
+    [/국립공원|도립공원|산지|탐방로|등산로|팔공산|주왕산|소백산|가야산|문경새재|청량산|금오산/,'산지'],
+    [/강|하천|낙동강|금호강|댐|호수|저수지/,'하천'],
+    [/서원|향교|사찰|고택|종택|유적|사적|탑|성곽|고분|왕릉|국가유산/,'국가유산'],
+    [/박물관|기념관|역사관|문화관|전시관|유물|기록/,'전시 자료'],
+    [/시장|산업|물류|항만|항구|철도|철도역|기차역|동대구역|서대구역|대구역|포항역|김천구미역|신경주역|안동역|영주역|점촌역|영천역|공항|포스코|제철/,'경제 교류'],
+    [/기상|기후|날씨|기상과학|기상대/,'기상·기후'],
+    [/천문|천문대|천체|별빛|우주/,'천문'],
+    [/생태|습지|수목원|식물원|숲|환경/,'생태'],
+    [/교통|기차|철도|옛길|문경새재/,'교통'],
+    [/봉수|우체국|통신|전신|전화/,'통신'],
+  ];
+  return rules.filter(([re])=>re.test(t)).map(([,label])=>label);
+}
+function curriculumKeywordList(p,u,ref,overview='',rel=null,hits=[]){
+  const unitName=u?.unit||u?.name||'';
+  const text=curriculumEvidenceText(p,overview);
+  const standard=standardFor(ref||u,p);
+  const words=[
+    ...achievementKeywordLabels(standard,u,ref,p,overview),
+    ...(rel?.evidence||[]),
+    ...(hits||[]),
+    ...(ref?.terms||[]),
+    ...(u?.terms||[]),
+    ...(ref?.placeTypes||[]),
+    ...(u?.placeTypes||[]),
+    p?.cat,
+    p?.sub,
+    ...detectedKeywordLabels(text),
+  ];
+  if(/지도로 만나는 우리 지역|지역의 위치와 특성|다양한 환경과 삶의 모습/.test(unitName))words.unshift('지도','위치','지형');
+  if(isNationalLandUnit(u))words.unshift('국토 지형');
+  if(/경제활동과 지역 간 교류/.test(unitName))words.unshift('경제 교류');
+  if(/국가유산/.test(unitName))words.unshift('국가유산');
+  if(/일상에서 만나는 과거/.test(unitName))words.unshift('과거 자료','지역 변화');
+  if(/옛날과 오늘날의 생활 모습/.test(unitName)){
+    words.unshift('생활사');
+    if(hasCustomsLifeEvidence(text))words.unshift('풍습·생활');
+    if(hasTransportLifeEvidence(text))words.unshift('교통 변화');
+    if(hasCommunicationLifeEvidence(text))words.unshift('통신 변화');
+  }
+  return uniq(words.map(normalizedKeywordLabel).filter(Boolean)).slice(0,6);
+}
+function keywordReasonText(p,u,ref,overview='',words=[],insufficient=false){
+  const unitName=u?.unit||u?.name||'선택 단원';
+  const topic=ref?.name||unitName;
+  const key=(words.length?words.slice(0,3):[p?.cat,p?.sub].filter(Boolean)).join(' · ')||'장소 특성';
+  const text=curriculumEvidenceText(p,overview);
+  if(insufficient)return `확인 키워드: ${key}. 단원 직접 연계는 공식 자료와 현장 안내판으로 추가 확인이 필요합니다.`;
+  if(/우리나라 국토 여행/.test(unitName)){
+    if(hasCoastalLandformEvidence(text))return `확인 키워드: ${key}. 해안선과 해안 지역의 이용 모습을 살피기 좋습니다.`;
+    return `확인 키워드: ${key}. 산지·하천·해안 등 국토 지형을 지도와 함께 살피기 좋습니다.`;
+  }
+  if(/지도로 만나는 우리 지역|지역의 위치와 특성|다양한 환경과 삶의 모습/.test(unitName)){
+    return `확인 키워드: ${key}. 위치와 주변 지형을 지도·사진으로 비교하기 좋습니다.`;
+  }
+  if(/경제활동과 지역 간 교류/.test(unitName)){
+    return `확인 키워드: ${key}. 지역의 생산·소비·이동 흐름을 보기 좋습니다.`;
+  }
+  if(/일상에서 만나는 과거/.test(unitName)){
+    return `확인 키워드: ${key}. 사진·기록·장소를 연결해 우리 지역의 과거와 현재 모습을 비교하기 좋습니다.`;
+  }
+  if(/옛날과 오늘날의 생활 모습/.test(unitName)){
+    if(hasCustomsLifeEvidence(text))return `확인 키워드: ${key}. 풍습·전통 생활 모습을 오늘날과 비교할 근거가 있을 때만 추천합니다.`;
+    if(hasTransportLifeEvidence(text))return `확인 키워드: ${key}. 교통수단과 이동 방식의 변화를 살피기 좋습니다.`;
+    if(hasCommunicationLifeEvidence(text))return `확인 키워드: ${key}. 통신수단과 정보 전달 방식의 변화를 살피기 좋습니다.`;
+    return `확인 키워드: ${key}. 풍습·교통·통신 변화가 자료에 확인될 때만 추천합니다.`;
+  }
+  if(/국가유산|유적과 유물/.test(unitName)){
+    return `확인 키워드: ${key}. 유물·기록·장소를 연결해 과거 생활을 살피기 좋습니다.`;
+  }
+  if(/기후|날씨/.test(unitName)){
+    return `확인 키워드: ${key}. 기후와 날씨 자료를 현장 관찰과 연결하기 좋습니다.`;
+  }
+  if(/민주주의|자치|시민 참여|법과 인권/.test(unitName)){
+    return `확인 키워드: ${key}. 공공기관과 시민 생활의 연결점을 살피기 좋습니다.`;
+  }
+  return `확인 키워드: ${key}. ${topic} 내용과 연결해 짧은 조사 활동으로 보기 좋습니다.`;
+}
+function compactFocusPointsFor(p,u,d,overview=''){
+  const unitName=u?.unit||u?.name||'';
+  const text=curriculumEvidenceText(p,overview);
+  if(d?.insufficient)return ['공식 자료 확인','현장 안내판 확인'];
+  if(/지도로 만나는 우리 지역|지역의 위치와 특성|다양한 환경과 삶의 모습/.test(unitName)){
+    return ['지도에서 위치 표시','지형·주변 모습 사진 기록'];
+  }
+  if(/우리나라 국토 여행/.test(unitName)){
+    if(hasCoastalLandformEvidence(text))return ['해안선 모양 관찰','해안 이용 모습 기록'];
+    if(hasMountainPlaceEvidence(text))return ['산지 위치 확인','탐방로·이용 모습 기록'];
+    return ['지도에서 지형 확인','현장 특징 한 문장 기록'];
+  }
+  if(/경제활동과 지역 간 교류/.test(unitName))return ['대표 거래·이동 흐름 찾기','지도에서 교류 경로 표시'];
+  if(/일상에서 만나는 과거/.test(unitName))return ['옛 사진·기록 찾기','현재 모습과 비교'];
+  if(/국가유산|유적과 유물/.test(unitName))return ['안내판 핵심어 찾기','유물·장소 연결해 설명'];
+  if(/옛날과 오늘날의 생활 모습/.test(unitName))return ['옛 생활 도구 찾기','오늘날 모습과 비교'];
+  return focusPointsFor(p,u,d,overview).slice(0,2).map(x=>cleanText(x).replace(/합니다?$/,''));
+}
+function keywordChipsHtml(words=[],limit=6){
+  const list=uniq((words||[]).map(normalizedKeywordLabel).filter(Boolean)).slice(0,limit);
+  return list.length?`<div class="kw-row">${list.map(w=>`<span class="kw-chip">${esc(w)}</span>`).join('')}</div>`:'';
+}
+function miniPointsHtml(points=[]){
+  const list=(points||[]).filter(Boolean).slice(0,3);
+  return list.length?`<ul class="mini-points">${list.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+}
+function achievementKeywordLabels(standard='',u=null,ref=null,p=null,overview=''){
+  const text=cleanText(`${standard} ${u?.standard||''} ${ref?.standard||''} ${u?.focus||''} ${ref?.focus||''} ${overview||''}`).toLowerCase();
+  if(isLegacyLifeUnit(u)){
+    const scopedText=cleanText(`${standard} ${ref?.standard||''} ${ref?.focus||''} ${overview||''}`).toLowerCase();
+    const labels=[];
+    if(hasCustomsLifeEvidence(scopedText))labels.push('풍습·생활');
+    if(hasTransportLifeEvidence(scopedText))labels.push('교통 변화');
+    if(hasCommunicationLifeEvidence(scopedText))labels.push('통신 변화');
+    if(/비교|변화|달라진/.test(scopedText))labels.push('비교하기');
+    if(/관찰|살펴|조사|자료/.test(scopedText))labels.push('자료 조사');
+    return uniq(labels.length?labels:['생활 변화','비교하기']);
+  }
+  const rules=[
+    [/지도|위치|방위|좌표|지역|고장|장소/,'지도·위치'],
+    [/자연환경|인문환경|지형|산지|하천|해안|기후|생활 모습|특징/,'지역 특성'],
+    [/조사|자료|수집|탐구|분석/,'자료 조사'],
+    [/관찰|살펴|확인|측정|기록/,'현장 관찰'],
+    [/비교|차이|공통점|변화/,'비교하기'],
+    [/설명|발표|표현|정리|보고서/,'설명하기'],
+    [/문화유산|유적|유물|역사|인물|사건|시대|기록/,'역사 자료'],
+    [/생산|소비|교류|시장|산업|경제|이동|물류/,'경제 흐름'],
+    [/공공기관|주민|참여|자치|민주|권리|안전/,'시민 생활'],
+    [/생태|생물|동물|식물|환경|습지|서식/,'생태 관찰'],
+    [/기상|날씨|기후|비|구름|재해/,'기상 자료'],
+    [/천문|별|달|태양계|우주|관측/,'천체 관측'],
+    [/교통|통신|철도|철도역|기차역|동대구역|서대구역|대구역|포항역|김천구미역|신경주역|안동역|영주역|점촌역|영천역|봉수|우체국/,'이동·통신'],
+  ];
+  return uniq(rules.filter(([re])=>re.test(text)).map(([,label])=>label));
+}
+function makeAchievementTips(p,u,d,overview=''){
+  const standard=d?.standard||standardFor(u,p);
+  const ref={name:d?.topic,standard};
+  const keys=achievementKeywordLabels(standard,u,ref,p,overview);
+  const text=cleanText(`${standard} ${(d?.keywordList||[]).join(' ')} ${p?.title||''} ${p?.cat||''} ${p?.sub||''} ${overview||''}`).toLowerCase();
+  const teacher=[];
+  const student=[];
+  const add=(t,s)=>{if(t)teacher.push(t);if(s)student.push(s);};
+
+  if(/지도|위치|방위|지역|장소|지형|자연환경|인문환경|지역 특성/.test(text)){
+    add('방문 전 지도에서 학교와 장소의 위치 관계를 함께 확인합니다.','지도에 장소 위치를 표시하고 학교에서 어느 방향인지 적습니다.');
+    add('현장에서는 지형, 물길, 주변 시설 중 하나를 정해 사진으로 기록하게 합니다.','보이는 지형이나 주변 시설을 한 가지 골라 짧게 설명합니다.');
+  }
+  if(/조사|자료|수집|분석|탐구|자료 조사/.test(text)){
+    add('공식 안내문, 지도, 사진 중 두 가지 자료를 함께 보게 합니다.','안내판이나 지도에서 단원 키워드와 맞는 말을 찾아 표시합니다.');
+  }
+  if(/관찰|기록|측정|현장 관찰/.test(text)){
+    add('관찰 대상을 하나로 좁혀 오래 볼 시간을 줍니다.','사진 한 장과 관찰 문장 한 문장을 남깁니다.');
+  }
+  if(/비교|차이|공통점|변화/.test(text)){
+    add('교과서 예시 장소와 이 장소의 공통점과 차이점을 질문합니다.','교과서 그림이나 지도와 현장 모습을 비교해 봅니다.');
+  }
+  if(/문화유산|유적|유물|역사|인물|사건|시대/.test(text)){
+    add('시대, 인물, 쓰임 중 하나를 골라 현장 안내판에서 근거를 찾게 합니다.','유물이나 건물의 쓰임을 한 문장으로 추측해 봅니다.');
+  }
+  if(/경제|생산|소비|교류|시장|산업|물류|항만|철도/.test(text)){
+    add('사람, 물건, 교통이 어디에서 어디로 이동하는지 대화합니다.','이 장소에서 이루어지는 생산·소비·이동 모습을 하나 찾습니다.');
+  }
+  if(/해안|해수욕장|갯벌|바다|사구|해양/.test(text)){
+    add('해안 지형과 사람들이 이용하는 방식을 함께 보게 합니다.','해안선 모양과 사람들이 이용하는 모습을 각각 하나씩 기록합니다.');
+  }
+  if(hasMountainPlaceEvidence(text)){
+    add('탐방로와 안전 안내를 먼저 확인하고 관찰 범위를 정합니다.','산지 위치와 탐방로 이용 모습을 지도에 표시합니다.');
+  }
+  if(/기상|날씨|기후|구름|비|재해/.test(text)){
+    add('방문 당일 날씨와 계절 특징을 장소 모습과 연결해 질문합니다.','날씨가 장소 이용에 주는 영향을 한 가지 적습니다.');
+  }
+  if(/생태|생물|식물|동물|습지|환경/.test(text)){
+    add('식물, 물, 흙, 사람의 이용 중 하나를 관찰 주제로 정합니다.','볼 수 있는 생물이나 환경 요소를 세 가지 찾아봅니다.');
+  }
+  if(/천문|별|달|태양계|우주|관측/.test(text)){
+    add('관측 시설의 역할과 관측 가능한 대상을 미리 확인합니다.','관측 장비가 무엇을 보기 위한 것인지 적습니다.');
+  }
+
+  if(!teacher.length)teacher.push('교과서 핵심어와 현장 안내판의 표현이 어떻게 연결되는지 질문합니다.');
+  if(!student.length)student.push('성취기준 키워드와 맞는 장면을 찾아 한 문장으로 설명합니다.');
+  return {
+    keywords:keys.length?keys:achievementKeywordLabels(d?.keywords||'',u,ref,p,overview),
+    teacher:uniq(teacher).slice(0,4),
+    student:uniq(student).slice(0,4),
+  };
+}
+function activityTipsHtml(p,u,d,overview=''){
+  const tips=makeAchievementTips(p,u,d,overview);
+  return `
+    <section class="activity-box">
+      <div class="activity-title"><span class="activity-title-ic">☑</span><span>활동 힌트</span></div>
+      <div class="tips-grid">
+        <div>
+          <div class="tip-title">보호자·교사용</div>
+          <ul class="tip-list">${tips.teacher.map(x=>`<li><span class="tip-check"></span><span>${esc(x)}</span></li>`).join('')}</ul>
+        </div>
+        <div>
+          <div class="tip-title">학생용</div>
+          <ul class="tip-list">${tips.student.map(x=>`<li><span class="tip-check"></span><span>${esc(x)}</span></li>`).join('')}</ul>
+        </div>
+      </div>
+    </section>`;
+}
 function learningGoalFor(p,u,d,overview=''){
   const text=curriculumEvidenceText(p,overview);
   if(/남자현/.test(text))return '남자현 지사 관련 시설을 통해 일제강점기 독립운동과 지역 인물의 저항 활동을 설명한다.';
-  if(/임청각|박열|신돌석|왕산\s*허위|왕산허위|허위|독립|항일|의병/.test(text))return '경북의 독립운동 장소를 인물·사건·시대 배경과 연결해 설명한다.';
+  if(/임청각|박열|신돌석|왕산\s*허위|왕산허위|허위|독립|항일|의병/.test(text))return '대구·경북의 독립운동 장소를 인물·사건·시대 배경과 연결해 설명한다.';
   if(/6\.25|6·25|전쟁|호국|전적|장사상륙|다부동/.test(text))return '6·25 전쟁 관련 장소를 통해 전쟁이 지역 사회와 생활에 남긴 영향을 설명한다.';
   if(d?.insufficient)return '단원 핵심 개념과 직접 맞는 장소인지 공식 자료와 현장 안내판으로 추가 확인한다.';
   return d?.activity||activityFor(p);
@@ -1973,61 +2846,76 @@ function curriculumData(p,u,overview=''){
   const matched=matchSubtopic(p,u,overview);
   const ref=matched||u;
   const hits=(ref.terms||u.terms||[]).filter(k=>keywordMatch(text,k));
+  const keywordList=curriculumKeywordList(p,u,ref,overview,rel,hits);
+  const insufficient=!!(rel.profile&&rel.score<rel.min);
   const order=(u.id||'').slice(-1);
   return {
     unit:u.unit||`${order}단원`,
     topic:ref&&ref.name!==u.name?ref.name:'단원 전체',
     lesson:ref?.lesson||lessonRange(u,p),
     standard:standardFor(ref,p),
-    reason:recommendationReasonFor(p,u,ref,overview,hits,rel),
+    reason:recommendationReasonFor(p,u,ref,overview,hits,rel,keywordList),
     activity:ref?.activity||u.activity||activityFor(p),
     direct:directReasonFor(p,u,ref,overview,hits,rel),
-    keywords:(rel.evidence?.length?rel.evidence.slice(0,4).join(' · '):'')||hits.slice(0,4).join(' · ')||(ref.focus||u.focus||[p.cat,p.sub].filter(Boolean).join(' · ')),
+    keywords:keywordList.join(' · ')||(rel.evidence?.length?rel.evidence.slice(0,4).join(' · '):'')||hits.slice(0,4).join(' · ')||(ref.focus||u.focus||[p.cat,p.sub].filter(Boolean).join(' · ')),
+    keywordList,
     matchLabel:rel.profile?`${rel.profile.label} 근거 ${rel.score>=rel.min?'확인':'부족'}`:'핵심어 기반 연결',
     source:uniq([u.source||'앱 내부 교육과정 데이터',p.sourceName?`장소 원자료: ${p.sourceName}`:'',p.detailSource?`상세 원자료: ${p.detailSource}`:''].filter(Boolean)).join(' / '),
-    insufficient:!!(rel.profile&&rel.score<rel.min),
+    insufficient,
     sourceEvidence:sourceEvidenceSummary(p,overview),
   };
 }
 function curriculumInsightHtml(p,u,overview=''){
   if(!u){
-    return `<div class="ai-hd"><span class="ai-ic">✨</span><span class="ai-ttl">AI 교육과정 연결</span></div><div class="ai-row-tx">학년, 교과, 단원을 선택하면 장소별 성취기준과 차시 연결이 표시됩니다.</div>`;
+    return `<section class="detail-block"><div class="detail-hd">장소 선택 요약</div><div class="detail-text">학년, 교과, 단원을 선택하면 성취기준 키워드와 활동 힌트가 표시됩니다.</div></section>`;
   }
   const d=curriculumData(p,u,overview);
+  const chips=keywordChipsHtml(d.keywordList);
+  const achievementKeys=achievementKeywordLabels(d.standard,u,{name:d.topic,standard:d.standard},p,overview);
+  const achievementChips=keywordChipsHtml(achievementKeys.length?achievementKeys:d.keywordList,5);
+  const locationRows=[
+    p.addr1?`<div class="site-row"><span class="site-ic">⌖</span><span><strong>${esc(areaName(p.addr1))}</strong><br>${esc(p.addr1)}</span></div>`:'',
+    `<div class="site-row"><span class="site-ic">㎞</span><span>학교 기준 <strong>${esc(distLabel(p))}</strong></span></div>`,
+    `<div class="site-row"><span class="site-ic">${CATS[p.cat]?.ic||'•'}</span><span>${esc(p.cat||'분류 없음')}${p.sub?' · '+esc(p.sub):''}</span></div>`,
+  ].filter(Boolean).join('');
   if(d.insufficient){
-    const points=focusPointsFor(p,u,d,overview);
     return `
-      <div class="ai-hd"><span class="ai-ic">✨</span><span class="ai-ttl">교육과정 연결 검토</span></div>
-      <div class="ai-compact">
-        <div>
-          <div class="ai-row-lbl">직접 연계 근거 부족</div>
-          <div class="ai-row-tx">현재 원자료만으로는 이 장소를 ${esc(d.unit)}의 핵심 장소로 추천하기 어렵습니다.</div>
-        </div>
-        <div>
-          <div class="ai-row-lbl">확인할 점</div>
-          <div class="ai-row-tx">${points.map(x=>`• ${esc(x)}`).join('<br>')}</div>
-        </div>
+      <div class="detail-grid">
+        <section class="detail-block">
+          <div class="detail-hd">교육과정 연결</div>
+          <div class="detail-title">${esc(d.unit)}</div>
+          <div class="detail-sub">${esc(d.topic)} · ${esc(d.lesson)}</div>
+          ${achievementChips||chips}
+          <div class="detail-text">${esc(d.standard)}</div>
+        </section>
+        <section class="detail-block">
+          <div class="detail-hd">장소 판단</div>
+          ${locationRows}
+          <div class="detail-divider"></div>
+          <div class="detail-title">추가 확인 필요</div>
+          <div class="detail-text">${esc(d.reason)}</div>
+        </section>
       </div>
-      ${d.sourceEvidence?`<div class="ai-row-tx" style="font-size:11px;color:var(--g500);margin-top:8px;">원자료: ${esc(d.sourceEvidence)}</div>`:''}`;
+      ${activityTipsHtml(p,u,d,overview)}`;
   }
-  const points=focusPointsFor(p,u,d,overview);
   return `
-    <div class="ai-hd"><span class="ai-ic">✨</span><span class="ai-ttl">AI 교육과정 연결</span></div>
-    <div class="ai-compact">
-      <div>
-        <div class="ai-row-lbl">성취기준</div>
-        <div class="ai-row-tx">${esc(d.standard)}</div>
-      </div>
-      <div>
-        <div class="ai-row-lbl">학습목표</div>
-        <div class="ai-row-tx">${esc(learningGoalFor(p,u,d,overview))}</div>
-      </div>
-      <div>
-        <div class="ai-row-lbl">현장 집중 포인트</div>
-        <div class="ai-row-tx">${points.map(x=>`• ${esc(x)}`).join('<br>')}</div>
-      </div>
+    <div class="detail-grid">
+      <section class="detail-block">
+        <div class="detail-hd">교육과정 연결</div>
+        <div class="detail-title">${esc(d.unit)}</div>
+        <div class="detail-sub">${esc(A.gr)}학년 ${esc(A.sj)} · ${esc(d.topic)} · ${esc(d.lesson)}</div>
+        ${achievementChips||chips}
+        <div class="detail-text">${esc(d.standard)}</div>
+      </section>
+      <section class="detail-block">
+        <div class="detail-hd">장소 판단</div>
+        ${locationRows}
+        <div class="detail-divider"></div>
+        <div class="detail-title">왜 맞는가</div>
+        <div class="detail-text">${esc(d.reason)}</div>
+      </section>
     </div>
-    <div class="ai-row-tx" style="font-size:11px;color:var(--g500);margin-top:8px;">근거: ${esc(d.sourceEvidence||d.keywords||d.matchLabel)}</div>`;
+    ${activityTipsHtml(p,u,d,overview)}`;
 }
 function placeSearchQuery(p){
   return cleanText(`${p?.title||''} ${areaName(p?.addr1||'')}`).trim();
@@ -2060,6 +2948,62 @@ function modalMediaHtml(p,img,cm){
   }
   return `<div class="mnimg"><div class="mnimg-ic">${cm?.ic||'📍'}</div><div class="mnimg-tx">공개 API 이미지가 없습니다.</div><div class="media-links"><a class="media-link" href="${l.naverImage}" target="_blank">네이버 사진</a><a class="media-link" href="${l.daumImage}" target="_blank">다음 사진</a></div></div>`;
 }
+function modalHeroHtml(p,img,cm,u,d=null){
+  const unitText=d?`${A.gr}학년 ${A.sj} · ${d.unit}`:(u?unitLabel(u):'단원 선택 필요');
+  const chips=[
+    areaName(p.addr1),
+    `학교 기준 ${distLabel(p)}`,
+    [p.cat,p.sub].filter(Boolean).join(' · '),
+    sourceShortLabel(p)||publicStatusLabel(p)||'공공데이터',
+  ].filter(Boolean);
+  const media=img
+    ? `<img src="${esc(img)}" alt="${esc(p.title)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="mhero-fallback" style="display:none">${cm?.ic||'📍'}</div>`
+    : `<div class="mhero-fallback">${cm?.ic||'📍'}</div>`;
+  return `
+    <section class="mhero" id="m-hero">
+      ${media}
+      <div class="mhero-content">
+        <div class="mhero-sub">${esc(unitText)}</div>
+        <div class="mhero-title">${esc(p.title)}</div>
+        <div class="hero-chip-row">${chips.map(x=>`<span class="hero-chip">${esc(x)}</span>`).join('')}</div>
+      </div>
+    </section>`;
+}
+const CITY_GUIDE_IMAGES={
+  포항:{file:'assets/city-guides/pohang.png',label:'포항 여행지 안내'},
+  경주:{file:'assets/city-guides/gyeongju.png',label:'경주 여행지 안내'},
+  김천:{file:'assets/city-guides/gimcheon.png',label:'김천 여행지 안내'},
+  안동:{file:'assets/city-guides/andong.png',label:'안동 여행지 안내'},
+  구미:{file:'assets/city-guides/gumi.png',label:'구미 여행지 안내'},
+  영주:{file:'assets/city-guides/yeongju.png',label:'영주 여행지 안내'},
+  영천:{file:'assets/city-guides/yeongcheon.png',label:'영천 여행지 안내'},
+  상주:{file:'assets/city-guides/sangju.png',label:'상주 여행지 안내'},
+  문경:{file:'assets/city-guides/mungyeong.png',label:'문경 여행지 안내'},
+  경산:{file:'assets/city-guides/gyeongsan.png',label:'경산 여행지 안내'},
+};
+function cityGuideForPlace(p){
+  const text=cleanText(`${p?.addr1||''} ${p?.title||''} ${p?.originalTitle||''} ${p?.sourceMeta||''}`);
+  const city=Object.keys(CITY_GUIDE_IMAGES).find(name=>text.includes(name));
+  return city?{city,...CITY_GUIDE_IMAGES[city]}:null;
+}
+function cityGuideHtml(p){
+  const guide=cityGuideForPlace(p);
+  if(!guide)return '';
+  return `
+    <section class="city-guide" id="m-city-guide">
+      <div class="city-guide-hd">
+        <div>
+          <div class="city-guide-kicker">지역 추천 관광지 정보</div>
+          <div class="city-guide-title">${esc(guide.label)}</div>
+        </div>
+        <div class="city-guide-meta">${esc(guide.city)} 기준</div>
+      </div>
+      <div class="city-guide-frame">
+        <img class="city-guide-img" src="${esc(guide.file)}" alt="${esc(guide.label)}" loading="lazy">
+      </div>
+      <div class="city-guide-note">같은 지역에서 가족 일정에 함께 넣어볼 만한 대표 관광지 안내 이미지입니다.</div>
+    </section>`;
+}
 function newsPhotoHtml(img,icon){
   return img
     ? `<div class="news-photo"><img src="${esc(img)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="news-placeholder" style="display:none">${icon}</div></div>`
@@ -2069,6 +3013,9 @@ function cardNewsHtml(p,u,overview='',img=''){
   const icon=CATS[p.cat]?.ic||'📍';
   const d=curriculumData(p,u,overview);
   const intro=placeOverviewFor(p,u,overview).text;
+  const keywords=d?.keywordList?.length?d.keywordList:[p.cat,p.sub].filter(Boolean);
+  const points=d?compactFocusPointsFor(p,u,d,overview):['단원 선택 후 활동 연결','공식 자료와 현장 정보 확인'];
+  const reason=d?.reason||`확인 키워드: ${keywords.slice(0,3).join(' · ')||'장소 특성'}. 장소 특성을 보고 방문 여부를 판단합니다.`;
   return `
     <div class="news-grid">
       <article class="news-card">
@@ -2076,73 +3023,53 @@ function cardNewsHtml(p,u,overview='',img=''){
         <div class="news-body">
           <div class="news-kicker">${esc(areaName(p.addr1))} 교육여행</div>
           <div class="news-title">${esc(p.title)}</div>
-          <div class="news-text">${esc(intro.slice(0,82))}${intro.length>82?'...':''}</div>
-          <div class="news-meta">${esc(p.cat||'체험지')}${p.sub?' · '+esc(p.sub):''}</div>
-        </div>
-      </article>
-      <article class="news-card">
-        <div class="news-body">
-          <div class="news-kicker">추천 이유</div>
-          <div class="news-title">왜 이 장소인가</div>
-          <div class="news-text">${esc(d?.reason||placeReason(p,u,overview))}</div>
-          <div class="news-text">${esc(d?.activity||activityFor(p))}</div>
+          <div class="news-text">${esc(intro.slice(0,72))}${intro.length>72?'...':''}</div>
           <div class="news-meta">학교 기준 ${esc(distLabel(p))}</div>
         </div>
       </article>
       <article class="news-card">
         <div class="news-body">
-          <div class="news-kicker">수업 연결</div>
+          <div class="news-kicker">선정 키워드</div>
+          <div class="news-title">${esc((keywords||[]).slice(0,2).join(' · ')||'장소 특성')}</div>
+          ${keywordChipsHtml(keywords)}
+          <div class="news-text">${esc(reason)}</div>
+          <div class="news-meta">${esc(p.cat||'체험지')}${p.sub?' · '+esc(p.sub):''}</div>
+        </div>
+      </article>
+      <article class="news-card">
+        <div class="news-body">
+          <div class="news-kicker">활동 힌트</div>
           <div class="news-title">${d?esc(d.topic):u?esc(unitLabel(u)):'단원 선택 필요'}</div>
-          <div class="news-text">${d?esc(d.standard):'단원 선택 후 성취기준이 연결됩니다.'}</div>
+          ${miniPointsHtml(points)}
           <div class="news-meta">${d?`${esc(A.gr)}학년 ${esc(A.sj)} · ${esc(d.unit)} · ${esc(d.lesson)}`:'교육과정 연결 대기'}</div>
         </div>
       </article>
     </div>`;
 }
-function toggleCardNews(){
-  const box=$i('m-cardnews');
-  const btn=$i('cardnewsBtn');
-  if(!box)return;
-  const willOpen=box.hasAttribute('hidden');
-  if(willOpen)box.removeAttribute('hidden');
-  else box.setAttribute('hidden','');
-  if(btn)btn.textContent=willOpen?'카드뉴스 접기':'카드뉴스 보기';
-}
-
 /* ── 모달 ── */
 async function om(id){
   const p=window._pm?.[id]||A.all.find(x=>x.id===id);if(!p)return;
   focusPlace(id);
   const u=unit();const cm=CATS[p.cat];
-  $i('mttl').textContent=p.title;
+  const d0=u?curriculumData(p,u,''):null;
+  $i('mttl').textContent='장소 상세';
 
   // 추천 장소 클릭 시 팝업으로 기본 정보를 먼저 표시합니다.
   $i('mbdy').innerHTML=`
-    ${modalMediaHtml(p,p.img,cm)}
+    ${modalHeroHtml(p,p.img,cm,u,d0)}
     <div class="minfo">
-      <div class="ib" style="background:var(--g50);">
-        <div class="ibl">장소 정보</div>
-        <div class="place-meta">
-          <strong>${esc(p.title)}</strong>
-          <span>📍 ${esc(p.addr1||'위치 검수 필요')} · 학교 기준 ${esc(distLabel(p))}</span>
-          <span>${cm?.ic||''} ${esc(p.cat||'분류 없음')}${p.sub?' · '+esc(p.sub):''}${publicStatusLabel(p)?' · '+esc(publicStatusLabel(p)):''}</span>
-          ${p.originalTitle?`<span>원자료명: ${esc(p.originalTitle)}</span>`:''}
-          ${p.sourceName?`<span>출처: ${esc(p.sourceName)}</span>`:''}
-        </div>
+      <div id="m-ai">${curriculumInsightHtml(p,u,'')}</div>
+      <div class="ib" style="background:var(--g50);" id="m-overview">
+        <div class="ibl">장소 소개</div>
+        <div class="ai-loading"><div class="ai-spin"></div> 정보 불러오는 중...</div>
+      </div>
+      ${cityGuideHtml(p)}
+      <div class="modal-links-panel">
         <div class="link-row">
           ${p.sourceUrl?`<a class="nlink" href="${esc(p.sourceUrl)}" target="_blank">공식 출처</a>`:''}
           ${externalPlaceAnchorsHtml(p)}
         </div>
       </div>
-      <div class="m-actions">
-        <button class="mact primary" id="cardnewsBtn" onclick="toggleCardNews()">카드뉴스 보기</button>
-      </div>
-      <div class="cardnews" id="m-cardnews" hidden>${cardNewsHtml(p,u,'',p.img)}</div>
-      <div class="ib" style="background:var(--g50);" id="m-overview">
-        <div class="ibl">장소 소개</div>
-        <div class="ai-loading"><div class="ai-spin"></div> 정보 불러오는 중...</div>
-      </div>
-      <div class="ai-box" id="m-ai">${curriculumInsightHtml(p,u,'')}</div>
     </div>`;
   $i('ov').classList.add('on');
 
@@ -2150,21 +3077,19 @@ async function om(id){
   const img=p.img||await fetchPlaceImage(p);
   if(!p.img&&img){
     p.img=img;
-    const media=$i('mbdy').firstElementChild;
-    if(media)media.outerHTML=modalMediaHtml(p,img,cm);
+    const media=$i('m-hero');
+    if(media)media.outerHTML=modalHeroHtml(p,img,cm,u,d0);
     rnList();
   }
   const ov=cleanText(overview||'');
   const intro=placeOverviewFor(p,u,ov);
   const ovEl=$i('m-overview');
   if(ovEl){
-    const rawNote=intro.generated&&ov?`<div class="raw-note">원자료: ${esc(ov.slice(0,160))}${ov.length>160?'...':''}</div>`:'';
-    ovEl.innerHTML=`<div class="ibl">${intro.generated?'AI 보조 장소 소개':'장소 소개'}</div>${esc(intro.text.slice(0,430))}${intro.text.length>430?'...':''}${rawNote}`;
+    const rawNote=intro.generated&&ov?`<div class="raw-note">원자료: ${esc(ov.slice(0,120))}${ov.length>120?'...':''}</div>`:'';
+    ovEl.innerHTML=`<div class="ibl">${intro.generated?'AI 보조 장소 소개':'장소 소개'}</div>${expandableTextHtml(intro.text,260)}${rawNote}`;
   }
   const aiEl=$i('m-ai');
   if(aiEl)aiEl.innerHTML=curriculumInsightHtml(p,u,ov);
-  const newsEl=$i('m-cardnews');
-  if(newsEl)newsEl.innerHTML=cardNewsHtml(p,u,ov,p.img||img);
 }
 function cm(){$i('ov').classList.remove('on');}
 updateResetBtn();

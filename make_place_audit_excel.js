@@ -3,7 +3,7 @@ const path = require('path');
 const vm = require('vm');
 
 const HTML_FILE = '경북체험학습추천 (2).html';
-const OUT_FILE = '경북_장소데이터_전체점검용.xlsx';
+const OUT_FILE = '대구경북_장소데이터_전체점검용.xlsx';
 
 function readApp() {
   const html = fs.readFileSync(HTML_FILE, 'utf8');
@@ -21,10 +21,11 @@ function readApp() {
   vm.runInContext(match[1], context);
   vm.runInContext(`
     globalThis.__APP_EXPORT__ = {
-      CUR, GBK, SIGUNGU, TK, TOUR, APP, EDU_CONTENT_TYPES, BLOCKED_CONTENT_TYPES,
+      CUR, GBK, DAEGU, SERVICE_AREAS, TOUR_AREA_CODES, SIGUNGU, DAEGU_SIGUNGU, TK, TOUR, APP, EDU_CONTENT_TYPES, BLOCKED_CONTENT_TYPES,
       CONTENT_TYPE_NAMES, contentTypeName, isAllowedContentType, isNonLearningPlace,
       isUsableTourPlace, clf, clsub, buildPlace, scorePlace, curriculumData,
-      curriculumRelevance, setState(g, s) { A.gr = g; A.sj = s; }
+      curriculumRelevance, PLACE_DISCOVERY_GROUPS, placeDiscoverySeeds, allPlaceDiscoverySeeds,
+      setState(g, s) { A.gr = g; A.sj = s; }
     };
   `, context);
   return context.__APP_EXPORT__;
@@ -118,40 +119,74 @@ function excludeReason(app, item) {
 
 async function collectPlaces(app) {
   const units = allUnits(app);
-  const allSeeds = uniq(units.flatMap(({ unit }) => unitSeeds(unit)));
+  const allSeeds = uniq([
+    ...units.flatMap(({ unit }) => unitSeeds(unit)),
+    ...(app.allPlaceDiscoverySeeds ? app.allPlaceDiscoverySeeds() : []),
+  ]);
   const placeMap = new Map();
+  const serviceAreas = app.SERVICE_AREAS || [{ code: '35', name: '경북', center: app.GBK }];
+  function sigunguMapFor(area) {
+    if (String(area.code) === '4') return app.DAEGU_SIGUNGU || {};
+    return app.SIGUNGU || {};
+  }
 
   const areaTasks = [];
-  Object.entries(app.SIGUNGU).forEach(([sigungu, code]) => {
-    app.EDU_CONTENT_TYPES.forEach((type) => {
-      areaTasks.push(async () => fetchItems(app, 'areaBasedList2', {
-        areaCode: 35,
-        sigunguCode: code,
-        contentTypeId: type,
-        arrange: 'A',
-        numOfRows: 1000,
-        pageNo: 1,
-      }, `경북전체:${sigungu}:${app.contentTypeName(type)}`));
+  serviceAreas.forEach((area) => {
+    Object.entries(sigunguMapFor(area)).forEach(([sigungu, code]) => {
+      app.EDU_CONTENT_TYPES.forEach((type) => {
+        areaTasks.push(async () => fetchItems(app, 'areaBasedList2', {
+          areaCode: area.code,
+          sigunguCode: code,
+          contentTypeId: type,
+          arrange: 'A',
+          numOfRows: 1000,
+          pageNo: 1,
+        }, `${area.name}전체:${sigungu}:${app.contentTypeName(type)}`));
+      });
     });
   });
 
-  console.log(`경북 전체 허용 장소 수집 요청 ${areaTasks.length}건`);
+  console.log(`대구·경북 전체 허용 장소 수집 요청 ${areaTasks.length}건`);
   (await runLimited(areaTasks, 8)).forEach((item) => mergePlace(placeMap, item));
+
+  const allowedKeywordTasks = [];
+  allSeeds.forEach((seed) => {
+    serviceAreas.forEach((area) => {
+      app.EDU_CONTENT_TYPES.forEach((type) => {
+        allowedKeywordTasks.push(async () => {
+          const items = await fetchItems(app, 'searchKeyword2', {
+            keyword: seed,
+            areaCode: area.code,
+            contentTypeId: type,
+            arrange: 'A',
+            numOfRows: 80,
+            pageNo: 1,
+          }, `보강검색:${area.name}:${seed}:${app.contentTypeName(type)}`);
+          return items.map((it) => ({ ...it, __keyword: seed }));
+        });
+      });
+    });
+  });
+
+  console.log(`허용 장소 보강 검색 요청 ${allowedKeywordTasks.length}건`);
+  (await runLimited(allowedKeywordTasks, 8)).forEach((item) => mergePlace(placeMap, item));
 
   const blockedTypes = uniq([...(app.BLOCKED_CONTENT_TYPES || []), '39']);
   const blockedTasks = [];
   allSeeds.forEach((seed) => {
-    blockedTypes.forEach((type) => {
-      blockedTasks.push(async () => {
-        const items = await fetchItems(app, 'searchKeyword2', {
-          keyword: seed,
-          areaCode: 35,
-          contentTypeId: type,
-          arrange: 'A',
-          numOfRows: 50,
-          pageNo: 1,
-        }, `제외검사용:${seed}:${app.contentTypeName(type)}`);
-        return items.map((it) => ({ ...it, __keyword: seed }));
+    serviceAreas.forEach((area) => {
+      blockedTypes.forEach((type) => {
+        blockedTasks.push(async () => {
+          const items = await fetchItems(app, 'searchKeyword2', {
+            keyword: seed,
+            areaCode: area.code,
+            contentTypeId: type,
+            arrange: 'A',
+            numOfRows: 50,
+            pageNo: 1,
+          }, `제외검사용:${area.name}:${seed}:${app.contentTypeName(type)}`);
+          return items.map((it) => ({ ...it, __keyword: seed }));
+        });
       });
     });
   });
@@ -165,13 +200,19 @@ async function collectPlaces(app) {
 function guideRows() {
   return [
     ['항목', '내용'],
-    ['파일 목적', '앱이 경북 관광자원 API에서 가져올 수 있는 장소 후보를 점검하기 위한 원자료 엑셀'],
+    ['파일 목적', '앱이 대구·경북 관광자원 API에서 가져올 수 있는 장소 후보를 점검하기 위한 원자료 엑셀'],
     ['추천통과_단원별', '현재 앱 규칙으로 교육과정 점수를 통과한 단원-장소 조합'],
-    ['장소마스터', '경북 전체 허용 관광 API 유형과 오염 검사용 음식점/숙박 후보를 합친 장소 목록'],
+    ['장소마스터', '대구·경북 전체 허용 관광 API 유형과 오염 검사용 음식점/숙박 후보를 합친 장소 목록'],
+    ['보강검색', '단원 키워드 외에 천문대, 천문과학관, 생태공원, 지질공원, 대표 경제거점처럼 장소군별 누락 방지 키워드로 추가 수집'],
     ['제외장소', '음식점, 숙박, 좌표 없음, 학습장소 성격 부족 등으로 앱 추천에서 제외되는 장소'],
-    ['수정 방법', '장소마스터에서 남길 장소를 표시해 주면 코드의 허용/제외 사전으로 반영 가능'],
+    ['수정 방법', '장소마스터에서 남길 대표 장소를 표시해 주면 코드의 허용/제외 사전으로 반영 가능'],
     ['주의', '앱은 실시간 API를 사용하므로 학교 위치/검색 시점에 따라 후보는 조금 달라질 수 있음'],
   ];
+}
+
+function centerForPlace(app, raw) {
+  const area = (app.SERVICE_AREAS || []).find((a) => String(a.code) === String(raw.areacode || raw.areaCode || ''));
+  return area?.center || app.GBK;
 }
 
 function masterRows(app, places) {
@@ -208,13 +249,18 @@ function masterRows(app, places) {
 }
 
 function recommendationRows(app, units, places) {
-  const rows = [['검토결과(유지/삭제)', '검토메모', '학년', '교과', '선택 단원', 'contentid', '장소명', '주소', '관광API유형', '앱대분류', '앱소분류', '경북중심거리(km)', '추천점수', '관련 주제', '관련 차시', '성취기준', '추천 이유', '직접 연계 근거', '출처 기준']];
-  const usablePlaces = places.filter((p) => !excludeReason(app, p) && app.isUsableTourPlace(p));
+  const rows = [['검토결과(유지/삭제)', '검토메모', '학년', '교과', '선택 단원', 'contentid', '장소명', '주소', '관광API유형', '앱대분류', '앱소분류', '기준점거리(km)', '추천점수', '관련 주제', '관련 차시', '성취기준', '추천 이유', '직접 연계 근거', '출처 기준']];
+  const candidatePlaces = places.filter((p) => {
+    if (!p?.mapx || !p?.mapy) return false;
+    const type = String(p.contenttypeid || '');
+    return app.isAllowedContentType(type) && !(app.BLOCKED_CONTENT_TYPES || []).includes(type);
+  });
   const recs = [];
   units.forEach(({ grade, subject, unit }) => {
     app.setState(grade, subject);
-    usablePlaces.forEach((raw) => {
-      const place = app.buildPlace(raw, app.GBK, unit, null);
+    candidatePlaces.forEach((raw) => {
+      if (!app.isUsableTourPlace(raw, unit)) return;
+      const place = app.buildPlace(raw, centerForPlace(app, raw), unit, null);
       if (!place.score) return;
       const data = app.curriculumData(place, unit, '');
       recs.push([
@@ -266,8 +312,14 @@ function excludedRows(app, places) {
 }
 
 function unitRows(app, units) {
-  const rows = [['학년', '교과', '선택 단원', '앱 검색어']];
-  units.forEach(({ grade, subject, unit }) => rows.push([`${grade}학년`, subject, unit.unit || unit.name, join(unitSeeds(unit))]));
+  const rows = [['학년', '교과', '선택 단원', '앱 검색어', '장소군 보강 검색어']];
+  units.forEach(({ grade, subject, unit }) => rows.push([
+    `${grade}학년`,
+    subject,
+    unit.unit || unit.name,
+    join(unitSeeds(unit)),
+    join(app.placeDiscoverySeeds ? app.placeDiscoverySeeds(unit) : []),
+  ]));
   return rows;
 }
 
